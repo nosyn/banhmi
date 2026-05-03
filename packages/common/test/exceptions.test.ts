@@ -4,8 +4,11 @@ import {
   BadRequestException,
   ConflictException,
   ForbiddenException,
+  GoneException,
   InternalServerErrorException,
+  MethodNotAllowedException,
   NotFoundException,
+  TooManyRequestsException,
   UnauthorizedException,
   UnprocessableEntityException,
 } from '../src/exceptions/http-exceptions'
@@ -55,5 +58,17 @@ describe('status-specific exceptions', () => {
 
   test('InternalServerErrorException has statusCode 500', () => {
     expect(new InternalServerErrorException().statusCode).toBe(500)
+  })
+
+  test('GoneException has statusCode 410', () => {
+    expect(new GoneException().statusCode).toBe(410)
+  })
+
+  test('MethodNotAllowedException has statusCode 405', () => {
+    expect(new MethodNotAllowedException().statusCode).toBe(405)
+  })
+
+  test('TooManyRequestsException has statusCode 429', () => {
+    expect(new TooManyRequestsException().statusCode).toBe(429)
   })
 })

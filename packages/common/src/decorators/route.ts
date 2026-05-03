@@ -1,6 +1,6 @@
 import { ROUTE_METADATA } from '../metadata-keys'
 
-export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'OPTIONS' | 'HEAD'
+export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'OPTIONS' | 'HEAD' | 'ALL'
 
 export interface RouteDefinitionMeta {
   method: HttpMethod
@@ -30,12 +30,4 @@ export const Delete = createRouteDecorator('DELETE')
 export const Options = createRouteDecorator('OPTIONS')
 export const Head = createRouteDecorator('HEAD')
 
-export function All(path = '') {
-  return function (_target: unknown, context: ClassMethodDecoratorContext): void {
-    if (!context.metadata[ROUTE_METADATA]) {
-      context.metadata[ROUTE_METADATA] = {}
-    }
-    const routes = context.metadata[ROUTE_METADATA] as Record<string, RouteDefinitionMeta>
-    routes[context.name as string] = { method: 'GET', path }
-  }
-}
+export const All = createRouteDecorator('ALL')

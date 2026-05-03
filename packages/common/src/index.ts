@@ -1,3 +1,5 @@
+import './polyfill-symbol-metadata'
+
 export { Token } from './token'
 export type { Token as TokenType } from './token'
 export * from './metadata-keys'
