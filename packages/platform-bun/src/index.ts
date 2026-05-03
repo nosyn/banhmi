@@ -1,2 +1,8 @@
-// @bunnest/platform-bun — populated in subsequent tasks
-export {}
+export { BunAdapter } from './bun-adapter'
+export { BunExecutionContext } from './execution-context'
+export { BunnestFactory } from './factory'
+export { GlobalExceptionFilter } from './global-filter'
+export { RadixRouter } from './router'
+export type { MatchResult, RegisteredRoute } from './router'
+export { BunRouteCtx } from './route-ctx'
+export { RouteExplorer } from './route-explorer'
