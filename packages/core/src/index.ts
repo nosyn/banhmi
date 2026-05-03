@@ -1,2 +1,3 @@
-// @bunnest/core — populated in subsequent tasks
-export {}
+export { ModuleGraph } from './module-graph'
+export type { ModuleNode } from './module-graph'
+export { Container } from './container'
