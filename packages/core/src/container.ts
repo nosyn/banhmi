@@ -29,8 +29,11 @@ export class Container {
     }
 
     if (this.resolving.has(key)) {
-      const name = typeof key === 'symbol' ? String(key) : (key as ClassConstructor).name
-      throw new Error(`Circular injection dependency detected for token: ${name}`)
+      const name =
+        typeof key === 'symbol' ? String(key) : (key as ClassConstructor).name
+      throw new Error(
+        `Circular injection dependency detected for token: ${name}`,
+      )
     }
 
     const def = this.providers.get(key)

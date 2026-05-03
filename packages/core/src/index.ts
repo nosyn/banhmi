@@ -1,3 +1,6 @@
-export { ModuleGraph } from './module-graph'
-export type { ModuleNode } from './module-graph'
 export { Container } from './container'
+export { LifecycleRunner } from './lifecycle-runner'
+export { ModuleGraph, flattenModuleProviders } from './module-graph'
+export type { ModuleNode } from './module-graph'
+export { BunnestApplication } from './application'
+export type { HttpAdapter } from './application'
