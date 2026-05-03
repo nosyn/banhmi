@@ -10,6 +10,12 @@
     "indentStyle": "space",
     "indentWidth": 2
   },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "semicolons": "asNeeded"
+    }
+  },
   "files": {
     "ignore": ["**/dist/**", "**/node_modules/**"]
   }
