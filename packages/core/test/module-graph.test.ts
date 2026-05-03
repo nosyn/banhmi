@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import { Injectable, Module } from '@bunnest/common'
+import { Injectable, MODULE_METADATA, Module } from '@bunnest/common'
 import { ModuleGraph } from '../src/module-graph'
 
 describe('ModuleGraph', () => {
@@ -36,25 +36,27 @@ describe('ModuleGraph', () => {
   })
 
   test('throws on circular dependency', () => {
-    // We cannot use @Module decorator for circular refs since TS won't allow it,
-    // so we manually craft the metadata to test the cycle detection
-    const circularMeta = { imports: [] as unknown[] }
+    // @Module can't express circular refs in TS source, so craft metadata manually.
+    // We need two classes: A imports B, B imports A.
+    class ModA {}
+    class ModB {}
 
-    function makeCircularModule(name: string) {
-      class M {}
-      Object.defineProperty(M, 'name', { value: name })
-      Object.defineProperty(M, Symbol.metadata, {
-        value: { [Symbol.for('bunnest:module')]: circularMeta },
-        configurable: true,
-      })
-      return M
-    }
+    Object.defineProperty(ModA, Symbol.metadata, {
+      value: { [MODULE_METADATA]: { imports: [ModB] } },
+      configurable: true,
+    })
+    Object.defineProperty(ModB, Symbol.metadata, {
+      value: { [MODULE_METADATA]: { imports: [ModA] } },
+      configurable: true,
+    })
 
-    // Note: circular dep detection via actual @Module is tested structurally —
-    // the test above ensures the visiting set logic is in place
+    const graph = new ModuleGraph()
+    expect(() => graph.buildTree(ModA as never)).toThrow(/circular/i)
+  })
+
+  test('throws when module is not decorated', () => {
     const graph = new ModuleGraph()
     expect(() => {
-      // A module that is not decorated at all should throw "is not a @Module"
       class NotAModule {}
       graph.buildTree(NotAModule as never)
     }).toThrow(/is not a @Module/)

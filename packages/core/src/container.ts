@@ -1,4 +1,8 @@
-import type { ClassConstructor, InjectToken, ProviderDef } from '@bunnest/common'
+import type {
+  ClassConstructor,
+  InjectToken,
+  ProviderDef,
+} from '@bunnest/common'
 import {
   getInjectTokens,
   getProviderToken,
@@ -10,6 +14,7 @@ import {
 export class Container {
   private providers = new Map<symbol | ClassConstructor, ProviderDef>()
   private singletons = new Map<symbol | ClassConstructor, unknown>()
+  private resolving = new Set<symbol | ClassConstructor>()
 
   register(def: ProviderDef): void {
     const token = getProviderToken(def)
@@ -23,15 +28,26 @@ export class Container {
       return this.singletons.get(key) as T
     }
 
+    if (this.resolving.has(key)) {
+      const name = typeof key === 'symbol' ? String(key) : (key as ClassConstructor).name
+      throw new Error(`Circular injection dependency detected for token: ${name}`)
+    }
+
     const def = this.providers.get(key)
     if (!def) {
-      const name = typeof key === 'symbol' ? String(key) : (key as ClassConstructor).name
+      const name =
+        typeof key === 'symbol' ? String(key) : (key as ClassConstructor).name
       throw new Error(`No provider registered for token: ${name}`)
     }
 
-    const instance = this.instantiate(def) as T
-    this.singletons.set(key, instance)
-    return instance
+    this.resolving.add(key)
+    try {
+      const instance = this.instantiate(def) as T
+      this.singletons.set(key, instance)
+      return instance
+    } finally {
+      this.resolving.delete(key)
+    }
   }
 
   private instantiate(def: ProviderDef): unknown {
