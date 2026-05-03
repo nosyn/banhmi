@@ -1,0 +1,14 @@
+import { BadRequestException } from '../exceptions/http-exceptions'
+import type { PipeMetadata, PipeTransform } from '../interfaces/pipe'
+
+const UUID_REGEX =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+export class ParseUUIDPipe implements PipeTransform<string, string> {
+  transform(value: string, _metadata: PipeMetadata): string {
+    if (!UUID_REGEX.test(value)) {
+      throw new BadRequestException(`"${value}" is not a valid UUID`)
+    }
+    return value
+  }
+}
