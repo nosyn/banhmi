@@ -1,0 +1,11 @@
+{
+  "name": "cats-api-example",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --watch src/main.ts"
+  },
+  "dependencies": {
+    "bunnest": "workspace:*"
+  }
+}

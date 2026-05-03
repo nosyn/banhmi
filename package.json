@@ -1,7 +1,7 @@
 {
   "name": "bunnest-monorepo",
   "private": true,
-  "workspaces": ["packages/*"],
+  "workspaces": ["packages/*", "examples/*"],
   "scripts": {
     "build": "bun run --filter='*' build",
     "test": "bun test --recursive",
