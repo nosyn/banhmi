@@ -1,0 +1,59 @@
+# Getting Started
+
+## Installation
+
+```bash
+bun add banhmi
+```
+
+## Create Your First App
+
+### 1. Bootstrap the application
+
+```ts
+// src/main.ts
+import { BanhmiFactory } from 'banhmi'
+import { AppModule } from './app.module'
+
+const app = await BanhmiFactory.create(AppModule)
+app.listen(parseInt(Bun.env.PORT ?? '3000', 10))
+```
+
+### 2. Define a module
+
+```ts
+// src/app.module.ts
+import { Module } from 'banhmi'
+import { CatsController } from './cats/cats.controller'
+
+@Module({ controllers: [CatsController] })
+export class AppModule {}
+```
+
+### 3. Define a controller
+
+```ts
+// src/cats/cats.controller.ts
+import { Controller, Get } from 'banhmi'
+import type { RouteCtx } from 'banhmi'
+
+@Controller('/cats')
+export class CatsController {
+  @Get('/')
+  findAll(_ctx: RouteCtx) {
+    return [{ name: 'Whiskers' }]
+  }
+}
+```
+
+## Project Structure
+
+```
+src/
+  main.ts
+  app.module.ts
+  cats/
+    cats.module.ts
+    cats.controller.ts
+    cats.service.ts
+```

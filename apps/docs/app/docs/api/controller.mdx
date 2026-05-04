@@ -1,0 +1,36 @@
+# @Controller
+
+Registers a class as an HTTP controller and sets its route prefix.
+
+```ts
+@Controller('/cats')
+export class CatsController {}
+```
+
+## Route Decorators
+
+| Decorator | Method |
+|-----------|--------|
+| `@Get(path?)` | GET |
+| `@Post(path?)` | POST |
+| `@Put(path?)` | PUT |
+| `@Patch(path?)` | PATCH |
+| `@Delete(path?)` | DELETE |
+
+## Route Parameters
+
+```ts
+@Get('/:id')
+findOne(ctx: RouteCtx) {
+  return ctx.params.id
+}
+```
+
+## Response Customization
+
+```ts
+@HttpCode(201)
+@Header('X-Custom', 'value')
+@Post('/')
+create() {}
+```
