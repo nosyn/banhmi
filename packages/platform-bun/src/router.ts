@@ -1,4 +1,9 @@
-import type { ClassConstructor, HttpMethod, Interceptor, RouteCtx } from '@banhmi/common'
+import type {
+  ClassConstructor,
+  HttpMethod,
+  Interceptor,
+  RouteCtx,
+} from '@banhmi/common'
 
 export type InterceptorOrClass = ClassConstructor | Interceptor
 

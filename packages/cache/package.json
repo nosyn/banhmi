@@ -1,0 +1,16 @@
+{
+  "name": "@banhmi/cache",
+  "version": "0.5.0",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@banhmi/common": "workspace:*",
+    "@banhmi/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@banhmi/platform-bun": "workspace:*"
+  }
+}
