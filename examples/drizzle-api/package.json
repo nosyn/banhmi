@@ -12,6 +12,7 @@
     "drizzle-orm": "^0.45.2"
   },
   "devDependencies": {
+    "better-sqlite3": "^12.9.0",
     "drizzle-kit": "^0.31.10"
   }
 }
