@@ -10,6 +10,7 @@
   "dependencies": {
     "@banhmi/common": "workspace:*",
     "@banhmi/core": "workspace:*",
-    "@banhmi/platform-bun": "workspace:*"
+    "@banhmi/platform-bun": "workspace:*",
+    "@banhmi/sqlite": "workspace:*"
   }
 }
