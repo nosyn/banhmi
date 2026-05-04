@@ -122,8 +122,20 @@ describe('POST /cats', () => {
 })
 
 describe('GET /cats/:id', () => {
+  let seededId: number
+
+  beforeAll(async () => {
+    const res = await fetch(`${BASE}/cats`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ name: 'Whiskers' }),
+    })
+    const body = (await res.json()) as Cat
+    seededId = body.id
+  })
+
   test('returns the cat by id', async () => {
-    const res = await fetch(`${BASE}/cats/1`)
+    const res = await fetch(`${BASE}/cats/${seededId}`)
     expect(res.status).toBe(200)
     const body = (await res.json()) as Cat
     expect(body.name).toBe('Whiskers')
@@ -173,10 +185,9 @@ describe('middleware intercepts unmatched routes', () => {
 describe('method-level guard only blocks its own route, not siblings', () => {
   let methodGuardApp: BanhmiApplication
   const METHOD_GUARD_PORT = 54400
+  let guardCalled = false
 
   beforeAll(async () => {
-    let guardCalled = false
-
     class StrictGuard implements Guard {
       async canActivate(_ctx: ExecutionContext): Promise<boolean> {
         guardCalled = true
@@ -203,14 +214,6 @@ describe('method-level guard only blocks its own route, not siblings', () => {
 
     methodGuardApp = await BanhmiFactory.create(MethodGuardApp)
     await methodGuardApp.listen(METHOD_GUARD_PORT)
-
-    // Expose guardCalled via closure for tests
-    ;(methodGuardApp as unknown as Record<string, unknown>)._guardCalled = () =>
-      guardCalled
-    ;(methodGuardApp as unknown as Record<string, unknown>)._resetGuardCalled =
-      () => {
-        guardCalled = false
-      }
   })
 
   afterAll(async () => {
@@ -222,21 +225,15 @@ describe('method-level guard only blocks its own route, not siblings', () => {
       `http://localhost:${METHOD_GUARD_PORT}/method-guard-test/blocked`,
     )
     expect(res.status).toBe(403)
-    const guardCalled = (methodGuardApp as unknown as Record<string, unknown>)
-      ._guardCalled as () => boolean
-    expect(guardCalled()).toBe(true)
+    expect(guardCalled).toBe(true)
   })
 
   test('allowed route returns 200 and guard is not called', async () => {
-    const resetGuard = (methodGuardApp as unknown as Record<string, unknown>)
-      ._resetGuardCalled as () => void
-    resetGuard()
+    guardCalled = false
     const res = await fetch(
       `http://localhost:${METHOD_GUARD_PORT}/method-guard-test/allowed`,
     )
     expect(res.status).toBe(200)
-    const guardCalled = (methodGuardApp as unknown as Record<string, unknown>)
-      ._guardCalled as () => boolean
-    expect(guardCalled()).toBe(false)
+    expect(guardCalled).toBe(false)
   })
 })

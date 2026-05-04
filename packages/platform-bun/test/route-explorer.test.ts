@@ -184,6 +184,8 @@ describe('RouteExplorer — method-level guards', () => {
     const restricted = routes.find((r) => r.path === '/items/restricted')
     const free = routes.find((r) => r.path === '/items/free')
 
+    // Order matters: RouteExplorer builds [...classGuards, ...(methodGuardsMap[methodName] ?? [])],
+    // so class-level guards always precede method-level guards in the pipeline.
     expect(restricted?.guards).toEqual([ClassGuard, MethodGuard])
     expect(free?.guards).toEqual([ClassGuard])
   })
