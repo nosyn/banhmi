@@ -12,6 +12,7 @@ export function Search() {
   const pagefind = useRef<{
     search: (q: string) => Promise<{ results: Array<{ data: () => Promise<PagefindResult> }> }>
   } | null>(null)
+  const generationRef = useRef(0)
 
   useEffect(() => {
     // Pagefind is available only after build — gracefully ignore in dev
@@ -22,13 +23,20 @@ export function Search() {
 
   async function handleSearch(q: string) {
     setQuery(q)
+    const generation = ++generationRef.current
     if (!pagefind.current || !q) {
       setResults([])
       return
     }
-    const { results: rawResults } = await pagefind.current.search(q)
-    const data = await Promise.all(rawResults.slice(0, 5).map((r) => r.data()))
-    setResults(data)
+    try {
+      const { results: rawResults } = await pagefind.current.search(q)
+      if (generation !== generationRef.current) return
+      const data = await Promise.all(rawResults.slice(0, 5).map((r) => r.data()))
+      if (generation !== generationRef.current) return
+      setResults(data)
+    } catch {
+      setResults([])
+    }
   }
 
   return (
