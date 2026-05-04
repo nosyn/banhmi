@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "bun-docs": {
+      "type": "http",
+      "url": "https://bun.com/docs/mcp"
+    },
+    "better-auth": {
+      "type": "http",
+      "url": "https://mcp.better-auth.com/mcp"
+    }
+  }
+}
