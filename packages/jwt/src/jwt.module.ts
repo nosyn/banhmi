@@ -7,6 +7,7 @@ import {
   type JwtModuleOptions,
 } from './tokens'
 
+// biome-ignore lint/complexity/noStaticOnlyClass: intentional NestJS-style dynamic module
 export class JwtModule {
   static forRoot(options: JwtModuleOptions) {
     @Module({

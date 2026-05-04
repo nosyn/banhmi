@@ -1,7 +1,11 @@
-import { Injectable, UnauthorizedException } from '@banhmi/common'
-import type { ExecutionContext, Guard } from '@banhmi/common'
-import { JWT_SERVICE_TOKEN } from './tokens'
+import {
+  type ExecutionContext,
+  type Guard,
+  Injectable,
+  UnauthorizedException,
+} from '@banhmi/common'
 import type { JwtService } from './jwt.service'
+import { JWT_SERVICE_TOKEN } from './tokens'
 
 @Injectable()
 export class JwtGuard implements Guard {
@@ -20,7 +24,7 @@ export class JwtGuard implements Guard {
     const token = authHeader.slice(7)
     try {
       const payload = await this.jwtService.verify(token)
-      context.getCtx().state['jwtPayload'] = payload
+      context.getCtx().state.jwtPayload = payload
       return true
     } catch {
       throw new UnauthorizedException('Invalid or expired token')

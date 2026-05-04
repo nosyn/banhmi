@@ -2,9 +2,8 @@ import { afterEach, describe, expect, test } from 'bun:test'
 import { Module } from '@banhmi/common'
 import { BanhmiFactory } from '@banhmi/platform-bun'
 import { ConfigModule } from '../src/config.module'
-import { ConfigService } from '../src/config.service'
+import { ConfigService, type EnvSchema } from '../src/config.service'
 import { CONFIG_TOKEN } from '../src/tokens'
-import type { EnvSchema } from '../src/config.service'
 
 const schema = {
   PORT: { type: 'number' as const, default: 3000 },

@@ -90,7 +90,7 @@ describe('JwtGuard', () => {
 
     const result = await guard.canActivate(mockCtx)
     expect(result).toBe(true)
-    expect((state['jwtPayload'] as { sub: string }).sub).toBe('99')
+    expect((state.jwtPayload as { sub: string }).sub).toBe('99')
   })
 })
 

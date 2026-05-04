@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'bun:test'
-import { StreamableFile } from '../src/streamable-file'
 import { StreamInterceptor } from '../src/interceptors/stream.interceptor'
 import type { CallHandler } from '../src/interfaces/call-handler'
 import type { ExecutionContext } from '../src/interfaces/execution-context'
+import { StreamableFile } from '../src/streamable-file'
 
 describe('StreamableFile', () => {
   test('wraps a ReadableStream', () => {

@@ -1,5 +1,5 @@
-import { Module, Token } from 'banhmi'
 import { Database } from 'bun:sqlite'
+import { Module, Token } from 'banhmi'
 import { drizzle } from 'drizzle-orm/bun-sqlite'
 import * as schema from './schema'
 

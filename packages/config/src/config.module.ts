@@ -2,6 +2,7 @@ import { Module } from '@banhmi/common'
 import { ConfigService, type EnvSchema } from './config.service'
 import { CONFIG_TOKEN } from './tokens'
 
+// biome-ignore lint/complexity/noStaticOnlyClass: intentional NestJS-style dynamic module
 export class ConfigModule {
   static forRoot<S extends EnvSchema>(
     schema: S,
