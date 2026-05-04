@@ -1,4 +1,4 @@
-import type { ClassConstructor } from '@banhmi/common'
+import type { ClassConstructor, Interceptor } from '@banhmi/common'
 import type { HttpAdapter } from '@banhmi/core'
 import type { Server, ServerWebSocket } from 'bun'
 import { type RegisteredFilter, runEnhancerPipeline } from './enhancer-pipeline'
@@ -24,7 +24,9 @@ export class BunAdapter implements HttpAdapter {
 
   use(middleware: unknown): void {
     if (typeof middleware !== 'function') {
-      throw new TypeError(`BunAdapter.use() expects a function, got ${typeof middleware}`)
+      throw new TypeError(
+        `BunAdapter.use() expects a function, got ${typeof middleware}`,
+      )
     }
     this.middleware.push(middleware as MiddlewareFn)
   }
@@ -164,7 +166,9 @@ export class BunAdapter implements HttpAdapter {
     )
 
     const guardInstances = match.guards.map((G) => new G())
-    const interceptorInstances = match.interceptors.map((I) => new I())
+    const interceptorInstances = match.interceptors.map((I) =>
+      typeof I === 'function' ? new (I as new () => Interceptor)() : (I as Interceptor),
+    )
     const filterInstances: RegisteredFilter[] = match.filters.map((F) => ({
       filterInstance: new F() as RegisteredFilter['filterInstance'],
     }))
