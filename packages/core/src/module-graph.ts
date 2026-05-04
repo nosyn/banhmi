@@ -5,6 +5,7 @@ export interface ModuleNode {
   module: AbstractConstructor
   providers: ModuleMetadata['providers']
   controllers: ModuleMetadata['controllers']
+  gateways: ModuleMetadata['gateways']
   exports: ModuleMetadata['exports']
   imports: ModuleNode[]
 }
@@ -29,6 +30,7 @@ export function flattenModuleProviders(
     for (const imp of n.imports) walk(imp)
     providers.push(...(n.providers ?? []))
     providers.push(...(n.controllers ?? []))
+    providers.push(...(n.gateways ?? []))
   }
 
   walk(node)
@@ -56,6 +58,7 @@ export class ModuleGraph {
       module: rootModule,
       providers: meta.providers ?? [],
       controllers: meta.controllers ?? [],
+      gateways: meta.gateways ?? [],
       exports: meta.exports ?? [],
       imports: (meta.imports ?? []).map((m) => this.buildTree(m)),
     }
