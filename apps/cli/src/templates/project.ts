@@ -43,13 +43,14 @@ export function tsconfigTemplate(): string {
 }
 
 export function mainTsTemplate(appName: string): string {
+  const safeName = JSON.stringify(appName)
   return `import { BanhmiFactory } from 'banhmi'
 import { AppModule } from './app.module'
 
 const app = await BanhmiFactory.create(AppModule)
 
 app.listen(parseInt(Bun.env.PORT ?? '3000', 10))
-console.log(\`[${appName}] listening on port \${Bun.env.PORT ?? '3000'}\`)
+console.log(${safeName} + ' listening on port ' + (Bun.env.PORT ?? '3000'))
 `
 }
 

@@ -1,5 +1,5 @@
 import { mkdir } from 'node:fs/promises'
-import { join } from 'node:path'
+import { join, resolve } from 'node:path'
 import {
   appModuleTemplate,
   biomeConfigTemplate,
@@ -16,6 +16,17 @@ export interface ScaffoldOptions {
 export async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
   const { name, outDir = process.cwd() } = options
   const projectDir = join(outDir, name)
+
+  // Guard against path traversal
+  if (
+    !resolve(projectDir).startsWith(`${resolve(outDir)}/`) &&
+    resolve(projectDir) !== resolve(outDir)
+  ) {
+    throw new Error(
+      `Invalid project name: "${name}" would escape the output directory`,
+    )
+  }
+
   const srcDir = join(projectDir, 'src')
 
   await mkdir(srcDir, { recursive: true })

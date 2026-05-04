@@ -1,5 +1,5 @@
 import { mkdir } from 'node:fs/promises'
-import { join } from 'node:path'
+import { join, resolve } from 'node:path'
 import {
   controllerTemplate,
   gatewayTemplate,
@@ -30,8 +30,16 @@ const EXTENSIONS: Record<GenerateType, string> = {
 }
 
 export async function generateFile(options: GenerateOptions): Promise<void> {
-  const { type, name, outDir = process.cwd() } = options
+  const { name, outDir = process.cwd(), type } = options
   const targetDir = join(outDir, name)
+
+  // Guard against path traversal
+  if (
+    !resolve(targetDir).startsWith(`${resolve(outDir)}/`) &&
+    resolve(targetDir) !== resolve(outDir)
+  ) {
+    throw new Error(`Invalid name: "${name}" would escape the output directory`)
+  }
 
   await mkdir(targetDir, { recursive: true })
 
