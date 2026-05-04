@@ -1,15 +1,20 @@
 import { describe, expect, test } from 'bun:test'
 import {
   SetMetadata,
+  UseFilters,
   UseGuards,
   UseInterceptors,
 } from '../../src/decorators/enhancers'
 import { Header, HttpCode } from '../../src/decorators/http'
 import {
   CUSTOM_ROUTE_METADATA,
+  FILTERS_METADATA,
   GUARDS_METADATA,
   HTTP_CODE_METADATA,
   INTERCEPTORS_METADATA,
+  METHOD_FILTERS_METADATA,
+  METHOD_GUARDS_METADATA,
+  METHOD_INTERCEPTORS_METADATA,
   RESPONSE_HEADERS_METADATA,
 } from '../../src/metadata-keys'
 
@@ -76,5 +81,137 @@ describe('@SetMetadata', () => {
       | Record<string, Record<string, unknown>>
       | undefined
     expect(custom?.findAll?.roles).toEqual(['admin'])
+  })
+})
+
+describe('@UseGuards on method', () => {
+  test('stores guards in per-method record', () => {
+    class RoleGuard {}
+
+    class Ctrl {
+      @UseGuards(RoleGuard)
+      findAll() {}
+    }
+
+    const meta = Ctrl[Symbol.metadata] as Record<symbol, unknown> | null
+    const map = meta?.[METHOD_GUARDS_METADATA] as
+      | Record<string, unknown[]>
+      | undefined
+    expect(map?.findAll).toContain(RoleGuard)
+  })
+
+  test('does not pollute class-level GUARDS_METADATA', () => {
+    class RoleGuard {}
+
+    class Ctrl {
+      @UseGuards(RoleGuard)
+      findAll() {}
+    }
+
+    const meta = Ctrl[Symbol.metadata] as Record<symbol, unknown> | null
+    expect(meta?.[GUARDS_METADATA]).toBeUndefined()
+  })
+
+  test('method guards are isolated per method', () => {
+    class GuardA {}
+    class GuardB {}
+
+    class Ctrl {
+      @UseGuards(GuardA)
+      findAll() {}
+
+      @UseGuards(GuardB)
+      findOne() {}
+    }
+
+    const meta = Ctrl[Symbol.metadata] as Record<symbol, unknown> | null
+    const map = meta?.[METHOD_GUARDS_METADATA] as
+      | Record<string, unknown[]>
+      | undefined
+    expect(map?.findAll).toContain(GuardA)
+    expect(map?.findAll).not.toContain(GuardB)
+    expect(map?.findOne).toContain(GuardB)
+    expect(map?.findOne).not.toContain(GuardA)
+  })
+})
+
+describe('@UseInterceptors on method', () => {
+  test('stores interceptors in per-method record', () => {
+    class LogInterceptor {}
+
+    class Ctrl {
+      @UseInterceptors(LogInterceptor)
+      findAll() {}
+    }
+
+    const meta = Ctrl[Symbol.metadata] as Record<symbol, unknown> | null
+    const map = meta?.[METHOD_INTERCEPTORS_METADATA] as
+      | Record<string, unknown[]>
+      | undefined
+    expect(map?.findAll).toContain(LogInterceptor)
+  })
+
+  test('does not pollute class-level INTERCEPTORS_METADATA', () => {
+    class LogInterceptor {}
+
+    class Ctrl {
+      @UseInterceptors(LogInterceptor)
+      findAll() {}
+    }
+
+    const meta = Ctrl[Symbol.metadata] as Record<symbol, unknown> | null
+    expect(meta?.[INTERCEPTORS_METADATA]).toBeUndefined()
+  })
+})
+
+describe('@UseFilters on method', () => {
+  test('stores filters in per-method record', () => {
+    class HttpFilter {}
+
+    class Ctrl {
+      @UseFilters(HttpFilter)
+      findAll() {}
+    }
+
+    const meta = Ctrl[Symbol.metadata] as Record<symbol, unknown> | null
+    const map = meta?.[METHOD_FILTERS_METADATA] as
+      | Record<string, unknown[]>
+      | undefined
+    expect(map?.findAll).toContain(HttpFilter)
+  })
+
+  test('does not pollute class-level FILTERS_METADATA', () => {
+    class HttpFilter {}
+
+    class Ctrl {
+      @UseFilters(HttpFilter)
+      findAll() {}
+    }
+
+    const meta = Ctrl[Symbol.metadata] as Record<symbol, unknown> | null
+    expect(meta?.[FILTERS_METADATA]).toBeUndefined()
+  })
+})
+
+describe('@UseGuards class + method combination', () => {
+  test('class guard and method guard coexist independently', () => {
+    class ClassGuard {}
+    class MethodGuard {}
+
+    @UseGuards(ClassGuard)
+    class Ctrl {
+      @UseGuards(MethodGuard)
+      restricted() {}
+
+      open() {}
+    }
+
+    const meta = Ctrl[Symbol.metadata] as Record<symbol, unknown> | null
+    expect(meta?.[GUARDS_METADATA]).toContain(ClassGuard)
+    const map = meta?.[METHOD_GUARDS_METADATA] as
+      | Record<string, unknown[]>
+      | undefined
+    expect(map?.restricted).toContain(MethodGuard)
+    expect(map?.open).toBeUndefined()
   })
 })

@@ -1,6 +1,21 @@
 import { describe, expect, test } from 'bun:test'
-import { Controller, Get, HttpCode, Post } from '@banhmi/common'
-import type { RouteCtx } from '@banhmi/common'
+import {
+  Controller,
+  Get,
+  HttpCode,
+  Post,
+  UseFilters,
+  UseGuards,
+  UseInterceptors,
+} from '@banhmi/common'
+import type {
+  CallHandler,
+  ExceptionFilter,
+  ExecutionContext,
+  Guard,
+  Interceptor,
+  RouteCtx,
+} from '@banhmi/common'
 import { RouteExplorer } from '../src/route-explorer'
 
 describe('RouteExplorer', () => {
@@ -109,5 +124,121 @@ describe('RouteExplorer', () => {
     const routes = explorer.explore(instance, RootController)
 
     expect(routes[0]?.path).toBe('/')
+  })
+})
+
+describe('RouteExplorer — method-level guards', () => {
+  test('method guard appears only on the decorated route', () => {
+    class AuthGuard implements Guard {
+      async canActivate(_ctx: ExecutionContext) {
+        return true
+      }
+    }
+
+    @Controller('/items')
+    class ItemsController {
+      @UseGuards(AuthGuard)
+      @Get('/secure')
+      secure() {}
+
+      @Get('/open')
+      open() {}
+    }
+
+    const explorer = new RouteExplorer()
+    const routes = explorer.explore(new ItemsController(), ItemsController)
+
+    const secure = routes.find((r) => r.path === '/items/secure')
+    const open = routes.find((r) => r.path === '/items/open')
+
+    expect(secure?.guards).toContain(AuthGuard)
+    expect(open?.guards).not.toContain(AuthGuard)
+  })
+
+  test('class guard applies to all routes, method guard only to its route', () => {
+    class ClassGuard implements Guard {
+      async canActivate(_ctx: ExecutionContext) {
+        return true
+      }
+    }
+    class MethodGuard implements Guard {
+      async canActivate(_ctx: ExecutionContext) {
+        return true
+      }
+    }
+
+    @UseGuards(ClassGuard)
+    @Controller('/items')
+    class ItemsController {
+      @UseGuards(MethodGuard)
+      @Get('/restricted')
+      restricted() {}
+
+      @Get('/free')
+      free() {}
+    }
+
+    const explorer = new RouteExplorer()
+    const routes = explorer.explore(new ItemsController(), ItemsController)
+
+    const restricted = routes.find((r) => r.path === '/items/restricted')
+    const free = routes.find((r) => r.path === '/items/free')
+
+    expect(restricted?.guards).toEqual([ClassGuard, MethodGuard])
+    expect(free?.guards).toEqual([ClassGuard])
+  })
+
+  test('method interceptor appears only on the decorated route', () => {
+    class TimingInterceptor implements Interceptor {
+      intercept(_ctx: ExecutionContext, next: CallHandler) {
+        return next.handle()
+      }
+    }
+
+    @Controller('/items')
+    class ItemsController {
+      @UseInterceptors(TimingInterceptor)
+      @Get('/timed')
+      timed() {}
+
+      @Get('/plain')
+      plain() {}
+    }
+
+    const explorer = new RouteExplorer()
+    const routes = explorer.explore(new ItemsController(), ItemsController)
+
+    const timed = routes.find((r) => r.path === '/items/timed')
+    const plain = routes.find((r) => r.path === '/items/plain')
+
+    expect(timed?.interceptors).toContain(TimingInterceptor)
+    expect(plain?.interceptors).not.toContain(TimingInterceptor)
+  })
+
+  test('method filter appears only on the decorated route', () => {
+    class CustomFilter implements ExceptionFilter<Error> {
+      catch(_err: Error, _ctx: ExecutionContext) {
+        return new Response('err')
+      }
+    }
+
+    @Controller('/items')
+    class ItemsController {
+      @UseFilters(CustomFilter)
+      @Get('/filtered')
+      filtered() {}
+
+      @Get('/unfiltered')
+      unfiltered() {}
+    }
+
+    const explorer = new RouteExplorer()
+    const routes = explorer.explore(new ItemsController(), ItemsController)
+
+    const filtered = routes.find((r) => r.path === '/items/filtered')
+    const unfiltered = routes.find((r) => r.path === '/items/unfiltered')
+
+    expect(filtered?.filters).toContain(CustomFilter)
+    expect(unfiltered?.filters).not.toContain(CustomFilter)
   })
 })
