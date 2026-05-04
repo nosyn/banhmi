@@ -1,3 +1,3 @@
 export interface CallHandler {
-  handle(): Promise<Response>
+  handle(): Promise<unknown>
 }

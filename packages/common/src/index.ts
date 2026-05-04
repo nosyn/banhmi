@@ -21,6 +21,7 @@ export {
 } from './decorators/route'
 export type { HttpMethod, RouteDefinitionMeta } from './decorators/route'
 export { HttpCode, Header, Redirect } from './decorators/http'
+export { Sse } from './decorators/sse'
 export {
   UseGuards,
   UseInterceptors,
@@ -67,6 +68,11 @@ export {
   TooManyRequestsException,
   InternalServerErrorException,
 } from './exceptions/http-exceptions'
+
+// Streaming
+export { StreamableFile } from './streamable-file'
+export type { StreamableFileOptions } from './streamable-file'
+export { StreamInterceptor } from './interceptors/stream.interceptor'
 
 // Pipes
 export { ParseIntPipe } from './pipes/parse-int.pipe'

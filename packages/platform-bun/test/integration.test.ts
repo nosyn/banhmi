@@ -1,4 +1,11 @@
-import { afterAll, beforeAll, describe, expect, test } from 'bun:test'
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  describe,
+  expect,
+  test,
+} from 'bun:test'
 import {
   Controller,
   Get,
@@ -7,6 +14,7 @@ import {
   Module,
   NotFoundException,
   Post,
+  StreamableFile,
   Token,
   UseGuards,
 } from '@banhmi/common'
@@ -235,5 +243,65 @@ describe('method-level guard only blocks its own route, not siblings', () => {
     )
     expect(res.status).toBe(200)
     expect(guardCalled).toBe(false)
+  })
+})
+
+describe('StreamableFile responses', () => {
+  let streamApp: BanhmiApplication | null = null
+
+  afterEach(async () => {
+    await streamApp?.close()
+    streamApp = null
+  })
+
+  test('streams text from a StreamableFile', async () => {
+    @Controller('/stream-test')
+    class StreamController {
+      @Get('/text')
+      getText() {
+        return StreamableFile.fromText('hello from stream')
+      }
+    }
+
+    @Module({ controllers: [StreamController] })
+    class TestApp {}
+
+    streamApp = await BanhmiFactory.create(TestApp)
+    const port = 54405
+    await streamApp.listen(port)
+
+    const res = await fetch(`http://localhost:${port}/stream-test/text`)
+    expect(res.status).toBe(200)
+    const body = await res.text()
+    expect(body).toBe('hello from stream')
+  })
+
+  test('sets Content-Type from StreamableFile options', async () => {
+    @Controller('/stream-test2')
+    class StreamController2 {
+      @Get('/pdf')
+      getPdf() {
+        return new StreamableFile(
+          new ReadableStream({
+            start(c) {
+              c.enqueue(new TextEncoder().encode('%PDF'))
+              c.close()
+            },
+          }),
+          { contentType: 'application/pdf' },
+        )
+      }
+    }
+
+    @Module({ controllers: [StreamController2] })
+    class TestApp2 {}
+
+    streamApp = await BanhmiFactory.create(TestApp2)
+    const port = 54406
+    await streamApp.listen(port)
+
+    const res = await fetch(`http://localhost:${port}/stream-test2/pdf`)
+    expect(res.status).toBe(200)
+    expect(res.headers.get('content-type')).toContain('application/pdf')
   })
 })
