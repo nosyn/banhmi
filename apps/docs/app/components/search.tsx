@@ -10,14 +10,18 @@ export function Search() {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<PagefindResult[]>([])
   const pagefind = useRef<{
-    search: (q: string) => Promise<{ results: Array<{ data: () => Promise<PagefindResult> }> }>
+    search: (
+      q: string,
+    ) => Promise<{ results: Array<{ data: () => Promise<PagefindResult> }> }>
   } | null>(null)
   const generationRef = useRef(0)
 
   useEffect(() => {
     // Pagefind is available only after build — gracefully ignore in dev
     import('/pagefind/pagefind.js' as unknown as string)
-      .then((pf) => { pagefind.current = pf as typeof pagefind.current })
+      .then((pf) => {
+        pagefind.current = pf as typeof pagefind.current
+      })
       .catch(() => {})
   }, [])
 
@@ -31,7 +35,9 @@ export function Search() {
     try {
       const { results: rawResults } = await pagefind.current.search(q)
       if (generation !== generationRef.current) return
-      const data = await Promise.all(rawResults.slice(0, 5).map((r) => r.data()))
+      const data = await Promise.all(
+        rawResults.slice(0, 5).map((r) => r.data()),
+      )
       if (generation !== generationRef.current) return
       setResults(data)
     } catch {
