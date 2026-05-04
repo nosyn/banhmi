@@ -1,8 +1,10 @@
 import type { Token } from '../token'
 
-export type ClassConstructor<T = unknown> = new (...args: unknown[]) => T
+// biome-ignore lint/suspicious/noExplicitAny: constructor args are resolved by the DI container, not typed at call sites
+export type ClassConstructor<T = unknown> = new (...args: any[]) => T
+// biome-ignore lint/suspicious/noExplicitAny: same as above
 export type AbstractConstructor<T = unknown> = abstract new (
-  ...args: unknown[]
+  ...args: any[]
 ) => T
 export type InjectToken<T = unknown> = Token<T> | ClassConstructor<T>
 

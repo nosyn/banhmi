@@ -1,7 +1,7 @@
 import { Module } from 'banhmi'
-import { UsersController } from './users/users.controller'
+import { UsersModule } from './users/users.module'
 
 @Module({
-  controllers: [UsersController],
+  imports: [UsersModule],
 })
 export class AppModule {}

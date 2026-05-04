@@ -1,7 +1,7 @@
 import type { RouteCtx } from 'banhmi'
 import { Controller, Get, UseGuards } from 'banhmi'
-import { auth } from '../auth'
 import { AuthGuard } from '../auth/auth.guard'
+import { AuthService } from '../auth/auth.service'
 
 interface SessionUser {
   id: string
@@ -12,6 +12,10 @@ interface SessionUser {
 
 @Controller('/users')
 export class UsersController {
+  static inject = [AuthService] as const
+
+  constructor(private auth: AuthService) {}
+
   @Get('/ping')
   ping() {
     return { message: 'pong', timestamp: Date.now() }
@@ -20,7 +24,9 @@ export class UsersController {
   @Get('/me')
   @UseGuards(AuthGuard)
   async getMe(ctx: RouteCtx): Promise<SessionUser | null> {
-    const session = await auth.api.getSession({ headers: ctx.headers })
+    const session = await this.auth.client.api.getSession({
+      headers: ctx.headers,
+    })
     return session?.user as SessionUser | null
   }
 }

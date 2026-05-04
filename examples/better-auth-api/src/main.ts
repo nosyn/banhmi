@@ -1,13 +1,14 @@
 import { BanhmiFactory } from 'banhmi'
+import { AuthService } from './auth/auth.service'
 import { AppModule } from './app.module'
-import { auth } from './auth'
 
 const app = await BanhmiFactory.create(AppModule)
+const auth = app.container.resolve(AuthService)
 
 app.use(async (req: Request, next: () => Promise<Response>) => {
   const url = new URL(req.url)
   if (url.pathname.startsWith('/api/auth')) {
-    return auth.handler(req)
+    return auth.client.handler(req)
   }
   return next()
 })
