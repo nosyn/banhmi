@@ -73,3 +73,20 @@ export { ParseIntPipe } from './pipes/parse-int.pipe'
 export { ParseUUIDPipe } from './pipes/parse-uuid.pipe'
 export { ParseBoolPipe } from './pipes/parse-bool.pipe'
 export { ValidationPipe } from './pipes/validation.pipe'
+
+// WebSockets
+export {
+  WebSocketGateway,
+  SubscribeMessage,
+  WebSocketServer,
+} from './decorators/websocket'
+export type {
+  WsGatewayOptions,
+  WsGatewayMetadata,
+} from './decorators/websocket'
+export type {
+  WsContext,
+  OnGatewayInit,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+} from './interfaces/ws-context'

@@ -25,6 +25,7 @@ export type ProviderDef<T = unknown> =
 export interface ModuleMetadata {
   imports?: AbstractConstructor[]
   controllers?: ClassConstructor[]
+  gateways?: ClassConstructor[]
   providers?: ProviderDef[]
   exports?: InjectToken[]
 }
