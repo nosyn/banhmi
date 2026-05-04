@@ -24,6 +24,10 @@ export class PostsService {
   }
 
   create(title: string, body: string, authorId: number) {
-    return this.db.insert(posts).values({ title, body, authorId }).returning().get()
+    return this.db
+      .insert(posts)
+      .values({ title, body, authorId })
+      .returning()
+      .get()
   }
 }

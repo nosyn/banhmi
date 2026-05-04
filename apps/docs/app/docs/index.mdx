@@ -1,0 +1,27 @@
+# Banhmi
+
+> Bun-first, NestJS-inspired TypeScript framework. Minimal deps. Native APIs. TC39 decorators.
+
+## Why Banhmi?
+
+- **Zero external HTTP dependencies** — built on raw `Bun.serve`
+- **TC39 Stage 3 decorators** — no legacy `experimentalDecorators`
+- **Static `inject` DI** — no `reflect-metadata`
+- **Native Bun APIs** — SQLite, S3, WebSockets, all native
+
+## Quick Start
+
+```bash
+bunx @banhmi/cli new my-app
+cd my-app && bun install && bun dev
+```
+
+## Hello World
+
+```ts
+import { BanhmiFactory } from 'banhmi'
+import { AppModule } from './app.module'
+
+const app = await BanhmiFactory.create(AppModule)
+app.listen(3000)
+```

@@ -53,7 +53,7 @@ export class RouteExplorer {
         | undefined) ?? {}
     const methodInterceptorsMap =
       (classMeta[METHOD_INTERCEPTORS_METADATA] as
-        | Record<string, ClassConstructor[]>
+        | Record<string, (ClassConstructor | object)[]>
         | undefined) ?? {}
     const methodFiltersMap =
       (classMeta[METHOD_FILTERS_METADATA] as
@@ -86,7 +86,10 @@ export class RouteExplorer {
         path: normalizedPath,
         handler: boundHandler,
         guards: [...classGuards, ...(methodGuardsMap[methodName] ?? [])],
-        interceptors: [...classInterceptors, ...(methodInterceptorsMap[methodName] ?? [])],
+        interceptors: [
+          ...classInterceptors,
+          ...(methodInterceptorsMap[methodName] ?? []),
+        ],
         filters: [...classFilters, ...(methodFiltersMap[methodName] ?? [])],
         httpCode: httpCodes[methodName],
         responseHeaders: responseHeadersMap[methodName] ?? [],

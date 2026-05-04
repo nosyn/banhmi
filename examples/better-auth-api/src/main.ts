@@ -19,5 +19,7 @@ console.log('Server running on http://localhost:3001')
 console.log('')
 console.log('Sign up:  POST http://localhost:3001/api/auth/sign-up/email')
 console.log('Sign in:  POST http://localhost:3001/api/auth/sign-in/email')
-console.log('Profile:  GET  http://localhost:3001/users/me  (requires auth cookie)')
+console.log(
+  'Profile:  GET  http://localhost:3001/users/me  (requires auth cookie)',
+)
 console.log('Public:   GET  http://localhost:3001/users/ping')

@@ -38,15 +38,27 @@ function makeClassOrMethodDecorator(
 }
 
 export function UseGuards(...guards: ClassConstructor[]) {
-  return makeClassOrMethodDecorator(GUARDS_METADATA, METHOD_GUARDS_METADATA, guards)
+  return makeClassOrMethodDecorator(
+    GUARDS_METADATA,
+    METHOD_GUARDS_METADATA,
+    guards,
+  )
 }
 
 export function UseInterceptors(...interceptors: ClassConstructor[]) {
-  return makeClassOrMethodDecorator(INTERCEPTORS_METADATA, METHOD_INTERCEPTORS_METADATA, interceptors)
+  return makeClassOrMethodDecorator(
+    INTERCEPTORS_METADATA,
+    METHOD_INTERCEPTORS_METADATA,
+    interceptors,
+  )
 }
 
 export function UseFilters(...filters: ClassConstructor[]) {
-  return makeClassOrMethodDecorator(FILTERS_METADATA, METHOD_FILTERS_METADATA, filters)
+  return makeClassOrMethodDecorator(
+    FILTERS_METADATA,
+    METHOD_FILTERS_METADATA,
+    filters,
+  )
 }
 
 export function UsePipes(...pipes: ClassConstructor[]) {

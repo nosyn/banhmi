@@ -2,6 +2,7 @@ import type { RouteCtx } from '@banhmi/common'
 
 export class BunRouteCtx implements RouteCtx {
   #url?: URL
+  readonly state: Record<string, unknown> = {}
 
   constructor(
     readonly request: Request,

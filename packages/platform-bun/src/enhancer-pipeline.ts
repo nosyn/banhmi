@@ -1,4 +1,4 @@
-import { ForbiddenException } from '@banhmi/common'
+import { ForbiddenException, StreamableFile } from '@banhmi/common'
 import type {
   CallHandler,
   ExceptionFilter,
@@ -19,6 +19,18 @@ function serializeResult(
   headers: [string, string][],
 ): Response {
   let response: Response
+
+  if (result instanceof StreamableFile) {
+    const streamHeaders = new Headers()
+    if (result.contentType)
+      streamHeaders.set('content-type', result.contentType)
+    if (result.disposition)
+      streamHeaders.set('content-disposition', result.disposition)
+    for (const [name, value] of headers) {
+      streamHeaders.set(name, value)
+    }
+    return new Response(result.stream, { status, headers: streamHeaders })
+  }
 
   if (result instanceof Response) {
     response = result

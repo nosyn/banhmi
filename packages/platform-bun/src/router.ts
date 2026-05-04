@@ -1,11 +1,18 @@
-import type { ClassConstructor, HttpMethod, RouteCtx } from '@banhmi/common'
+import type {
+  ClassConstructor,
+  HttpMethod,
+  Interceptor,
+  RouteCtx,
+} from '@banhmi/common'
+
+export type InterceptorOrClass = ClassConstructor | Interceptor
 
 export interface RegisteredRoute {
   method: HttpMethod
   path: string
   handler: (ctx: RouteCtx) => Promise<unknown>
   guards: ClassConstructor[]
-  interceptors: ClassConstructor[]
+  interceptors: InterceptorOrClass[]
   filters: ClassConstructor[]
   httpCode: number | undefined
   responseHeaders: [string, string][]

@@ -1,22 +1,22 @@
-import type { AbstractConstructor } from '@banhmi/common';
-import { BanhmiApplication, Container, ModuleGraph } from '@banhmi/core';
-import { BunAdapter } from './bun-adapter';
+import type { AbstractConstructor } from '@banhmi/common'
+import { BanhmiApplication, Container, ModuleGraph } from '@banhmi/core'
+import { BunAdapter } from './bun-adapter'
 
 // biome-ignore lint/complexity/noStaticOnlyClass: intentional NestJS-style factory
 export class BanhmiFactory {
   static async create(
     rootModule: AbstractConstructor,
   ): Promise<BanhmiApplication> {
-    const graph = new ModuleGraph();
-    const moduleTree = graph.buildTree(rootModule);
+    const graph = new ModuleGraph()
+    const moduleTree = graph.buildTree(rootModule)
 
-    const container = new Container();
-    const allProviders = graph.flattenProviders(moduleTree);
+    const container = new Container()
+    const allProviders = graph.flattenProviders(moduleTree)
     for (const provider of allProviders) {
-      container.register(provider);
+      container.register(provider)
     }
 
-    const adapter = new BunAdapter();
-    return new BanhmiApplication(container, moduleTree, adapter);
+    const adapter = new BunAdapter()
+    return new BanhmiApplication(container, moduleTree, adapter)
   }
 }
