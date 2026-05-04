@@ -1,5 +1,5 @@
-import { Injectable, UnauthorizedException } from 'banhmi'
 import type { ExecutionContext, Guard } from 'banhmi'
+import { Injectable, UnauthorizedException } from 'banhmi'
 import { auth } from '../auth'
 
 @Injectable()

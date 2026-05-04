@@ -6,6 +6,7 @@ import {
   expect,
   test,
 } from 'bun:test'
+import type { ExecutionContext, Guard, RouteCtx } from '@banhmi/common'
 import {
   Controller,
   Get,
@@ -18,7 +19,6 @@ import {
   Token,
   UseGuards,
 } from '@banhmi/common'
-import type { ExecutionContext, Guard, RouteCtx } from '@banhmi/common'
 import type { BanhmiApplication } from '@banhmi/core'
 import { BanhmiFactory } from '../src/factory'
 

@@ -5,7 +5,7 @@ import type {
 } from '@banhmi/common'
 import type { Container } from './container'
 import { LifecycleRunner } from './lifecycle-runner'
-import { type ModuleNode, flattenModuleProviders } from './module-graph'
+import { flattenModuleProviders, type ModuleNode } from './module-graph'
 
 export interface HttpAdapter {
   registerController(instance: object, controllerClass: ClassConstructor): void

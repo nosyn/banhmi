@@ -28,7 +28,9 @@ export function Sidebar() {
         fontSize: '0.9rem',
       }}
     >
-      <div style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: '1.5rem' }}>
+      <div
+        style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: '1.5rem' }}
+      >
         <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
           Banhmi
         </Link>
@@ -38,14 +40,25 @@ export function Sidebar() {
         if ('children' in item) {
           return (
             <div key={item.label} style={{ marginBottom: '0.75rem' }}>
-              <div style={{ fontWeight: 600, color: '#6b7280', marginBottom: '0.25rem' }}>
+              <div
+                style={{
+                  fontWeight: 600,
+                  color: '#6b7280',
+                  marginBottom: '0.25rem',
+                }}
+              >
                 {item.label}
               </div>
               {item.children.map((child) => (
                 <Link
                   key={child.href}
                   to={child.href as string}
-                  style={{ display: 'block', padding: '0.2rem 0.5rem', textDecoration: 'none', color: '#374151' }}
+                  style={{
+                    display: 'block',
+                    padding: '0.2rem 0.5rem',
+                    textDecoration: 'none',
+                    color: '#374151',
+                  }}
                   activeProps={{ style: { color: '#7c3aed', fontWeight: 600 } }}
                 >
                   {child.label}
@@ -58,7 +71,12 @@ export function Sidebar() {
           <Link
             key={item.href}
             to={item.href as string}
-            style={{ display: 'block', padding: '0.2rem 0', textDecoration: 'none', color: '#374151' }}
+            style={{
+              display: 'block',
+              padding: '0.2rem 0',
+              textDecoration: 'none',
+              color: '#374151',
+            }}
             activeProps={{ style: { color: '#7c3aed', fontWeight: 600 } }}
           >
             {item.label}

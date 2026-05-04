@@ -1,5 +1,5 @@
+export { JwtGuard } from './jwt.guard'
 export { JwtModule } from './jwt.module'
 export { JwtService } from './jwt.service'
-export { JwtGuard } from './jwt.guard'
-export { JWT_SERVICE_TOKEN, JWT_OPTIONS_TOKEN } from './tokens'
 export type { JwtModuleOptions } from './tokens'
+export { JWT_OPTIONS_TOKEN, JWT_SERVICE_TOKEN } from './tokens'

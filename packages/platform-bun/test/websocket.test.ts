@@ -1,4 +1,5 @@
 import { afterAll, beforeAll, describe, expect, test } from 'bun:test'
+import type { WsContext } from '@banhmi/common'
 import {
   Injectable,
   Module,
@@ -9,7 +10,6 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@banhmi/common'
-import type { WsContext } from '@banhmi/common'
 import type { BanhmiApplication } from '@banhmi/core'
 import type { Server } from 'bun'
 import { BanhmiFactory } from '../src/factory'

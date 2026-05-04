@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from 'banhmi'
 import { eq } from 'drizzle-orm'
-import { DB_TOKEN } from '../database/database.module'
 import type { DrizzleDB } from '../database/database.module'
-import { posts, users } from '../database/schema'
+import { DB_TOKEN } from '../database/database.module'
+import { users } from '../database/schema'
 
 @Injectable()
 export class UsersService {

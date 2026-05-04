@@ -1,5 +1,5 @@
-import { Controller, Get, UseGuards } from 'banhmi'
 import type { RouteCtx } from 'banhmi'
+import { Controller, Get, UseGuards } from 'banhmi'
 import { auth } from '../auth'
 import { AuthGuard } from '../auth/auth.guard'
 

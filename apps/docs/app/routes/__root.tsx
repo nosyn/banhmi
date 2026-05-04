@@ -1,4 +1,9 @@
-import { HeadContent, Outlet, Scripts, createRootRoute } from '@tanstack/react-router'
+import {
+  createRootRoute,
+  HeadContent,
+  Outlet,
+  Scripts,
+} from '@tanstack/react-router'
 import { Sidebar } from '../components/sidebar'
 
 export const Route = createRootRoute({
@@ -9,7 +14,10 @@ export const Route = createRootRoute({
       { title: 'Banhmi — Bun-first TypeScript Framework' },
     ],
     links: [
-      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap' },
+      {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap',
+      },
     ],
   }),
   component: () => (

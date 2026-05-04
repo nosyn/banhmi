@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, test } from 'bun:test'
-import { Module, UnauthorizedException } from '@banhmi/common'
 import type { ExecutionContext } from '@banhmi/common'
+import { Module, UnauthorizedException } from '@banhmi/common'
 import { BanhmiFactory } from '@banhmi/platform-bun'
 import { JwtGuard } from '../src/jwt.guard'
 import { JwtModule } from '../src/jwt.module'

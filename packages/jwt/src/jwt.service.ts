@@ -1,6 +1,6 @@
 import { Injectable } from '@banhmi/common'
-import { SignJWT, jwtVerify } from 'jose'
 import type { JWTPayload } from 'jose'
+import { jwtVerify, SignJWT } from 'jose'
 import { JWT_OPTIONS_TOKEN, type JwtModuleOptions } from './tokens'
 
 @Injectable()

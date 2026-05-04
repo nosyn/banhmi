@@ -2,10 +2,9 @@ import { createFileRoute } from '@tanstack/react-router'
 import type { ComponentType } from 'react'
 
 // Static glob — Vite resolves these at build time
-const docModules = import.meta.glob('../../docs/**/*.mdx', { eager: true }) as Record<
-  string,
-  { default: ComponentType }
->
+const docModules = import.meta.glob('../../docs/**/*.mdx', {
+  eager: true,
+}) as Record<string, { default: ComponentType }>
 
 function getDocComponent(slug: string): ComponentType | null {
   const key = `../../docs/${slug}.mdx`

@@ -1,5 +1,5 @@
-import { Controller, Delete, Get, HttpCode, Post } from 'banhmi'
 import type { RouteCtx } from 'banhmi'
+import { Controller, Delete, Get, HttpCode, Post } from 'banhmi'
 import { UsersService } from './users.service'
 
 @Controller('/users')

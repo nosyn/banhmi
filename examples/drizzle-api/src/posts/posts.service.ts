@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from 'banhmi'
 import { eq } from 'drizzle-orm'
-import { DB_TOKEN } from '../database/database.module'
 import type { DrizzleDB } from '../database/database.module'
+import { DB_TOKEN } from '../database/database.module'
 import { posts } from '../database/schema'
 
 @Injectable()

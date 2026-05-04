@@ -1,7 +1,10 @@
 {
   "name": "banhmi-monorepo",
   "private": true,
-  "workspaces": ["packages/*", "examples/*"],
+  "workspaces": [
+    "packages/*",
+    "examples/*"
+  ],
   "scripts": {
     "build": "bun run --filter='*' build",
     "test": "bun test --recursive",
@@ -9,7 +12,7 @@
     "format": "biome format --write ."
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.0",
+    "@biomejs/biome": "2.4.10",
     "@changesets/cli": "^2.27.0"
   }
 }

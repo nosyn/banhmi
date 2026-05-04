@@ -1,4 +1,12 @@
 import { describe, expect, test } from 'bun:test'
+import type {
+  CallHandler,
+  ExceptionFilter,
+  ExecutionContext,
+  Guard,
+  Interceptor,
+  RouteCtx,
+} from '@banhmi/common'
 import {
   Controller,
   Get,
@@ -7,14 +15,6 @@ import {
   UseFilters,
   UseGuards,
   UseInterceptors,
-} from '@banhmi/common'
-import type {
-  CallHandler,
-  ExceptionFilter,
-  ExecutionContext,
-  Guard,
-  Interceptor,
-  RouteCtx,
 } from '@banhmi/common'
 import { RouteExplorer } from '../src/route-explorer'
 

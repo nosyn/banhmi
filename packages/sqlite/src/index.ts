@@ -1,5 +1,5 @@
-export { SqliteModule } from './sqlite.module'
+export { INJECT_DATABASE, InjectDatabase } from './inject-database'
+export { BaseRepository, Repository } from './repository'
 export type { SqliteModuleOptions } from './sqlite.module'
+export { SqliteModule } from './sqlite.module'
 export { DATABASE_TOKEN } from './tokens'
-export { InjectDatabase, INJECT_DATABASE } from './inject-database'
-export { Repository, BaseRepository } from './repository'

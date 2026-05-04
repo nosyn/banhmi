@@ -1,5 +1,5 @@
-import { HttpException } from '@banhmi/common'
 import type { ExceptionFilter, ExecutionContext } from '@banhmi/common'
+import { HttpException } from '@banhmi/common'
 
 export class GlobalExceptionFilter implements ExceptionFilter<unknown> {
   catch(exception: unknown, _context: ExecutionContext): Response {
