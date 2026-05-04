@@ -138,7 +138,11 @@ export class BunAdapter implements HttpAdapter {
     gateway.lifecycle.onDisconnect?.(ctx)
   }
 
-  private async handleRequest(request: Request): Promise<Response> {
+  private handleRequest(request: Request): Promise<Response> {
+    return this.runMiddleware(request, () => this.dispatchRoute(request))
+  }
+
+  private async dispatchRoute(request: Request): Promise<Response> {
     const url = new URL(request.url)
     const match = this.router.match(request.method, url.pathname)
 
@@ -162,18 +166,15 @@ export class BunAdapter implements HttpAdapter {
       filterInstance: new F() as RegisteredFilter['filterInstance'],
     }))
 
-    const dispatchToHandler = () =>
-      runEnhancerPipeline(
-        execCtx,
-        () => match.handler(routeCtx),
-        guardInstances,
-        interceptorInstances,
-        filterInstances,
-        match.httpCode ?? 200,
-        match.responseHeaders,
-      )
-
-    return this.runMiddleware(request, dispatchToHandler)
+    return runEnhancerPipeline(
+      execCtx,
+      () => match.handler(routeCtx),
+      guardInstances,
+      interceptorInstances,
+      filterInstances,
+      match.httpCode ?? 200,
+      match.responseHeaders,
+    )
   }
 
   private async runMiddleware(

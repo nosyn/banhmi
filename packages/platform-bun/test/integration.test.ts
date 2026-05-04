@@ -142,3 +142,21 @@ describe('404 handling', () => {
     expect(res.status).toBe(404)
   })
 })
+
+describe('middleware intercepts unmatched routes', () => {
+  test('middleware can handle routes not in the router', async () => {
+    const middlewareApp = await BunnestFactory.create(AppModule)
+    middlewareApp.use(async (req: Request, next: () => Promise<Response>) => {
+      const url = new URL(req.url)
+      if (url.pathname === '/intercept') {
+        return Response.json({ intercepted: true })
+      }
+      return next()
+    })
+    await middlewareApp.listen(54399)
+    const res = await fetch('http://localhost:54399/intercept')
+    expect(res.status).toBe(200)
+    expect(await res.json()).toEqual({ intercepted: true })
+    await middlewareApp.close()
+  })
+})
