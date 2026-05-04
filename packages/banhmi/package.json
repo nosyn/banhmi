@@ -8,9 +8,11 @@
     "test": "bun test"
   },
   "dependencies": {
+    "@banhmi/cache": "workspace:*",
     "@banhmi/common": "workspace:*",
     "@banhmi/core": "workspace:*",
     "@banhmi/platform-bun": "workspace:*",
+    "@banhmi/redis": "workspace:*",
     "@banhmi/s3": "workspace:*",
     "@banhmi/sqlite": "workspace:*"
   }

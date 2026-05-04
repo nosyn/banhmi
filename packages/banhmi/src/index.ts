@@ -1,5 +1,7 @@
+export * from '@banhmi/cache'
 export * from '@banhmi/common'
 export * from '@banhmi/core'
 export * from '@banhmi/platform-bun'
+export * from '@banhmi/redis'
 export * from '@banhmi/s3'
 export * from '@banhmi/sqlite'
