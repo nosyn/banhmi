@@ -42,7 +42,9 @@
       "dependencies": {
         "@banhmi/cache": "workspace:*",
         "@banhmi/common": "workspace:*",
+        "@banhmi/config": "workspace:*",
         "@banhmi/core": "workspace:*",
+        "@banhmi/jwt": "workspace:*",
         "@banhmi/platform-bun": "workspace:*",
         "@banhmi/redis": "workspace:*",
         "@banhmi/s3": "workspace:*",
@@ -64,11 +66,34 @@
       "name": "@banhmi/common",
       "version": "0.1.0",
     },
+    "packages/config": {
+      "name": "@banhmi/config",
+      "version": "1.0.0",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/core": "workspace:*",
+      },
+      "devDependencies": {
+        "@banhmi/platform-bun": "workspace:*",
+      },
+    },
     "packages/core": {
       "name": "@banhmi/core",
       "version": "0.1.0",
       "dependencies": {
         "@banhmi/common": "workspace:*",
+      },
+    },
+    "packages/jwt": {
+      "name": "@banhmi/jwt",
+      "version": "1.0.0",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/core": "workspace:*",
+        "jose": "^6.2.3",
+      },
+      "devDependencies": {
+        "@banhmi/platform-bun": "workspace:*",
       },
     },
     "packages/platform-bun": {
@@ -119,7 +144,11 @@
 
     "@banhmi/common": ["@banhmi/common@workspace:packages/common"],
 
+    "@banhmi/config": ["@banhmi/config@workspace:packages/config"],
+
     "@banhmi/core": ["@banhmi/core@workspace:packages/core"],
+
+    "@banhmi/jwt": ["@banhmi/jwt@workspace:packages/jwt"],
 
     "@banhmi/platform-bun": ["@banhmi/platform-bun@workspace:packages/platform-bun"],
 
