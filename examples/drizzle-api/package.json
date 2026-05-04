@@ -1,0 +1,17 @@
+{
+  "name": "drizzle-api-example",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --watch src/main.ts",
+    "db:push": "bunx drizzle-kit push",
+    "db:studio": "bunx drizzle-kit studio"
+  },
+  "dependencies": {
+    "banhmi": "workspace:*",
+    "drizzle-orm": "^0.45.2"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.10"
+  }
+}
