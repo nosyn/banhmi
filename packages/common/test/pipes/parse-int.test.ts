@@ -10,10 +10,14 @@ describe('ParseIntPipe', () => {
   })
 
   test('throws BadRequestException for non-integer', () => {
-    expect(() => pipe.transform('abc', { type: 'param' })).toThrow(BadRequestException)
+    expect(() => pipe.transform('abc', { type: 'param' })).toThrow(
+      BadRequestException,
+    )
   })
 
   test('throws for decimal string', () => {
-    expect(() => pipe.transform('3.14', { type: 'param' })).toThrow(BadRequestException)
+    expect(() => pipe.transform('3.14', { type: 'param' })).toThrow(
+      BadRequestException,
+    )
   })
 })

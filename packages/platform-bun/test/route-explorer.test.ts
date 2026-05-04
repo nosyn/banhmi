@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test'
-import { Controller, Get, HttpCode, Post } from '@bunnest/common'
-import type { RouteCtx } from '@bunnest/common'
+import { Controller, Get, HttpCode, Post } from '@banhmi/common'
+import type { RouteCtx } from '@banhmi/common'
 import { RouteExplorer } from '../src/route-explorer'
 
 describe('RouteExplorer', () => {

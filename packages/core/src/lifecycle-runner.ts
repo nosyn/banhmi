@@ -1,4 +1,4 @@
-import type { ClassConstructor, ProviderDef } from '@bunnest/common'
+import type { ClassConstructor, ProviderDef } from '@banhmi/common'
 import type { Container } from './container'
 import { isClassProvider } from './provider'
 

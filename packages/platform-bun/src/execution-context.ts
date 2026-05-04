@@ -2,7 +2,7 @@ import type {
   ClassConstructor,
   ExecutionContext,
   RouteCtx,
-} from '@bunnest/common'
+} from '@banhmi/common'
 
 export class BunExecutionContext implements ExecutionContext {
   constructor(

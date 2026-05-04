@@ -22,6 +22,8 @@ describe('ValidationPipe', () => {
 
   test('throws BadRequestException for invalid value', async () => {
     const pipe = new ValidationPipe(numberSchema)
-    await expect(pipe.transform(-1, { type: 'body' })).rejects.toBeInstanceOf(BadRequestException)
+    await expect(pipe.transform(-1, { type: 'body' })).rejects.toBeInstanceOf(
+      BadRequestException,
+    )
   })
 })

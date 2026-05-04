@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import type { HttpMethod, RouteCtx } from '@bunnest/common'
+import type { HttpMethod, RouteCtx } from '@banhmi/common'
 import type { RegisteredRoute } from '../src/router'
 import { RadixRouter } from '../src/router'
 

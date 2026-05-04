@@ -1,5 +1,5 @@
 {
-  "name": "@bunnest/common",
+  "name": "@banhmi/common",
   "version": "0.1.0",
   "type": "module",
   "exports": { ".": "./src/index.ts" },

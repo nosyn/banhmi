@@ -1,3 +1,4 @@
+import type { ClassConstructor } from '../interfaces/module-metadata'
 import {
   CUSTOM_ROUTE_METADATA,
   FILTERS_METADATA,
@@ -5,14 +6,17 @@ import {
   INTERCEPTORS_METADATA,
   PIPES_METADATA,
 } from '../metadata-keys'
-import type { ClassConstructor } from '../interfaces/module-metadata'
 
-function makeClassOrMethodDecorator(metaKey: symbol, values: ClassConstructor[]) {
-  return function (
+function makeClassOrMethodDecorator(
+  metaKey: symbol,
+  values: ClassConstructor[],
+) {
+  return (
     _target: unknown,
     context: ClassDecoratorContext | ClassMethodDecoratorContext,
-  ): void {
-    const existing = (context.metadata[metaKey] as ClassConstructor[] | undefined) ?? []
+  ): void => {
+    const existing =
+      (context.metadata[metaKey] as ClassConstructor[] | undefined) ?? []
     context.metadata[metaKey] = [...existing, ...values]
   }
 }
@@ -34,10 +38,16 @@ export function UsePipes(...pipes: ClassConstructor[]) {
 }
 
 export function SetMetadata(key: string, value: unknown) {
-  return function (_target: unknown, context: ClassMethodDecoratorContext): void {
-    if (!context.metadata[CUSTOM_ROUTE_METADATA]) context.metadata[CUSTOM_ROUTE_METADATA] = {}
-    const custom = context.metadata[CUSTOM_ROUTE_METADATA] as Record<string, Record<string, unknown>>
-    if (!custom[context.name as string]) custom[context.name as string] = {}
-    custom[context.name as string]![key] = value
+  return (_target: unknown, context: ClassMethodDecoratorContext): void => {
+    if (!context.metadata[CUSTOM_ROUTE_METADATA])
+      context.metadata[CUSTOM_ROUTE_METADATA] = {}
+    const custom = context.metadata[CUSTOM_ROUTE_METADATA] as Record<
+      string,
+      Record<string, unknown>
+    >
+    const methodName = context.name as string
+    if (!custom[methodName]) custom[methodName] = {}
+    const methodMeta = custom[methodName] as Record<string, unknown>
+    methodMeta[key] = value
   }
 }

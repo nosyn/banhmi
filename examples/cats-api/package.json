@@ -6,6 +6,6 @@
     "dev": "bun run --watch src/main.ts"
   },
   "dependencies": {
-    "bunnest": "workspace:*"
+    "banhmi": "workspace:*"
   }
 }

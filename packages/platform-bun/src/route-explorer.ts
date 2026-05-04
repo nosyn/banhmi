@@ -3,7 +3,7 @@ import type {
   ControllerMetadata,
   RouteCtx,
   RouteDefinitionMeta,
-} from '@bunnest/common'
+} from '@banhmi/common'
 import {
   CONTROLLER_METADATA,
   FILTERS_METADATA,
@@ -12,7 +12,7 @@ import {
   INTERCEPTORS_METADATA,
   RESPONSE_HEADERS_METADATA,
   ROUTE_METADATA,
-} from '@bunnest/common'
+} from '@banhmi/common'
 import type { RegisteredRoute } from './router'
 
 export class RouteExplorer {

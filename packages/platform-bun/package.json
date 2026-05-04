@@ -1,5 +1,5 @@
 {
-  "name": "@bunnest/platform-bun",
+  "name": "@banhmi/platform-bun",
   "version": "0.1.0",
   "type": "module",
   "exports": { ".": "./src/index.ts" },
@@ -8,7 +8,7 @@
     "test": "bun test"
   },
   "dependencies": {
-    "@bunnest/common": "workspace:*",
-    "@bunnest/core": "workspace:*"
+    "@banhmi/common": "workspace:*",
+    "@banhmi/core": "workspace:*"
   }
 }

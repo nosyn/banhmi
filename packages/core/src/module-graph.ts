@@ -1,5 +1,5 @@
-import type { AbstractConstructor, ModuleMetadata } from '@bunnest/common'
-import { MODULE_METADATA } from '@bunnest/common'
+import type { AbstractConstructor, ModuleMetadata } from '@banhmi/common'
+import { MODULE_METADATA } from '@banhmi/common'
 
 export interface ModuleNode {
   module: AbstractConstructor

@@ -1,5 +1,5 @@
 import { describe, expect, mock, test } from 'bun:test'
-import { Injectable } from '@bunnest/common'
+import { Injectable } from '@banhmi/common'
 import { Container } from '../src/container'
 import { LifecycleRunner } from '../src/lifecycle-runner'
 

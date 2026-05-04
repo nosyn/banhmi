@@ -12,7 +12,9 @@ describe('@Module', () => {
     class AppModule {}
 
     const meta = AppModule[Symbol.metadata] as Record<symbol, unknown> | null
-    const moduleMeta = meta?.[MODULE_METADATA] as { providers: unknown[] } | undefined
+    const moduleMeta = meta?.[MODULE_METADATA] as
+      | { providers: unknown[] }
+      | undefined
     expect(moduleMeta?.providers).toContain(SomeService)
   })
 
@@ -21,7 +23,9 @@ describe('@Module', () => {
     class EmptyModule {}
 
     const meta = EmptyModule[Symbol.metadata] as Record<symbol, unknown> | null
-    const moduleMeta = meta?.[MODULE_METADATA] as Record<string, unknown> | undefined
+    const moduleMeta = meta?.[MODULE_METADATA] as
+      | Record<string, unknown>
+      | undefined
     expect(moduleMeta).toBeDefined()
   })
 })

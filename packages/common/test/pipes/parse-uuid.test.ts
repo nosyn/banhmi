@@ -11,6 +11,8 @@ describe('ParseUUIDPipe', () => {
   })
 
   test('throws for invalid UUID', () => {
-    expect(() => pipe.transform('not-a-uuid', { type: 'param' })).toThrow(BadRequestException)
+    expect(() => pipe.transform('not-a-uuid', { type: 'param' })).toThrow(
+      BadRequestException,
+    )
   })
 })

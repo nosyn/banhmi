@@ -8,9 +8,9 @@ import {
   NotFoundException,
   Post,
   Token,
-} from '@bunnest/common'
-import type { RouteCtx } from '@bunnest/common'
-import type { BunnestApplication } from '@bunnest/core'
+} from '@banhmi/common'
+import type { RouteCtx } from '@banhmi/common'
+import type { BunnestApplication } from '@banhmi/core'
 import { BunnestFactory } from '../src/factory'
 
 // ─── Domain ──────────────────────────────────────────────────────────────────

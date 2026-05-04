@@ -1,7 +1,9 @@
 import type { Token } from '../token'
 
 export type ClassConstructor<T = unknown> = new (...args: unknown[]) => T
-export type AbstractConstructor<T = unknown> = abstract new (...args: unknown[]) => T
+export type AbstractConstructor<T = unknown> = abstract new (
+  ...args: unknown[]
+) => T
 export type InjectToken<T = unknown> = Token<T> | ClassConstructor<T>
 
 export type ValueProvider<T> = {

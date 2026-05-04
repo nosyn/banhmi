@@ -7,7 +7,10 @@ describe('@Controller', () => {
     @Controller('/cats')
     class CatsController {}
 
-    const meta = CatsController[Symbol.metadata] as Record<symbol, unknown> | null
+    const meta = CatsController[Symbol.metadata] as Record<
+      symbol,
+      unknown
+    > | null
     expect(meta?.[CONTROLLER_METADATA]).toEqual({ prefix: '/cats' })
   })
 
@@ -15,7 +18,10 @@ describe('@Controller', () => {
     @Controller()
     class RootController {}
 
-    const meta = RootController[Symbol.metadata] as Record<symbol, unknown> | null
+    const meta = RootController[Symbol.metadata] as Record<
+      symbol,
+      unknown
+    > | null
     expect(meta?.[CONTROLLER_METADATA]).toEqual({ prefix: '' })
   })
 })

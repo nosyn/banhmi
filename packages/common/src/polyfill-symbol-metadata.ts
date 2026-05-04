@@ -5,14 +5,16 @@
 // This polyfill captures that symbol and exposes it as Symbol.metadata so that
 // tests and runtime code can access class metadata via the spec-compliant API.
 
-if (typeof (Symbol as unknown as Record<string, unknown>)['metadata'] === 'undefined') {
+if (
+  typeof (Symbol as unknown as Record<string, unknown>).metadata === 'undefined'
+) {
   // Use a probe class to capture the internal Symbol.metadata symbol that Bun uses
   function _probe() {
-    return function <T extends abstract new (...args: unknown[]) => unknown>(
+    return <T extends abstract new (...args: unknown[]) => unknown>(
       _target: T,
       context: ClassDecoratorContext<T>,
-    ): void {
-      context.metadata['_'] = 1
+    ): void => {
+      context.metadata._ = 1
     }
   }
 
@@ -23,6 +25,6 @@ if (typeof (Symbol as unknown as Record<string, unknown>)['metadata'] === 'undef
     (s) => s.description === 'Symbol.metadata',
   )
   if (metaSym) {
-    ;(Symbol as unknown as Record<string, unknown>)['metadata'] = metaSym
+    ;(Symbol as unknown as Record<string, unknown>).metadata = metaSym
   }
 }

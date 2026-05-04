@@ -9,9 +9,12 @@ describe('route decorators', () => {
       findAll() {}
     }
 
-    const meta = CatsController[Symbol.metadata] as Record<symbol, unknown> | null
+    const meta = CatsController[Symbol.metadata] as Record<
+      symbol,
+      unknown
+    > | null
     const routes = meta?.[ROUTE_METADATA] as Record<string, unknown> | undefined
-    expect(routes?.['findAll']).toEqual({ method: 'GET', path: '/cats' })
+    expect(routes?.findAll).toEqual({ method: 'GET', path: '/cats' })
   })
 
   test('@Post stores POST route', () => {
@@ -20,9 +23,12 @@ describe('route decorators', () => {
       create() {}
     }
 
-    const meta = CatsController[Symbol.metadata] as Record<symbol, unknown> | null
+    const meta = CatsController[Symbol.metadata] as Record<
+      symbol,
+      unknown
+    > | null
     const routes = meta?.[ROUTE_METADATA] as Record<string, unknown> | undefined
-    expect(routes?.['create']).toEqual({ method: 'POST', path: '' })
+    expect(routes?.create).toEqual({ method: 'POST', path: '' })
   })
 
   test('multiple routes on same controller', () => {
@@ -34,9 +40,14 @@ describe('route decorators', () => {
       remove() {}
     }
 
-    const meta = CatsController[Symbol.metadata] as Record<symbol, unknown> | null
-    const routes = meta?.[ROUTE_METADATA] as Record<string, { method: string }> | undefined
-    expect(routes?.['findOne']?.method).toBe('GET')
-    expect(routes?.['remove']?.method).toBe('DELETE')
+    const meta = CatsController[Symbol.metadata] as Record<
+      symbol,
+      unknown
+    > | null
+    const routes = meta?.[ROUTE_METADATA] as
+      | Record<string, { method: string }>
+      | undefined
+    expect(routes?.findOne?.method).toBe('GET')
+    expect(routes?.remove?.method).toBe('DELETE')
   })
 })

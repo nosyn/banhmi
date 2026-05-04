@@ -1,4 +1,4 @@
-import { Module } from 'bunnest'
+import { Module } from 'banhmi'
 import { CatsController } from './cats.controller'
 import { CatsService } from './cats.service'
 

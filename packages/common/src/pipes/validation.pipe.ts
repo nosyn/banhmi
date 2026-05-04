@@ -10,7 +10,9 @@ interface StandardSchema<T = unknown> {
   '~standard': {
     vendor: string
     version: number
-    validate(value: unknown): StandardSchemaResult<T> | Promise<StandardSchemaResult<T>>
+    validate(
+      value: unknown,
+    ): StandardSchemaResult<T> | Promise<StandardSchemaResult<T>>
   }
 }
 

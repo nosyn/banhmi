@@ -1,4 +1,4 @@
-import type { RouteCtx } from '@bunnest/common'
+import type { RouteCtx } from '@banhmi/common'
 
 export class BunRouteCtx implements RouteCtx {
   #url?: URL

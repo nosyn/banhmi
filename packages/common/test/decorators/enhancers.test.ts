@@ -1,5 +1,9 @@
 import { describe, expect, test } from 'bun:test'
-import { SetMetadata, UseGuards, UseInterceptors } from '../../src/decorators/enhancers'
+import {
+  SetMetadata,
+  UseGuards,
+  UseInterceptors,
+} from '../../src/decorators/enhancers'
 import { Header, HttpCode } from '../../src/decorators/http'
 import {
   CUSTOM_ROUTE_METADATA,
@@ -29,8 +33,10 @@ describe('@Header', () => {
     }
 
     const meta = Ctrl[Symbol.metadata] as Record<symbol, unknown> | null
-    const headers = meta?.[RESPONSE_HEADERS_METADATA] as Record<string, [string, string][]> | undefined
-    expect(headers?.['findAll']).toContainEqual(['Cache-Control', 'no-cache'])
+    const headers = meta?.[RESPONSE_HEADERS_METADATA] as
+      | Record<string, [string, string][]>
+      | undefined
+    expect(headers?.findAll).toContainEqual(['Cache-Control', 'no-cache'])
   })
 })
 
@@ -66,7 +72,9 @@ describe('@SetMetadata', () => {
     }
 
     const meta = Ctrl[Symbol.metadata] as Record<symbol, unknown> | null
-    const custom = meta?.[CUSTOM_ROUTE_METADATA] as Record<string, Record<string, unknown>> | undefined
-    expect(custom?.['findAll']?.['roles']).toEqual(['admin'])
+    const custom = meta?.[CUSTOM_ROUTE_METADATA] as
+      | Record<string, Record<string, unknown>>
+      | undefined
+    expect(custom?.findAll?.roles).toEqual(['admin'])
   })
 })

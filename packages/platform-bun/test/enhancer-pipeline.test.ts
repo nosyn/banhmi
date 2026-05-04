@@ -1,12 +1,12 @@
 import { describe, expect, test } from 'bun:test'
-import { ForbiddenException, NotFoundException } from '@bunnest/common'
+import { ForbiddenException, NotFoundException } from '@banhmi/common'
 import type {
   CallHandler,
   ExceptionFilter,
   ExecutionContext,
   Guard,
   Interceptor,
-} from '@bunnest/common'
+} from '@banhmi/common'
 import { runEnhancerPipeline } from '../src/enhancer-pipeline'
 import { BunExecutionContext } from '../src/execution-context'
 import { BunRouteCtx } from '../src/route-ctx'

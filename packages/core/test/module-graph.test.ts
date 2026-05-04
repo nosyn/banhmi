@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import { Injectable, MODULE_METADATA, Module } from '@bunnest/common'
+import { Injectable, MODULE_METADATA, Module } from '@banhmi/common'
 import { ModuleGraph } from '../src/module-graph'
 
 describe('ModuleGraph', () => {

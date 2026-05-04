@@ -1,5 +1,5 @@
 {
-  "name": "@bunnest/core",
+  "name": "@banhmi/core",
   "version": "0.1.0",
   "type": "module",
   "exports": { ".": "./src/index.ts" },
@@ -8,6 +8,6 @@
     "test": "bun test"
   },
   "dependencies": {
-    "@bunnest/common": "workspace:*"
+    "@banhmi/common": "workspace:*"
   }
 }

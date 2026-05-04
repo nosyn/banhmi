@@ -1,5 +1,5 @@
-import type { AbstractConstructor } from '@bunnest/common'
-import { BunnestApplication, Container, ModuleGraph } from '@bunnest/core'
+import type { AbstractConstructor } from '@banhmi/common'
+import { BunnestApplication, Container, ModuleGraph } from '@banhmi/core'
 import { BunAdapter } from './bun-adapter'
 
 // biome-ignore lint/complexity/noStaticOnlyClass: intentional NestJS-style factory

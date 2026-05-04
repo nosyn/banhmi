@@ -1,4 +1,4 @@
-import { Module } from 'bunnest'
+import { Module } from 'banhmi'
 import { CatsModule } from './cats/cats.module'
 
 @Module({

@@ -1,5 +1,5 @@
-import type { ClassConstructor } from '@bunnest/common'
-import type { HttpAdapter } from '@bunnest/core'
+import type { ClassConstructor } from '@banhmi/common'
+import type { HttpAdapter } from '@banhmi/core'
 import type { Server } from 'bun'
 import { type RegisteredFilter, runEnhancerPipeline } from './enhancer-pipeline'
 import { BunExecutionContext } from './execution-context'

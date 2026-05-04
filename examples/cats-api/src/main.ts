@@ -1,4 +1,4 @@
-import { BunnestFactory } from 'bunnest'
+import { BunnestFactory } from 'banhmi'
 import { AppModule } from './app.module'
 
 const app = await BunnestFactory.create(AppModule)

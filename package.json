@@ -1,5 +1,5 @@
 {
-  "name": "bunnest-monorepo",
+  "name": "banhmi-monorepo",
   "private": true,
   "workspaces": ["packages/*", "examples/*"],
   "scripts": {

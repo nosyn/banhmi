@@ -1,4 +1,4 @@
-import type { ClassConstructor, HttpMethod, RouteCtx } from '@bunnest/common'
+import type { ClassConstructor, HttpMethod, RouteCtx } from '@banhmi/common'
 
 export interface RegisteredRoute {
   method: HttpMethod

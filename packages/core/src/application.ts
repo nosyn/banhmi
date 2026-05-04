@@ -2,7 +2,7 @@ import type {
   AbstractConstructor,
   ClassConstructor,
   ProviderDef,
-} from '@bunnest/common'
+} from '@banhmi/common'
 import type { Container } from './container'
 import { LifecycleRunner } from './lifecycle-runner'
 import { type ModuleNode, flattenModuleProviders } from './module-graph'

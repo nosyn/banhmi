@@ -1,14 +1,26 @@
-import type { ClassConstructor, FactoryProvider, InjectToken, ProviderDef, ValueProvider } from '@bunnest/common'
+import type {
+  ClassConstructor,
+  FactoryProvider,
+  InjectToken,
+  ProviderDef,
+  ValueProvider,
+} from '@banhmi/common'
 
-export function isValueProvider<T>(def: ProviderDef<T>): def is ValueProvider<T> {
+export function isValueProvider<T>(
+  def: ProviderDef<T>,
+): def is ValueProvider<T> {
   return typeof def === 'object' && 'useValue' in def
 }
 
-export function isFactoryProvider<T>(def: ProviderDef<T>): def is FactoryProvider<T> {
+export function isFactoryProvider<T>(
+  def: ProviderDef<T>,
+): def is FactoryProvider<T> {
   return typeof def === 'object' && 'useFactory' in def
 }
 
-export function isClassProvider<T>(def: ProviderDef<T>): def is ClassConstructor<T> {
+export function isClassProvider<T>(
+  def: ProviderDef<T>,
+): def is ClassConstructor<T> {
   return typeof def === 'function'
 }
 

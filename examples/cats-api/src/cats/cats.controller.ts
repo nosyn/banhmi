@@ -1,5 +1,5 @@
-import { Controller, Delete, Get, HttpCode, Post } from 'bunnest'
-import type { RouteCtx } from 'bunnest'
+import { Controller, Delete, Get, HttpCode, Post } from 'banhmi'
+import type { RouteCtx } from 'banhmi'
 import { CatsService } from './cats.service'
 
 @Controller('/cats')

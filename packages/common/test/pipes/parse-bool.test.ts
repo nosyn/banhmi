@@ -14,6 +14,8 @@ describe('ParseBoolPipe', () => {
   })
 
   test('throws for anything else', () => {
-    expect(() => pipe.transform('yes', { type: 'query' })).toThrow(BadRequestException)
+    expect(() => pipe.transform('yes', { type: 'query' })).toThrow(
+      BadRequestException,
+    )
   })
 })

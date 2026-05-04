@@ -1,11 +1,11 @@
-import { ForbiddenException } from '@bunnest/common'
+import { ForbiddenException } from '@banhmi/common'
 import type {
   CallHandler,
   ExceptionFilter,
   ExecutionContext,
   Guard,
   Interceptor,
-} from '@bunnest/common'
+} from '@banhmi/common'
 import { GlobalExceptionFilter } from './global-filter'
 
 export interface RegisteredFilter {

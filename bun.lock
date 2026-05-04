@@ -13,40 +13,46 @@
       "name": "cats-api-example",
       "version": "0.0.1",
       "dependencies": {
-        "bunnest": "workspace:*",
+        "banhmi": "workspace:*",
       },
     },
-    "packages/bunnest": {
-      "name": "bunnest",
+    "packages/banhmi": {
+      "name": "banhmi",
       "version": "0.1.0",
       "dependencies": {
-        "@bunnest/common": "workspace:*",
-        "@bunnest/core": "workspace:*",
-        "@bunnest/platform-bun": "workspace:*",
+        "@banhmi/common": "workspace:*",
+        "@banhmi/core": "workspace:*",
+        "@banhmi/platform-bun": "workspace:*",
       },
     },
     "packages/common": {
-      "name": "@bunnest/common",
+      "name": "@banhmi/common",
       "version": "0.1.0",
     },
     "packages/core": {
-      "name": "@bunnest/core",
+      "name": "@banhmi/core",
       "version": "0.1.0",
       "dependencies": {
-        "@bunnest/common": "workspace:*",
+        "@banhmi/common": "workspace:*",
       },
     },
     "packages/platform-bun": {
-      "name": "@bunnest/platform-bun",
+      "name": "@banhmi/platform-bun",
       "version": "0.1.0",
       "dependencies": {
-        "@bunnest/common": "workspace:*",
-        "@bunnest/core": "workspace:*",
+        "@banhmi/common": "workspace:*",
+        "@banhmi/core": "workspace:*",
       },
     },
   },
   "packages": {
     "@babel/runtime": ["@babel/runtime@7.29.2", "", {}, "sha512-JiDShH45zKHWyGe4ZNVRrCjBz8Nh9TMmZG1kh4QTK8hCBTWBi8Da+i7s1fJw7/lYpM4ccepSNfqzZ/QvABBi5g=="],
+
+    "@banhmi/common": ["@banhmi/common@workspace:packages/common"],
+
+    "@banhmi/core": ["@banhmi/core@workspace:packages/core"],
+
+    "@banhmi/platform-bun": ["@banhmi/platform-bun@workspace:packages/platform-bun"],
 
     "@biomejs/biome": ["@biomejs/biome@1.9.4", "", { "optionalDependencies": { "@biomejs/cli-darwin-arm64": "1.9.4", "@biomejs/cli-darwin-x64": "1.9.4", "@biomejs/cli-linux-arm64": "1.9.4", "@biomejs/cli-linux-arm64-musl": "1.9.4", "@biomejs/cli-linux-x64": "1.9.4", "@biomejs/cli-linux-x64-musl": "1.9.4", "@biomejs/cli-win32-arm64": "1.9.4", "@biomejs/cli-win32-x64": "1.9.4" }, "bin": { "biome": "bin/biome" } }, "sha512-1rkd7G70+o9KkTn5KLmDYXihGoTaIGO9PIIN2ZB7UJxFrWw04CZHPYiMRjYsaDvVV7hP1dYNRLxSANLaBFGpog=="],
 
@@ -65,12 +71,6 @@
     "@biomejs/cli-win32-arm64": ["@biomejs/cli-win32-arm64@1.9.4", "", { "os": "win32", "cpu": "arm64" }, "sha512-tlbhLk+WXZmgwoIKwHIHEBZUwxml7bRJgk0X2sPyNR3S93cdRq6XulAZRQJ17FYGGzWne0fgrXBKpl7l4M87Hg=="],
 
     "@biomejs/cli-win32-x64": ["@biomejs/cli-win32-x64@1.9.4", "", { "os": "win32", "cpu": "x64" }, "sha512-8Y5wMhVIPaWe6jw2H+KlEm4wP/f7EW3810ZLmDlrEEy5KvBsb9ECEfu/kMWD484ijfQ8+nIi0giMgu9g1UAuuA=="],
-
-    "@bunnest/common": ["@bunnest/common@workspace:packages/common"],
-
-    "@bunnest/core": ["@bunnest/core@workspace:packages/core"],
-
-    "@bunnest/platform-bun": ["@bunnest/platform-bun@workspace:packages/platform-bun"],
 
     "@changesets/apply-release-plan": ["@changesets/apply-release-plan@7.1.1", "", { "dependencies": { "@changesets/config": "^3.1.4", "@changesets/get-version-range-type": "^0.4.0", "@changesets/git": "^3.0.4", "@changesets/should-skip-package": "^0.1.2", "@changesets/types": "^6.1.0", "@manypkg/get-packages": "^1.1.3", "detect-indent": "^6.0.0", "fs-extra": "^7.0.1", "lodash.startcase": "^4.4.0", "outdent": "^0.5.0", "prettier": "^2.7.1", "resolve-from": "^5.0.0", "semver": "^7.5.3" } }, "sha512-9qPCm/rLx/xoOFXIHGB229+4GOL76S4MC+7tyOuTsR6+1jYlfFDQORdvwR5hDA6y4FL2BPt3qpbcQIS+dW85LA=="],
 
@@ -128,11 +128,11 @@
 
     "array-union": ["array-union@2.1.0", "", {}, "sha512-HGyxoOTYUyCM6stUe6EJgnd4EoewAI7zMdfqO+kGjnlZmBDz/cR5pf8r/cR4Wq60sL/p0IkcjUEEPwS3GFrIyw=="],
 
+    "banhmi": ["banhmi@workspace:packages/banhmi"],
+
     "better-path-resolve": ["better-path-resolve@1.0.0", "", { "dependencies": { "is-windows": "^1.0.0" } }, "sha512-pbnl5XzGBdrFU/wT4jqmJVPn2B6UHPBOhzMQkY/SPUPB6QtUXtmBHBIwCbXJol93mOpGMnQyP/+BB19q04xj7g=="],
 
     "braces": ["braces@3.0.3", "", { "dependencies": { "fill-range": "^7.1.1" } }, "sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA=="],
-
-    "bunnest": ["bunnest@workspace:packages/bunnest"],
 
     "cats-api-example": ["cats-api-example@workspace:examples/cats-api"],
 

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from 'bunnest'
+import { Injectable, NotFoundException } from 'banhmi'
 
 interface Cat {
   id: number

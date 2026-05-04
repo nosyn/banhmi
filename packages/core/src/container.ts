@@ -1,8 +1,4 @@
-import type {
-  ClassConstructor,
-  InjectToken,
-  ProviderDef,
-} from '@bunnest/common'
+import type { ClassConstructor, InjectToken, ProviderDef } from '@banhmi/common'
 import {
   getInjectTokens,
   getProviderToken,

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import { Injectable, Token } from '@bunnest/common'
+import { Injectable, Token } from '@banhmi/common'
 import { Container } from '../src/container'
 
 describe('Container', () => {
@@ -39,7 +39,9 @@ describe('Container', () => {
     @Injectable()
     class Logger {
       static inject = [] as const
-      log(msg: string) { return msg }
+      log(msg: string) {
+        return msg
+      }
     }
 
     @Injectable()
@@ -68,7 +70,10 @@ describe('Container', () => {
     const CLIENT_TOKEN = Token<{ url: string }>('client')
 
     const container = new Container()
-    container.register({ provide: BASE_URL, useValue: 'https://api.example.com' })
+    container.register({
+      provide: BASE_URL,
+      useValue: 'https://api.example.com',
+    })
     container.register({
       provide: CLIENT_TOKEN,
       useFactory: (url: unknown) => ({ url: url as string }),
