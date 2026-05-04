@@ -167,7 +167,9 @@ export class BunAdapter implements HttpAdapter {
 
     const guardInstances = match.guards.map((G) => new G())
     const interceptorInstances = match.interceptors.map((I) =>
-      typeof I === 'function' ? new (I as new () => Interceptor)() : (I as Interceptor),
+      typeof I === 'function'
+        ? new (I as new () => Interceptor)()
+        : (I as Interceptor),
     )
     const filterInstances: RegisteredFilter[] = match.filters.map((F) => ({
       filterInstance: new F() as RegisteredFilter['filterInstance'],
