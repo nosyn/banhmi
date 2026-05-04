@@ -399,10 +399,10 @@ export class AppModule {}
 - [ ] **Step 6: Create `examples/drizzle-api/src/main.ts`**
 
 ```ts
-import { BunnestFactory } from 'banhmi'
+import { BanhmiFactory } from 'banhmi'
 import { AppModule } from './app.module'
 
-const app = await BunnestFactory.create(AppModule)
+const app = await BanhmiFactory.create(AppModule)
 app.enableShutdownHooks()
 await app.listen(3002)
 

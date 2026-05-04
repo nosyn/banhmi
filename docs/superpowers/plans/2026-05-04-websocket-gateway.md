@@ -749,7 +749,7 @@ export class BunAdapter implements HttpAdapter {
 ```ts
 export { BunAdapter } from './bun-adapter'
 export { BunExecutionContext } from './execution-context'
-export { BunnestFactory } from './factory'
+export { BanhmiFactory } from './factory'
 export { GlobalExceptionFilter } from './global-filter'
 export { RadixRouter } from './router'
 export type { MatchResult, RegisteredRoute } from './router'
@@ -779,7 +779,7 @@ git commit -m "feat(platform-bun): add WebSocket gateway support to BunAdapter"
 
 ---
 
-## Task 4: Update `ModuleGraph` and `BunnestApplication` for gateways
+## Task 4: Update `ModuleGraph` and `BanhmiApplication` for gateways
 
 **Files:**
 - Modify: `packages/core/src/module-graph.ts`
@@ -935,7 +935,7 @@ export interface HttpAdapter {
   use(middleware: unknown): void
 }
 
-export class BunnestApplication {
+export class BanhmiApplication {
   private lifecycleRunner: LifecycleRunner
   private allProviders: ProviderDef[]
   private shutdownHooksEnabled = false
@@ -1037,7 +1037,7 @@ Expected: all tests pass (including new module-graph-gateways tests)
 git add packages/core/src/module-graph.ts \
         packages/core/src/application.ts \
         packages/core/test/module-graph-gateways.test.ts
-git commit -m "feat(core): add gateway support to ModuleNode and BunnestApplication"
+git commit -m "feat(core): add gateway support to ModuleNode and BanhmiApplication"
 ```
 
 ---
@@ -1064,9 +1064,9 @@ import {
   WebSocketServer,
 } from '@banhmi/common'
 import type { WsContext } from '@banhmi/common'
-import type { BunnestApplication } from '@banhmi/core'
+import type { BanhmiApplication } from '@banhmi/core'
 import type { Server } from 'bun'
-import { BunnestFactory } from '../src/factory'
+import { BanhmiFactory } from '../src/factory'
 
 // ─── Gateway ─────────────────────────────────────────────────────────────────
 
@@ -1144,11 +1144,11 @@ function wsClose(ws: WebSocket): Promise<void> {
 const PORT = 54323
 const WS_URL = `ws://localhost:${PORT}/ws`
 
-let app: BunnestApplication
+let app: BanhmiApplication
 let gateway: ChatGateway
 
 beforeAll(async () => {
-  app = await BunnestFactory.create(WsAppModule)
+  app = await BanhmiFactory.create(WsAppModule)
   await app.listen(PORT)
   gateway = app.container.resolve(ChatGateway) as ChatGateway
 })
@@ -1378,7 +1378,7 @@ git commit -m "feat(cats-api): add EventsGateway WebSocket demo"
 - ✅ WS upgrade handling in `handleFetch` — Task 3
 - ✅ `ModuleNode.gateways` — Task 4
 - ✅ `flattenModuleProviders` includes gateways — Task 4
-- ✅ `BunnestApplication.flattenGateways` + calling `registerGateway` — Task 4
+- ✅ `BanhmiApplication.flattenGateways` + calling `registerGateway` — Task 4
 - ✅ Integration test — Task 5
 - ✅ Example gateway — Task 6
 

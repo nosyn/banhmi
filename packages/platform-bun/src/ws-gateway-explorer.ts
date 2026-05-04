@@ -24,15 +24,24 @@ export interface ExploredGateway {
 }
 
 export class WsGatewayExplorer {
-  explore(instance: object, gatewayClass: ClassConstructor): ExploredGateway | null {
-    const classMeta = gatewayClass[Symbol.metadata] as Record<symbol, unknown> | null
+  explore(
+    instance: object,
+    gatewayClass: ClassConstructor,
+  ): ExploredGateway | null {
+    const classMeta = gatewayClass[Symbol.metadata] as Record<
+      symbol,
+      unknown
+    > | null
     if (!classMeta) return null
 
-    const gatewayMeta = classMeta[WS_GATEWAY_METADATA] as WsGatewayMetadata | undefined
+    const gatewayMeta = classMeta[WS_GATEWAY_METADATA] as
+      | WsGatewayMetadata
+      | undefined
     if (!gatewayMeta) return null
 
     const messageMap =
-      (classMeta[WS_MESSAGE_METADATA] as Record<string, string> | undefined) ?? {}
+      (classMeta[WS_MESSAGE_METADATA] as Record<string, string> | undefined) ??
+      {}
     const serverPropNames =
       (classMeta[WS_SERVER_PROPERTY_METADATA] as string[] | undefined) ?? []
 
@@ -51,7 +60,8 @@ export class WsGatewayExplorer {
       'afterInit' in instance &&
       typeof (instance as OnGatewayInit).afterInit === 'function'
     ) {
-      lifecycle.onInit = (server) => (instance as OnGatewayInit).afterInit(server)
+      lifecycle.onInit = (server) =>
+        (instance as OnGatewayInit).afterInit(server)
     }
     if (
       'handleConnection' in instance &&

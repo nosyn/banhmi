@@ -23,6 +23,9 @@ export class BunAdapter implements HttpAdapter {
   private gateways: Array<ExploredGateway & { instance: object }> = []
 
   use(middleware: unknown): void {
+    if (typeof middleware !== 'function') {
+      throw new TypeError(`BunAdapter.use() expects a function, got ${typeof middleware}`)
+    }
     this.middleware.push(middleware as MiddlewareFn)
   }
 
@@ -184,7 +187,6 @@ export class BunAdapter implements HttpAdapter {
     const chain = [...this.middleware]
 
     const execute = (index: number): Promise<Response> => {
-      if (index >= chain.length) return final()
       const mw = chain[index]
       if (!mw) return final()
       return mw(request, () => execute(index + 1))

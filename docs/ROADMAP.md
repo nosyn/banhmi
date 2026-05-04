@@ -11,7 +11,7 @@
 - Static-`inject` DI container with circular-dep detection
 - Module graph (imports, providers, controllers, exports)
 - Lifecycle hooks (`onModuleInit`, `onModuleDestroy`, `onApplicationBootstrap`, `onApplicationShutdown`)
-- `BunnestApplication` + `BunAdapter` on raw `Bun.serve`
+- `BanhmiApplication` + `BunAdapter` on raw `Bun.serve`
 - `RadixRouter` with `:param`, `:param?`, and `*` wildcard matching
 - Enhancer pipeline: Guards → Interceptors → Pipes → Handler → Filters
 - Built-in exceptions (`NotFoundException`, `BadRequestException`, etc.)

@@ -1,19 +1,23 @@
 import { describe, expect, test } from 'bun:test'
 import {
   Injectable,
-  OnGatewayConnection,
-  OnGatewayDisconnect,
-  OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@banhmi/common'
-import type { WsContext } from '@banhmi/common'
+import type {
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+  OnGatewayInit,
+  WsContext,
+} from '@banhmi/common'
 import { WsGatewayExplorer } from '../src/ws-gateway-explorer'
 
 @WebSocketGateway({ path: '/chat' })
 @Injectable()
-class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+class ChatGateway
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
   @WebSocketServer()
   server: unknown
 

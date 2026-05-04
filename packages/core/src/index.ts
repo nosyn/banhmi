@@ -1,6 +1,6 @@
-export { Container } from './container'
-export { LifecycleRunner } from './lifecycle-runner'
-export { ModuleGraph, flattenModuleProviders } from './module-graph'
-export type { ModuleNode } from './module-graph'
-export { BunnestApplication } from './application'
-export type { HttpAdapter } from './application'
+export { Container } from './container';
+export { LifecycleRunner } from './lifecycle-runner';
+export { ModuleGraph, flattenModuleProviders } from './module-graph';
+export type { ModuleNode } from './module-graph';
+export { BanhmiApplication } from './application';
+export type { HttpAdapter } from './application';

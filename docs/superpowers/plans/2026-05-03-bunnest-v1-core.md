@@ -1,8 +1,8 @@
-# Bunnest v1 Core Implementation Plan
+# Banhmi v1 Core Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build `@banhmi/common`, `@banhmi/core`, `@banhmi/platform-bun`, and the `bunnest` facade — a complete Bun-first HTTP framework with DI, modules, decorators, guards, interceptors, pipes, and exception filters.
+**Goal:** Build `@banhmi/common`, `@banhmi/core`, `@banhmi/platform-bun`, and the `banhmi` facade — a complete Bun-first HTTP framework with DI, modules, decorators, guards, interceptors, pipes, and exception filters.
 
 **Architecture:** TC39 Stage 3 decorators with `Symbol.metadata` for metadata storage (no `reflect-metadata`). DI uses `static inject` token arrays. Route handlers receive a `RouteCtx` context object (TC39 Stage 3 has no parameter decorators). Radix router built on `Bun.serve` with Web Standard `Request`/`Response`. No RxJS — interceptors use `Promise<Response>`.
 
@@ -13,8 +13,8 @@
 ## Spec Amendment (applied to spec file)
 
 - `@Param`, `@Query`, `@Body` parameter decorators are replaced by `RouteCtx` context object
-- `BunnestFactory` lives in `@banhmi/platform-bun`, re-exported by `bunnest` facade
-- Package `bunnest` (unscoped) added as user-facing facade
+- `BanhmiFactory` lives in `@banhmi/platform-bun`, re-exported by `banhmi` facade
+- Package `banhmi` (unscoped) added as user-facing facade
 
 ---
 
@@ -74,7 +74,7 @@ packages/
       module-graph.ts       # ModuleGraph — build DAG, detect circular deps
       container.ts          # Container — resolve providers
       lifecycle-runner.ts   # Run lifecycle hooks on all providers
-      application.ts        # BunnestApplication
+      application.ts        # BanhmiApplication
       index.ts
     test/
       module-graph.test.ts
@@ -92,7 +92,7 @@ packages/
       route-explorer.ts     # Extract route definitions from controller metadata
       global-filter.ts      # GlobalExceptionFilter
       bun-adapter.ts        # BunAdapter — wires Bun.serve with router + pipeline
-      factory.ts            # BunnestFactory.create()
+      factory.ts            # BanhmiFactory.create()
       index.ts
     test/
       router.test.ts
@@ -103,7 +103,7 @@ packages/
     package.json
     tsconfig.json
 
-  bunnest/
+  banhmi/
     src/
       index.ts              # Re-exports @banhmi/common + core + platform-bun
     package.json
@@ -125,20 +125,20 @@ packages/
 - Create: `packages/core/tsconfig.json`
 - Create: `packages/platform-bun/package.json`
 - Create: `packages/platform-bun/tsconfig.json`
-- Create: `packages/bunnest/package.json`
-- Create: `packages/bunnest/tsconfig.json`
+- Create: `packages/banhmi/package.json`
+- Create: `packages/banhmi/tsconfig.json`
 
 - [ ] **Step 1: Initialise git and root package**
 
 ```bash
-cd /path/to/bunnest
+cd /path/to/banhmi
 git init
 ```
 
 Create `package.json`:
 ```json
 {
-  "name": "bunnest-monorepo",
+  "name": "banhmi-monorepo",
   "private": true,
   "workspaces": ["packages/*"],
   "scripts": {
@@ -292,9 +292,9 @@ Create empty `packages/platform-bun/src/index.ts`:
 // @banhmi/platform-bun — populated in subsequent tasks
 ```
 
-- [ ] **Step 7: Create bunnest facade package files**
+- [ ] **Step 7: Create banhmi facade package files**
 
-Create `packages/bunnest/package.json`:
+Create `packages/banhmi/package.json`:
 ```json
 {
   "name": "banhmi",
@@ -313,7 +313,7 @@ Create `packages/bunnest/package.json`:
 }
 ```
 
-Create `packages/bunnest/tsconfig.json`:
+Create `packages/banhmi/tsconfig.json`:
 ```json
 {
   "extends": "../../tsconfig.json",
@@ -322,7 +322,7 @@ Create `packages/bunnest/tsconfig.json`:
 }
 ```
 
-Create `packages/bunnest/src/index.ts`:
+Create `packages/banhmi/src/index.ts`:
 ```ts
 export * from '@banhmi/common'
 export * from '@banhmi/core'
@@ -335,7 +335,7 @@ export * from '@banhmi/platform-bun'
 bun install
 ```
 
-Expected: lockfile created, all workspace packages symlinked in `node_modules/@bunnest/`.
+Expected: lockfile created, all workspace packages symlinked in `node_modules/@banhmi/`.
 
 - [ ] **Step 9: Initialise changesets**
 
@@ -406,18 +406,18 @@ export function Token<T>(description: string): Token<T> {
 
 Create `packages/common/src/metadata-keys.ts`:
 ```ts
-export const INJECTABLE_WATERMARK = Symbol('bunnest:injectable')
-export const MODULE_METADATA = Symbol('bunnest:module')
-export const CONTROLLER_METADATA = Symbol('bunnest:controller')
-export const ROUTE_METADATA = Symbol('bunnest:routes')
-export const HTTP_CODE_METADATA = Symbol('bunnest:http_code')
-export const RESPONSE_HEADERS_METADATA = Symbol('bunnest:response_headers')
-export const REDIRECT_METADATA = Symbol('bunnest:redirect')
-export const GUARDS_METADATA = Symbol('bunnest:guards')
-export const INTERCEPTORS_METADATA = Symbol('bunnest:interceptors')
-export const FILTERS_METADATA = Symbol('bunnest:filters')
-export const PIPES_METADATA = Symbol('bunnest:pipes')
-export const CUSTOM_ROUTE_METADATA = Symbol('bunnest:custom_metadata')
+export const INJECTABLE_WATERMARK = Symbol('banhmi:injectable')
+export const MODULE_METADATA = Symbol('banhmi:module')
+export const CONTROLLER_METADATA = Symbol('banhmi:controller')
+export const ROUTE_METADATA = Symbol('banhmi:routes')
+export const HTTP_CODE_METADATA = Symbol('banhmi:http_code')
+export const RESPONSE_HEADERS_METADATA = Symbol('banhmi:response_headers')
+export const REDIRECT_METADATA = Symbol('banhmi:redirect')
+export const GUARDS_METADATA = Symbol('banhmi:guards')
+export const INTERCEPTORS_METADATA = Symbol('banhmi:interceptors')
+export const FILTERS_METADATA = Symbol('banhmi:filters')
+export const PIPES_METADATA = Symbol('banhmi:pipes')
+export const CUSTOM_ROUTE_METADATA = Symbol('banhmi:custom_metadata')
 ```
 
 - [ ] **Step 5: Run tests to confirm pass**
@@ -1600,12 +1600,12 @@ describe('ModuleGraph', () => {
     // Manually set metadata to create circular ref
     Object.defineProperty(ModuleA, Symbol.metadata, {
       value: {
-        [Symbol.for('bunnest:module')]: { imports: [ModuleB] },
+        [Symbol.for('banhmi:module')]: { imports: [ModuleB] },
       },
     })
     Object.defineProperty(ModuleB, Symbol.metadata, {
       value: {
-        [Symbol.for('bunnest:module')]: { imports: [ModuleA] },
+        [Symbol.for('banhmi:module')]: { imports: [ModuleA] },
       },
     })
 
@@ -1900,7 +1900,7 @@ git commit -m "feat(@banhmi/core): add module graph and DI container"
 
 ---
 
-### Task 10: @banhmi/core — Lifecycle runner & BunnestApplication
+### Task 10: @banhmi/core — Lifecycle runner & BanhmiApplication
 
 **Files:**
 - Create: `packages/core/src/lifecycle-runner.ts`
@@ -2022,7 +2022,7 @@ export class LifecycleRunner {
 }
 ```
 
-- [ ] **Step 4: Implement BunnestApplication**
+- [ ] **Step 4: Implement BanhmiApplication**
 
 Create `packages/core/src/application.ts`:
 ```ts
@@ -2038,7 +2038,7 @@ export interface HttpAdapter {
   use(middleware: unknown): void
 }
 
-export class BunnestApplication {
+export class BanhmiApplication {
   private lifecycleRunner: LifecycleRunner
   private allProviders: ProviderDef[]
   private shutdownHooksEnabled = false
@@ -2123,7 +2123,7 @@ export { ModuleGraph } from './module-graph'
 export type { ModuleNode } from './module-graph'
 export { Container } from './container'
 export { LifecycleRunner } from './lifecycle-runner'
-export { BunnestApplication } from './application'
+export { BanhmiApplication } from './application'
 export type { HttpAdapter } from './application'
 ```
 
@@ -2131,7 +2131,7 @@ export type { HttpAdapter } from './application'
 
 ```bash
 git add packages/core/
-git commit -m "feat(@banhmi/core): add lifecycle runner and BunnestApplication"
+git commit -m "feat(@banhmi/core): add lifecycle runner and BanhmiApplication"
 ```
 
 ---
@@ -2880,7 +2880,7 @@ git commit -m "feat(@banhmi/platform-bun): add RouteExplorer for extracting cont
 
 ---
 
-### Task 15: @banhmi/platform-bun — BunAdapter & BunnestFactory
+### Task 15: @banhmi/platform-bun — BunAdapter & BanhmiFactory
 
 **Files:**
 - Create: `packages/platform-bun/src/bun-adapter.ts`
@@ -2990,16 +2990,16 @@ export class BunAdapter implements HttpAdapter {
 }
 ```
 
-- [ ] **Step 2: Implement BunnestFactory**
+- [ ] **Step 2: Implement BanhmiFactory**
 
 Create `packages/platform-bun/src/factory.ts`:
 ```ts
 import type { AbstractConstructor } from '@banhmi/common'
-import { Container, ModuleGraph, BunnestApplication } from '@banhmi/core'
+import { Container, ModuleGraph, BanhmiApplication } from '@banhmi/core'
 import { BunAdapter } from './bun-adapter'
 
-export class BunnestFactory {
-  static async create(rootModule: AbstractConstructor): Promise<BunnestApplication> {
+export class BanhmiFactory {
+  static async create(rootModule: AbstractConstructor): Promise<BanhmiApplication> {
     const graph = new ModuleGraph()
     const moduleTree = graph.buildTree(rootModule)
 
@@ -3010,7 +3010,7 @@ export class BunnestFactory {
     }
 
     const adapter = new BunAdapter()
-    return new BunnestApplication(container, moduleTree, adapter)
+    return new BanhmiApplication(container, moduleTree, adapter)
   }
 }
 ```
@@ -3020,7 +3020,7 @@ export class BunnestFactory {
 Update `packages/platform-bun/src/index.ts`:
 ```ts
 export { BunAdapter } from './bun-adapter'
-export { BunnestFactory } from './factory'
+export { BanhmiFactory } from './factory'
 export { BunRouteCtx } from './route-ctx'
 export { BunExecutionContext } from './execution-context'
 export { RadixRouter } from './router'
@@ -3028,9 +3028,9 @@ export { GlobalExceptionFilter } from './global-filter'
 export { RouteExplorer } from './route-explorer'
 ```
 
-- [ ] **Step 4: Update bunnest facade index**
+- [ ] **Step 4: Update banhmi facade index**
 
-Update `packages/bunnest/src/index.ts`:
+Update `packages/banhmi/src/index.ts`:
 ```ts
 export * from '@banhmi/common'
 export * from '@banhmi/core'
@@ -3040,8 +3040,8 @@ export * from '@banhmi/platform-bun'
 - [ ] **Step 5: Commit**
 
 ```bash
-git add packages/platform-bun/src/bun-adapter.ts packages/platform-bun/src/factory.ts packages/platform-bun/src/index.ts packages/bunnest/src/index.ts
-git commit -m "feat(@banhmi/platform-bun): add BunAdapter and BunnestFactory"
+git add packages/platform-bun/src/bun-adapter.ts packages/platform-bun/src/factory.ts packages/platform-bun/src/index.ts packages/banhmi/src/index.ts
+git commit -m "feat(@banhmi/platform-bun): add BunAdapter and BanhmiFactory"
 ```
 
 ---
@@ -3056,10 +3056,10 @@ git commit -m "feat(@banhmi/platform-bun): add BunAdapter and BunnestFactory"
 Create `packages/platform-bun/test/integration.test.ts`:
 ```ts
 import { expect, test, describe, beforeAll, afterAll } from 'bun:test'
-import { BunnestFactory } from '../src/factory'
+import { BanhmiFactory } from '../src/factory'
 import { Controller, Get, Post, HttpCode, Module, Injectable, NotFoundException, Token } from '@banhmi/common'
 import type { RouteCtx, Guard, ExecutionContext, Interceptor, CallHandler } from '@banhmi/common'
-import type { BunnestApplication } from '@banhmi/core'
+import type { BanhmiApplication } from '@banhmi/core'
 
 // ─── Domain ──────────────────────────────────────────────────────────────────
 
@@ -3133,12 +3133,12 @@ class AppModule {}
 
 // ─── Tests ───────────────────────────────────────────────────────────────────
 
-let app: BunnestApplication
+let app: BanhmiApplication
 const PORT = 54321
 const BASE = `http://localhost:${PORT}`
 
 beforeAll(async () => {
-  app = await BunnestFactory.create(AppModule)
+  app = await BanhmiFactory.create(AppModule)
   await app.listen(PORT)
 })
 
@@ -3205,7 +3205,7 @@ If any test fails, investigate the failure and fix the relevant source file befo
 - [ ] **Step 3: Run the full test suite**
 
 ```bash
-cd /path/to/bunnest && bun test --recursive
+cd /path/to/banhmi && bun test --recursive
 ```
 
 Expected: all tests across all packages passing with 0 failures
@@ -3345,14 +3345,14 @@ export class AppModule {}
 
 Create `examples/cats-api/src/main.ts`:
 ```ts
-import { BunnestFactory } from 'banhmi'
+import { BanhmiFactory } from 'banhmi'
 import { AppModule } from './app.module'
 
-const app = await BunnestFactory.create(AppModule)
+const app = await BanhmiFactory.create(AppModule)
 app.enableShutdownHooks()
 await app.listen(3000)
 
-console.log('🐰 Bunnest running on http://localhost:3000')
+console.log('🐰 Banhmi running on http://localhost:3000')
 ```
 
 - [ ] **Step 3: Install example dependencies and verify it starts**
@@ -3403,7 +3403,7 @@ git commit -m "feat(examples): add cats-api example demonstrating full framework
 | Built-in pipes | Task 8 |
 | ValidationPipe (Standard Schema) | Task 8 |
 | Lifecycle hooks (OnModuleInit etc.) | Task 6, 10 |
-| BunnestApplication.listen/close | Task 10 |
+| BanhmiApplication.listen/close | Task 10 |
 | Shutdown hooks | Task 10 |
 | Radix router | Task 11 |
 | BunRouteCtx | Task 12 |
@@ -3411,8 +3411,8 @@ git commit -m "feat(examples): add cats-api example demonstrating full framework
 | Global exception filter | Task 13 |
 | Route explorer | Task 14 |
 | BunAdapter + Bun.serve | Task 15 |
-| BunnestFactory.create() | Task 15 |
-| bunnest facade package | Task 15 |
+| BanhmiFactory.create() | Task 15 |
+| banhmi facade package | Task 15 |
 | Integration test | Task 16 |
 | Example app | Task 17 |
 

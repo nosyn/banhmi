@@ -19,7 +19,7 @@ This file governs how AI agents work in this codebase. All agents MUST follow th
 packages/
   common/          # @banhmi/common — decorators, interfaces, exceptions, pipes
   core/            # @banhmi/core — DI container, module graph, lifecycle, application
-  platform-bun/    # @banhmi/platform-bun — BunAdapter, RadixRouter, BunnestFactory
+  platform-bun/    # @banhmi/platform-bun — BunAdapter, RadixRouter, BanhmiFactory
   banhmi/          # banhmi — re-exports all three packages
 examples/
   cats-api/        # Demo app consuming the banhmi package

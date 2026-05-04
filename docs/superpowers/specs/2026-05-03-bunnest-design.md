@@ -1,9 +1,9 @@
-# Bunnest Framework Design Spec
+# Banhmi Framework Design Spec
 _2026-05-03_
 
 ## Overview
 
-Bunnest is a Bun-first, TypeScript web framework inspired by NestJS's architectural elegance — modules, dependency injection, decorators, enhancers — but built from scratch around Bun's native APIs and TC39 Stage 3 decorators. It is not a NestJS port and makes no promise of drop-in migration compatibility. Every API decision optimizes for the long run on Bun.
+Banhmi is a Bun-first, TypeScript web framework inspired by NestJS's architectural elegance — modules, dependency injection, decorators, enhancers — but built from scratch around Bun's native APIs and TC39 Stage 3 decorators. It is not a NestJS port and makes no promise of drop-in migration compatibility. Every API decision optimizes for the long run on Bun.
 
 **Non-goals:**
 - Node.js compatibility
@@ -14,15 +14,15 @@ Bunnest is a Bun-first, TypeScript web framework inspired by NestJS's architectu
 
 ## Package Structure
 
-Single monorepo with Bun workspaces. Packages published under `@bunnest/*`.
+Single monorepo with Bun workspaces. Packages published under `@banhmi/*`.
 
 ```
-bunnest/
+banhmi/
   packages/
     common/         # Decorators, interfaces, exceptions, pipes (no HTTP deps)
     core/           # DI container, module system, application lifecycle
-    platform-bun/   # Bun.serve adapter, radix-tree router, BunnestFactory
-    bunnest/        # Facade — re-exports common + core + platform-bun
+    platform-bun/   # Bun.serve adapter, radix-tree router, BanhmiFactory
+    banhmi/        # Facade — re-exports common + core + platform-bun
     microservices/  # Transport layer — v2
     websockets/     # WebSocket gateway — v2
     testing/        # createTestingModule(), test utilities — v1.x
@@ -31,7 +31,7 @@ bunnest/
   examples/
 ```
 
-Package dependency order: `common` ← `core` ← `platform-bun` ← `bunnest`
+Package dependency order: `common` ← `core` ← `platform-bun` ← `banhmi`
 
 **Runtime:** Bun only.  
 **Language:** TypeScript 5, TC39 Stage 3 decorators, `"moduleResolution": "bundler"`, `"strict": true`, `"noUncheckedIndexedAccess": true`.  
@@ -42,14 +42,14 @@ Package dependency order: `common` ← `core` ← `platform-bun` ← `bunnest`
 
 Application entry point:
 ```ts
-import { BunnestFactory } from 'banhmi'
+import { BanhmiFactory } from 'banhmi'
 import { AppModule } from './app.module'
 
-const app = await BunnestFactory.create(AppModule)
+const app = await BanhmiFactory.create(AppModule)
 await app.listen(3000)
 ```
 
-> **Note:** `BunnestFactory` lives in `@banhmi/platform-bun` and is re-exported by the `bunnest` facade package. A 4th package `bunnest` (no scope) is added as a convenience facade.
+> **Note:** `BanhmiFactory` lives in `@banhmi/platform-bun` and is re-exported by the `banhmi` facade package. A 4th package `banhmi` (no scope) is added as a convenience facade.
 
 ---
 
@@ -332,7 +332,7 @@ Lifecycle hook interfaces that providers/modules can implement:
 
 ---
 
-## Configuration (v1.x — `@bunnest/config`)
+## Configuration (v1.x — `@banhmi/config`)
 
 `ConfigModule.forRoot({ schema })` validates `Bun.env` against a Standard Schema at application bootstrap. Throws a descriptive error if validation fails — fail fast, no silent misconfiguration.
 
@@ -354,7 +354,7 @@ For v1.0, users use `Bun.env` directly — typed via `/// <reference types="bun-
 
 ---
 
-## Testing (`@bunnest/testing` — v1.x)
+## Testing (`@banhmi/testing` — v1.x)
 
 Uses `bun test` as the runner. No Jest.
 
@@ -374,14 +374,14 @@ const service = module.get(CatsService)
 
 ## Roadmap
 
-### v2 — WebSockets (`@bunnest/websockets`)
+### v2 — WebSockets (`@banhmi/websockets`)
 
 - `@WebSocketGateway(path?)` — registers a WS endpoint on `Bun.serve`'s native WebSocket upgrade
 - `@SubscribeMessage(event)` — handler for a named message event
 - Same guard/interceptor pipeline applies to WS messages
 - `@ConnectedSocket()` / `@MessageBody()` parameter decorators
 
-### v2 — Microservices (`@bunnest/microservices`)
+### v2 — Microservices (`@banhmi/microservices`)
 
 - `ClientProxy` / `Server` transport pattern from NestJS
 - Built-in transports using Bun native clients:
@@ -391,10 +391,10 @@ const service = module.get(CatsService)
 - `@MessagePattern()` / `@EventPattern()` for routing
 - Hybrid apps (HTTP + microservice on same process) supported
 
-### v1.x — CLI (`@bunnest/cli`)
+### v1.x — CLI (`@banhmi/cli`)
 
-- `bunx bunnest new <project>` — scaffold a new project
-- `bunx bunnest generate <schematic> <name>` — controller, module, service, guard, pipe, interceptor, filter
+- `bunx banhmi new <project>` — scaffold a new project
+- `bunx banhmi generate <schematic> <name>` — controller, module, service, guard, pipe, interceptor, filter
 - Ships after core stabilizes
 
 ---

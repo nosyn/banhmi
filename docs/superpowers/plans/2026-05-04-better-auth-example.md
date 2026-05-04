@@ -52,7 +52,7 @@ Add to `packages/platform-bun/test/integration.test.ts` — a new describe block
 ```ts
 describe('middleware intercepts unmatched routes', () => {
   test('middleware can handle routes not in the router', async () => {
-    const middlewareApp = await BunnestFactory.create(AppModule)
+    const middlewareApp = await BanhmiFactory.create(AppModule)
     middlewareApp.use(async (req: Request, next: () => Promise<Response>) => {
       const url = new URL(req.url)
       if (url.pathname === '/intercept') {
@@ -474,11 +474,11 @@ export class AppModule {}
 - [ ] **Step 9: Create `examples/better-auth-api/src/main.ts`**
 
 ```ts
-import { BunnestFactory } from 'banhmi'
+import { BanhmiFactory } from 'banhmi'
 import { auth } from './auth'
 import { AppModule } from './app.module'
 
-const app = await BunnestFactory.create(AppModule)
+const app = await BanhmiFactory.create(AppModule)
 
 // Mount better-auth handler for all /api/auth/** requests
 app.use(async (req: Request, next: () => Promise<Response>) => {
