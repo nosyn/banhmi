@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, test } from 'bun:test'
 import { Injectable, Module, Token } from '@banhmi/common'
-import { BanhmiTestingModule, TestingModuleRef } from '../src/testing-module'
+import { BanhmiTestingModule } from '../src/testing-module'
+import type { TestingModuleRef } from '../src/testing-module'
 
 const GREETER = Token<{ greet: () => string }>('Greeter')
 

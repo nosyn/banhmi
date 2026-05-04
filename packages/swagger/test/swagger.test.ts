@@ -37,7 +37,7 @@ describe('DocumentBuilder', () => {
       .addBearerAuth()
       .build()
 
-    expect(doc.components?.securitySchemes?.['bearerAuth']).toEqual({
+    expect(doc.components?.securitySchemes?.bearerAuth).toEqual({
       type: 'http',
       scheme: 'bearer',
       bearerFormat: 'JWT',
@@ -68,10 +68,8 @@ describe('SwaggerExplorer', () => {
     new SwaggerExplorer().explore([CatsController], doc)
 
     expect(doc.paths['/cats']).toBeDefined()
-    expect((doc.paths['/cats'] as Record<string, unknown>)['get']).toBeDefined()
-    expect(
-      (doc.paths['/cats'] as Record<string, unknown>)['post'],
-    ).toBeDefined()
+    expect((doc.paths['/cats'] as Record<string, unknown>).get).toBeDefined()
+    expect((doc.paths['/cats'] as Record<string, unknown>).post).toBeDefined()
     expect(doc.paths['/cats/{id}']).toBeDefined()
   })
 })

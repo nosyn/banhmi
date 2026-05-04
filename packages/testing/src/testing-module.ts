@@ -21,6 +21,7 @@ export class TestingModuleRef {
   }
 }
 
+// biome-ignore lint/complexity/noStaticOnlyClass: intentional NestJS-style dynamic module
 export class BanhmiTestingModule {
   static async createTestingModule(
     options: TestingModuleOptions,

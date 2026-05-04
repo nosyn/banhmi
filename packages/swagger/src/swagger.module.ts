@@ -3,6 +3,7 @@ import type { BanhmiApplication, ModuleNode } from '@banhmi/core'
 import { SwaggerExplorer } from './explorer'
 import type { OpenApiDocument } from './types'
 
+// biome-ignore lint/complexity/noStaticOnlyClass: intentional NestJS-style dynamic module
 export class SwaggerModule {
   static setup(
     path: string,
