@@ -10,6 +10,9 @@ import {
   GUARDS_METADATA,
   HTTP_CODE_METADATA,
   INTERCEPTORS_METADATA,
+  METHOD_FILTERS_METADATA,
+  METHOD_GUARDS_METADATA,
+  METHOD_INTERCEPTORS_METADATA,
   RESPONSE_HEADERS_METADATA,
   ROUTE_METADATA,
 } from '@banhmi/common'
@@ -44,6 +47,18 @@ export class RouteExplorer {
       (classMeta[INTERCEPTORS_METADATA] as ClassConstructor[] | undefined) ?? []
     const classFilters =
       (classMeta[FILTERS_METADATA] as ClassConstructor[] | undefined) ?? []
+    const methodGuardsMap =
+      (classMeta[METHOD_GUARDS_METADATA] as
+        | Record<string, ClassConstructor[]>
+        | undefined) ?? {}
+    const methodInterceptorsMap =
+      (classMeta[METHOD_INTERCEPTORS_METADATA] as
+        | Record<string, ClassConstructor[]>
+        | undefined) ?? {}
+    const methodFiltersMap =
+      (classMeta[METHOD_FILTERS_METADATA] as
+        | Record<string, ClassConstructor[]>
+        | undefined) ?? {}
     const httpCodes =
       (classMeta[HTTP_CODE_METADATA] as Record<string, number> | undefined) ??
       {}
@@ -70,9 +85,9 @@ export class RouteExplorer {
         method: routeMeta.method,
         path: normalizedPath,
         handler: boundHandler,
-        guards: [...classGuards],
-        interceptors: [...classInterceptors],
-        filters: [...classFilters],
+        guards: [...classGuards, ...(methodGuardsMap[methodName] ?? [])],
+        interceptors: [...classInterceptors, ...(methodInterceptorsMap[methodName] ?? [])],
+        filters: [...classFilters, ...(methodFiltersMap[methodName] ?? [])],
         httpCode: httpCodes[methodName],
         responseHeaders: responseHeadersMap[methodName] ?? [],
         handlerClass: controllerClass,

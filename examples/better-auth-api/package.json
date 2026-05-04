@@ -1,0 +1,13 @@
+{
+  "name": "better-auth-api-example",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --watch src/main.ts",
+    "migrate": "bunx --bun auth@latest migrate"
+  },
+  "dependencies": {
+    "banhmi": "workspace:*",
+    "better-auth": "^1.6.9"
+  }
+}
