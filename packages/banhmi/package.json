@@ -11,6 +11,7 @@
     "@banhmi/common": "workspace:*",
     "@banhmi/core": "workspace:*",
     "@banhmi/platform-bun": "workspace:*",
+    "@banhmi/s3": "workspace:*",
     "@banhmi/sqlite": "workspace:*"
   }
 }

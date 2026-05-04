@@ -43,6 +43,7 @@
         "@banhmi/common": "workspace:*",
         "@banhmi/core": "workspace:*",
         "@banhmi/platform-bun": "workspace:*",
+        "@banhmi/s3": "workspace:*",
         "@banhmi/sqlite": "workspace:*",
       },
     },
@@ -65,6 +66,17 @@
         "@banhmi/core": "workspace:*",
       },
     },
+    "packages/s3": {
+      "name": "@banhmi/s3",
+      "version": "0.4.0",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/core": "workspace:*",
+      },
+      "devDependencies": {
+        "@banhmi/platform-bun": "workspace:*",
+      },
+    },
     "packages/sqlite": {
       "name": "@banhmi/sqlite",
       "version": "0.3.0",
@@ -85,6 +97,8 @@
     "@banhmi/core": ["@banhmi/core@workspace:packages/core"],
 
     "@banhmi/platform-bun": ["@banhmi/platform-bun@workspace:packages/platform-bun"],
+
+    "@banhmi/s3": ["@banhmi/s3@workspace:packages/s3"],
 
     "@banhmi/sqlite": ["@banhmi/sqlite@workspace:packages/sqlite"],
 

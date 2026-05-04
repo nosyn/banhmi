@@ -1,0 +1,5 @@
+export { S3Module } from './s3.module'
+export type { S3ModuleConfig } from './s3.module'
+export { S3_TOKEN } from './tokens'
+export { S3Service } from './s3.service'
+export { InjectS3 } from './inject-s3'
