@@ -1,0 +1,33 @@
+{
+  "name": "@banhmi/microservices",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "bun build ./src/index.ts --outdir ./dist --target=bun",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@banhmi/common": "workspace:*",
+    "@banhmi/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "ioredis": ">=5",
+    "nats": ">=2",
+    "mqtt": ">=5",
+    "amqplib": ">=0.10",
+    "kafkajs": ">=2",
+    "@grpc/grpc-js": ">=1"
+  },
+  "peerDependenciesMeta": {
+    "ioredis": { "optional": true },
+    "nats": { "optional": true },
+    "mqtt": { "optional": true },
+    "amqplib": { "optional": true },
+    "kafkajs": { "optional": true },
+    "@grpc/grpc-js": { "optional": true }
+  }
+}
