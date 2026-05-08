@@ -1,0 +1,282 @@
+{
+  "sections": [
+    {
+      "slug": "introduction",
+      "title": "Introduction",
+      "items": [
+        { "slug": "first-steps", "title": "First Steps" }
+      ]
+    },
+    {
+      "slug": "overview",
+      "title": "Overview",
+      "items": [
+        { "slug": "controllers", "title": "Controllers" },
+        { "slug": "providers", "title": "Providers" },
+        { "slug": "modules", "title": "Modules" },
+        { "slug": "middleware", "title": "Middleware" },
+        { "slug": "exception-filters", "title": "Exception Filters" },
+        { "slug": "pipes", "title": "Pipes" },
+        { "slug": "guards", "title": "Guards" },
+        { "slug": "interceptors", "title": "Interceptors" },
+        { "slug": "custom-decorators", "title": "Custom Decorators" }
+      ]
+    },
+    {
+      "slug": "fundamentals",
+      "title": "Fundamentals",
+      "items": [
+        { "slug": "custom-providers", "title": "Custom Providers" },
+        { "slug": "asynchronous-providers", "title": "Asynchronous Providers" },
+        { "slug": "dynamic-modules", "title": "Dynamic Modules" },
+        { "slug": "injection-scopes", "title": "Injection Scopes" },
+        { "slug": "circular-dependency", "title": "Circular Dependency" },
+        { "slug": "module-reference", "title": "Module Reference" },
+        { "slug": "lazy-loading-modules", "title": "Lazy-loading Modules" },
+        { "slug": "execution-context", "title": "Execution Context" },
+        { "slug": "lifecycle-events", "title": "Lifecycle Events" },
+        { "slug": "discovery-service", "title": "Discovery Service" },
+        { "slug": "platform-agnosticism", "title": "Platform Agnosticism" },
+        { "slug": "testing", "title": "Testing" }
+      ]
+    },
+    {
+      "slug": "bun-native",
+      "title": "Bun-native APIs",
+      "items": [
+        { "slug": "bun-serve", "title": "Bun.serve" },
+        { "slug": "bun-sqlite", "title": "bun:sqlite" },
+        { "slug": "bun-sql", "title": "Bun.sql" },
+        { "slug": "bun-s3", "title": "Bun.S3Client" },
+        { "slug": "bun-password", "title": "Bun.password" },
+        { "slug": "bun-compression", "title": "Bun.gzip / deflate / zstd" },
+        { "slug": "native-formdata", "title": "Native FormData" },
+        { "slug": "native-websocket", "title": "Native WebSocket" }
+      ]
+    },
+    {
+      "slug": "built-ins",
+      "title": "Built-ins",
+      "items": [
+        { "slug": "pipes", "title": "Built-in Pipes" },
+        { "slug": "validators", "title": "Built-in Validators" },
+        { "slug": "transformers", "title": "Built-in Transformers" },
+        { "slug": "exceptions", "title": "Built-in Exceptions" },
+        { "slug": "interceptors", "title": "Built-in Interceptors" }
+      ]
+    },
+    {
+      "slug": "techniques",
+      "title": "Techniques",
+      "items": [
+        { "slug": "configuration", "title": "Configuration" },
+        { "slug": "database", "title": "Database" },
+        { "slug": "mongo", "title": "Mongo" },
+        { "slug": "validation", "title": "Validation" },
+        { "slug": "caching", "title": "Caching" },
+        { "slug": "serialization", "title": "Serialization" },
+        { "slug": "versioning", "title": "Versioning" },
+        { "slug": "task-scheduling", "title": "Task Scheduling" },
+        { "slug": "queues", "title": "Queues" },
+        { "slug": "logging", "title": "Logging" },
+        { "slug": "cookies", "title": "Cookies" },
+        { "slug": "events", "title": "Events" },
+        { "slug": "compression", "title": "Compression" },
+        { "slug": "file-upload", "title": "File Upload" },
+        { "slug": "streaming-files", "title": "Streaming Files" },
+        { "slug": "http-module", "title": "HTTP Module" },
+        { "slug": "session", "title": "Session" },
+        { "slug": "mvc", "title": "Model-View-Controller" },
+        { "slug": "performance", "title": "Performance" },
+        { "slug": "sse", "title": "Server-Sent Events" }
+      ]
+    },
+    {
+      "slug": "security",
+      "title": "Security",
+      "items": [
+        { "slug": "authentication", "title": "Authentication" },
+        { "slug": "authorization", "title": "Authorization" },
+        { "slug": "encryption-and-hashing", "title": "Encryption and Hashing" },
+        { "slug": "helmet", "title": "Helmet" },
+        { "slug": "cors", "title": "CORS" },
+        { "slug": "csrf", "title": "CSRF Protection" },
+        { "slug": "rate-limiting", "title": "Rate limiting" }
+      ]
+    },
+    {
+      "slug": "graphql",
+      "title": "GraphQL",
+      "items": [
+        { "slug": "quick-start", "title": "Quick Start" },
+        { "slug": "resolvers", "title": "Resolvers" },
+        { "slug": "mutations", "title": "Mutations" },
+        { "slug": "subscriptions", "title": "Subscriptions" },
+        { "slug": "scalars", "title": "Scalars" },
+        { "slug": "directives", "title": "Directives" },
+        { "slug": "interfaces", "title": "Interfaces" },
+        { "slug": "unions-and-enums", "title": "Unions and Enums" },
+        { "slug": "field-middleware", "title": "Field Middleware" },
+        { "slug": "mapped-types", "title": "Mapped Types" },
+        { "slug": "plugins", "title": "Plugins" },
+        { "slug": "complexity", "title": "Complexity" },
+        { "slug": "extensions", "title": "Extensions" },
+        { "slug": "cli-plugin", "title": "CLI Plugin" },
+        { "slug": "generating-sdl", "title": "Generating SDL" },
+        { "slug": "sharing-models", "title": "Sharing Models" },
+        { "slug": "other-features", "title": "Other Features" },
+        { "slug": "federation", "title": "Federation" }
+      ]
+    },
+    {
+      "slug": "websockets",
+      "title": "WebSockets",
+      "items": [
+        { "slug": "gateways", "title": "Gateways" },
+        { "slug": "exception-filters", "title": "Exception Filters" },
+        { "slug": "pipes", "title": "Pipes" },
+        { "slug": "guards", "title": "Guards" },
+        { "slug": "interceptors", "title": "Interceptors" },
+        { "slug": "adapters", "title": "Adapters" }
+      ]
+    },
+    {
+      "slug": "microservices",
+      "title": "Microservices",
+      "items": [
+        { "slug": "overview", "title": "Overview" },
+        { "slug": "redis", "title": "Redis" },
+        { "slug": "mqtt", "title": "MQTT" },
+        { "slug": "nats", "title": "NATS" },
+        { "slug": "rabbitmq", "title": "RabbitMQ" },
+        { "slug": "kafka", "title": "Kafka" },
+        { "slug": "grpc", "title": "gRPC" },
+        { "slug": "custom-transporters", "title": "Custom Transporters" },
+        { "slug": "exception-filters", "title": "Exception Filters" },
+        { "slug": "pipes", "title": "Pipes" },
+        { "slug": "guards", "title": "Guards" },
+        { "slug": "interceptors", "title": "Interceptors" }
+      ]
+    },
+    {
+      "slug": "deployment",
+      "title": "Deployment",
+      "items": [
+        { "slug": "standalone-apps", "title": "Standalone Apps" },
+        { "slug": "https-and-multiple-servers", "title": "HTTPS & Multiple Servers" },
+        { "slug": "hybrid", "title": "Hybrid Application" },
+        { "slug": "edge", "title": "Edge / Serverless" },
+        { "slug": "hot-reload", "title": "Hot Reload" },
+        { "slug": "raw-body", "title": "Raw Body" },
+        { "slug": "keep-alive", "title": "Keep-Alive Connections" },
+        { "slug": "request-lifecycle", "title": "Request Lifecycle" },
+        { "slug": "common-errors", "title": "Common Errors" }
+      ]
+    },
+    {
+      "slug": "cli",
+      "title": "CLI",
+      "items": [
+        { "slug": "overview", "title": "Overview" },
+        { "slug": "workspaces", "title": "Workspaces" },
+        { "slug": "libraries", "title": "Libraries" },
+        { "slug": "usage", "title": "Usage" },
+        { "slug": "scripts", "title": "Scripts" }
+      ]
+    },
+    {
+      "slug": "openapi",
+      "title": "OpenAPI",
+      "items": [
+        { "slug": "introduction", "title": "Introduction" },
+        { "slug": "scalar", "title": "Scalar" },
+        { "slug": "types-and-parameters", "title": "Types and Parameters" },
+        { "slug": "operations", "title": "Operations" },
+        { "slug": "security", "title": "Security" },
+        { "slug": "mapped-types", "title": "Mapped Types" },
+        { "slug": "decorators", "title": "Decorators" },
+        { "slug": "cli-plugin", "title": "CLI Plugin" },
+        { "slug": "other-features", "title": "Other Features" }
+      ]
+    },
+    {
+      "slug": "recipes",
+      "title": "Recipes",
+      "items": [
+        { "slug": "repl", "title": "REPL" },
+        { "slug": "crud-generator", "title": "CRUD Generator" },
+        { "slug": "swc", "title": "SWC" },
+        { "slug": "passport", "title": "Passport (auth)" },
+        { "slug": "hot-reload", "title": "Hot reload" },
+        { "slug": "mikroorm", "title": "MikroORM" },
+        { "slug": "typeorm", "title": "TypeORM" },
+        { "slug": "mongoose", "title": "Mongoose" },
+        { "slug": "sequelize", "title": "Sequelize" },
+        { "slug": "router-module", "title": "Router Module" },
+        { "slug": "swagger", "title": "Swagger" },
+        { "slug": "health-checks", "title": "Health checks" },
+        { "slug": "cqrs", "title": "CQRS" },
+        { "slug": "compodoc", "title": "Compodoc" },
+        { "slug": "prisma", "title": "Prisma" },
+        { "slug": "sentry", "title": "Sentry" },
+        { "slug": "serve-static", "title": "Serve static" },
+        { "slug": "commander", "title": "Commander" },
+        { "slug": "async-local-storage", "title": "Async local storage" },
+        { "slug": "necord", "title": "Necord" },
+        { "slug": "suites", "title": "Suites (Automock)" }
+      ]
+    },
+    {
+      "slug": "migration",
+      "title": "Migration from NestJS",
+      "items": [
+        { "slug": "concepts", "title": "Concept Mapping" },
+        { "slug": "codemods", "title": "Codemods" },
+        { "slug": "compat", "title": "Compatibility caveats" }
+      ]
+    },
+    {
+      "slug": "performance",
+      "title": "Performance & Benchmarks",
+      "items": [
+        { "slug": "methodology", "title": "Methodology" },
+        { "slug": "results", "title": "Live Results" },
+        { "slug": "tuning", "title": "Tuning Checklist" }
+      ]
+    },
+    {
+      "slug": "production",
+      "title": "Production Checklist",
+      "items": []
+    },
+    {
+      "slug": "examples",
+      "title": "Examples Catalog",
+      "items": []
+    },
+    {
+      "slug": "devtools",
+      "title": "Devtools",
+      "items": [
+        { "slug": "overview", "title": "Overview" },
+        { "slug": "ci-cd-integration", "title": "CI/CD Integration" }
+      ]
+    },
+    {
+      "slug": "faq",
+      "title": "FAQ",
+      "items": [
+        { "slug": "serverless", "title": "Serverless" },
+        { "slug": "http-adapter", "title": "HTTP adapter" },
+        { "slug": "keep-alive", "title": "Keep-Alive connections" },
+        { "slug": "global-path-prefix", "title": "Global path prefix" },
+        { "slug": "raw-body", "title": "Raw body" },
+        { "slug": "hybrid-application", "title": "Hybrid application" },
+        { "slug": "https-and-multiple-servers", "title": "HTTPS & multiple servers" },
+        { "slug": "request-lifecycle", "title": "Request lifecycle" },
+        { "slug": "common-errors", "title": "Common errors" },
+        { "slug": "examples", "title": "Examples" }
+      ]
+    }
+  ]
+}
