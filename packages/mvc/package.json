@@ -1,0 +1,27 @@
+{
+  "name": "@banhmi/mvc",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "peerDependencies": {
+    "eta": ">=3.0.0",
+    "edge.js": ">=6.0.0"
+  },
+  "peerDependenciesMeta": {
+    "eta": {
+      "optional": true
+    },
+    "edge.js": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@banhmi/common": "workspace:*",
+    "@banhmi/core": "workspace:*",
+    "@banhmi/platform-bun": "workspace:*",
+    "banhmi": "workspace:*"
+  }
+}

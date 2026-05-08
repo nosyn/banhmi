@@ -1,23 +1,114 @@
 # Model-View-Controller
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
-
-## When to use
-
-TBD
+`@banhmi/mvc` provides server-side template rendering through a pluggable view engine interface. The `@Render` decorator wraps a handler so its return value becomes template locals, and the rendered HTML is sent with `Content-Type: text/html`.
 
 ## Setup
 
-TBD
+Install the package and a template engine peer dep:
+
+```bash
+bun add @banhmi/mvc eta
+```
+
+Register `MvcModule.forRoot()` in your root module:
+
+```ts
+import { Module } from 'banhmi'
+import { MvcModule, etaEngine } from '@banhmi/mvc'
+
+@Module({
+  imports: [
+    MvcModule.forRoot({
+      engine: etaEngine({ viewsDir: './views' }),
+    }),
+  ],
+})
+export class AppModule {}
+```
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+Decorate a controller method with `@Render('templateName')`. The handler's return value is passed as template locals:
+
+```ts
+import { Controller, Get } from 'banhmi'
+import { Render } from '@banhmi/mvc'
+
+@Controller()
+export class HomeController {
+  @Get('/')
+  @Render('home')
+  index() {
+    return { title: 'Welcome to Banhmi', user: 'world' }
+  }
+}
+```
+
+Create `views/home.eta`:
+
+```html
+<html>
+  <body>
+    <h1><%= it.title %></h1>
+    <p>Hello, <%= it.user %>!</p>
+  </body>
+</html>
+```
+
+## Supported engines
+
+### Eta (recommended)
+
+```ts
+import { etaEngine } from '@banhmi/mvc'
+
+etaEngine({ viewsDir: './views', layoutsDir: './views/layouts' })
+```
+
+Peer dep: `eta >= 3.0.0`.
+
+### Edge.js
+
+```ts
+import { edgeEngine } from '@banhmi/mvc'
+
+edgeEngine({ viewsDir: './views' })
+```
+
+Peer dep: `edge.js >= 6.0.0`.
+
+### Custom engine
+
+Implement the `ViewEngine` interface:
+
+```ts
+import type { ViewEngine } from '@banhmi/mvc'
+
+const myEngine: ViewEngine = {
+  async render(template, locals) {
+    // return rendered HTML string
+    return `<p>${locals.message}</p>`
+  },
+}
+```
 
 ## API reference
 
-TBD
+### `MvcModule.forRoot(opts: MvcOptions)`
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `engine` | `ViewEngine` | The view engine instance (required) |
+| `viewsDir` | `string` | Optional top-level views directory |
+| `layoutsDir` | `string` | Optional layouts directory |
+
+### `@Render(template: string)`
+
+Method decorator. The handler's return value is used as template locals. The response is a `text/html` `Response`.
+
+Throws `Error` if no engine is registered (missing `MvcModule.forRoot()`), or if the template is not found.
 
 ## See also
 
-TBD
+- [Eta docs](https://eta.js.org/)
+- [Edge.js docs](https://edgejs.dev/)

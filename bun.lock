@@ -433,6 +433,7 @@
         "@banhmi/middleware": "workspace:*",
         "@banhmi/mongo": "workspace:*",
         "@banhmi/multipart": "workspace:*",
+        "@banhmi/mvc": "workspace:*",
         "@banhmi/mysql": "workspace:*",
         "@banhmi/openapi": "workspace:*",
         "@banhmi/otel": "workspace:*",
@@ -613,6 +614,24 @@
         "@banhmi/platform-bun": "workspace:*",
         "banhmi": "workspace:*",
       },
+    },
+    "packages/mvc": {
+      "name": "@banhmi/mvc",
+      "version": "0.1.0",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/core": "workspace:*",
+        "@banhmi/platform-bun": "workspace:*",
+        "banhmi": "workspace:*",
+      },
+      "peerDependencies": {
+        "edge.js": ">=6.0.0",
+        "eta": ">=3.0.0",
+      },
+      "optionalPeers": [
+        "edge.js",
+        "eta",
+      ],
     },
     "packages/mysql": {
       "name": "@banhmi/mysql",
@@ -903,6 +922,8 @@
     "@banhmi/mongo": ["@banhmi/mongo@workspace:packages/mongo"],
 
     "@banhmi/multipart": ["@banhmi/multipart@workspace:packages/multipart"],
+
+    "@banhmi/mvc": ["@banhmi/mvc@workspace:packages/mvc"],
 
     "@banhmi/mysql": ["@banhmi/mysql@workspace:packages/mysql"],
 
