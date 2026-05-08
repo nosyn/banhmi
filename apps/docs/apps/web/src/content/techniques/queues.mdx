@@ -1,23 +1,156 @@
 # Queues
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+`@banhmi/queue` provides a BullMQ-style Redis-backed job queue. Produce
+jobs with `Queue.add()`; consume them by decorating a class with
+`@Processor(name)` and methods with `@Process(jobName)`. The queue
+explorer starts workers automatically at application bootstrap and stops
+them on shutdown.
 
 ## When to use
 
-TBD
+- Offloading slow work (email, image processing, report generation) outside
+  the HTTP request cycle.
+- Delayed or scheduled side-effects (send a reminder email in 5 minutes).
+- Retry-able work that may fail transiently (third-party APIs, network calls).
+- Decoupling producer services from consumer services.
 
 ## Setup
 
-TBD
+Install the package and add Redis:
 
-## Usage
+```ts
+import { Module } from 'banhmi'
+import { RedisModule } from '@banhmi/redis'
+import { QueueModule } from '@banhmi/queue'
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+@Module({
+  imports: [
+    RedisModule.forRoot(Bun.env.REDIS_URL ?? 'redis://localhost:6379'),
+    QueueModule.registerQueue({ name: 'emails' }),
+  ],
+})
+class AppModule {}
+```
+
+## Defining a processor
+
+Decorate a provider class with `@Processor(queueName)` and individual
+handler methods with `@Process(jobName)`. Register the class as a provider
+in the same module.
+
+```ts
+import { Injectable } from 'banhmi'
+import { Processor, Process } from '@banhmi/queue'
+import type { ProcessorContext } from '@banhmi/queue'
+
+@Injectable()
+@Processor('emails')
+class EmailProcessor {
+  @Process('send')
+  async send(ctx: ProcessorContext<{ to: string }>) {
+    ctx.log(`Sending to ${ctx.job.data.to}`)
+    await sendEmail(ctx.job.data.to)
+  }
+
+  /** Catch-all: handles any job name not matched above. */
+  @Process()
+  async fallback(ctx: ProcessorContext) {
+    ctx.log(`Unhandled job: ${ctx.job.name}`)
+  }
+}
+```
+
+## Producing jobs
+
+Inject the named queue with `@InjectQueue(name)` in your `static inject`
+array:
+
+```ts
+import { Injectable } from 'banhmi'
+import { InjectQueue } from '@banhmi/queue'
+import type { Queue } from '@banhmi/queue'
+
+@Injectable()
+class NotificationService {
+  static inject = [InjectQueue('emails')] as const
+  constructor(private readonly emailQueue: Queue<{ to: string }>) {}
+
+  async notifyUser(to: string) {
+    await this.emailQueue.add('send', { to })
+  }
+}
+```
+
+## Job options
+
+```ts
+await queue.add('send', { to: 'user@example.com' }, {
+  delay: 60_000,           // wait 60s before processing
+  attempts: 3,             // retry up to 3 times on failure
+  backoff: {
+    type: 'exponential',   // or 'fixed'
+    delay: 1000,           // initial delay (doubled each retry for exponential)
+  },
+  jobId: 'idempotency-key', // optional explicit ID
+})
+```
+
+## Retry and back-off
+
+When a handler throws, the worker increments `attemptsMade`. If
+`attemptsMade < opts.attempts` the job is re-queued after the back-off
+delay:
+
+| Strategy     | Delay formula                            |
+|--------------|------------------------------------------|
+| `fixed`      | `backoff.delay` ms every time            |
+| `exponential`| `backoff.delay × 2^(attemptsMade - 1)` ms|
+
+Once `attemptsMade === opts.attempts` the job is marked `failed` in Redis.
+
+## Redis storage layout
+
+| Key                      | Type        | Contents                           |
+|--------------------------|-------------|------------------------------------|
+| `<queue>:waiting`        | List        | Job IDs ready to be processed      |
+| `<queue>:delayed`        | Sorted Set  | Job IDs with score = run-at ms     |
+| `<queue>:job:<id>`       | Hash        | Job data + metadata                |
 
 ## API reference
 
-TBD
+### `Queue<TData>`
+
+| Method                                         | Description                     |
+|------------------------------------------------|---------------------------------|
+| `add(jobName, data, opts?): Promise<Job>`      | Enqueue a job                   |
+
+### `Worker`
+
+| Method          | Description                          |
+|-----------------|--------------------------------------|
+| `start()`       | Begin the polling loop               |
+| `stop()`        | Gracefully stop and await last job   |
+
+### `Job<TData>`
+
+| Field          | Type     | Description                            |
+|----------------|----------|----------------------------------------|
+| `id`           | `string` | Unique identifier                      |
+| `name`         | `string` | Job name (matches `@Process` handler)  |
+| `data`         | `TData`  | Application payload                    |
+| `attemptsMade` | `number` | Times processing has been attempted    |
+| `createdAt`    | `number` | Unix timestamp (ms)                    |
+| `processedAt`  | `number` | Unix timestamp (ms) when work started  |
+
+### `ProcessorContext<TData>`
+
+| Member     | Type                    | Description                          |
+|------------|-------------------------|--------------------------------------|
+| `job`      | `Job<TData>`            | The job being processed              |
+| `log(msg)` | `(msg: string) => void` | Write a log line tied to this job    |
 
 ## See also
 
-TBD
+- [`@banhmi/redis`](/techniques/database) — the underlying Redis client.
+- [`@banhmi/events`](/techniques/events) — for in-process pub/sub.
+- [`@banhmi/scheduling`](/techniques/task-scheduling) — for cron/interval jobs.

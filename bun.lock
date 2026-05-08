@@ -208,6 +208,16 @@
         "banhmi": "workspace:*",
       },
     },
+    "examples/features/queue": {
+      "name": "banhmi-feature-queue",
+      "version": "0.0.0",
+      "dependencies": {
+        "@banhmi/queue": "workspace:*",
+        "@banhmi/redis": "workspace:*",
+        "banhmi": "workspace:*",
+        "ioredis": "^5.10.1",
+      },
+    },
     "examples/features/rate-limiting": {
       "name": "banhmi-feature-rate-limiting",
       "version": "0.0.0",
@@ -316,6 +326,7 @@
         "@banhmi/middleware": "workspace:*",
         "@banhmi/multipart": "workspace:*",
         "@banhmi/platform-bun": "workspace:*",
+        "@banhmi/queue": "workspace:*",
         "@banhmi/redis": "workspace:*",
         "@banhmi/s3": "workspace:*",
         "@banhmi/scheduling": "workspace:*",
@@ -449,6 +460,19 @@
       "dependencies": {
         "@banhmi/common": "workspace:*",
         "@banhmi/core": "workspace:*",
+      },
+    },
+    "packages/queue": {
+      "name": "@banhmi/queue",
+      "version": "0.1.0",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/core": "workspace:*",
+        "@banhmi/logger": "workspace:*",
+        "@banhmi/platform-bun": "workspace:*",
+        "@banhmi/redis": "workspace:*",
+        "banhmi": "workspace:*",
+        "ioredis": "^5.10.1",
       },
     },
     "packages/redis": {
@@ -652,6 +676,8 @@
     "@banhmi/multipart": ["@banhmi/multipart@workspace:packages/multipart"],
 
     "@banhmi/platform-bun": ["@banhmi/platform-bun@workspace:packages/platform-bun"],
+
+    "@banhmi/queue": ["@banhmi/queue@workspace:packages/queue"],
 
     "@banhmi/redis": ["@banhmi/redis@workspace:packages/redis"],
 
@@ -940,6 +966,8 @@
     "banhmi-feature-helmet": ["banhmi-feature-helmet@workspace:examples/features/helmet"],
 
     "banhmi-feature-logger": ["banhmi-feature-logger@workspace:examples/features/logger"],
+
+    "banhmi-feature-queue": ["banhmi-feature-queue@workspace:examples/features/queue"],
 
     "banhmi-feature-rate-limiting": ["banhmi-feature-rate-limiting@workspace:examples/features/rate-limiting"],
 

@@ -1,0 +1,12 @@
+{
+  "name": "banhmi-feature-queue",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "dependencies": {
+    "@banhmi/queue": "workspace:*",
+    "@banhmi/redis": "workspace:*",
+    "banhmi": "workspace:*",
+    "ioredis": "^5.10.1"
+  }
+}
