@@ -1,23 +1,122 @@
 # Authorization
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Authorization determines what an authenticated user is allowed to do. Banhmi
+uses the `Guard` interface for route-level access control. Combined with
+`@UseAuth` (authentication) and `@UseGuards` (authorization), you get a clean
+two-step pipeline.
 
 ## When to use
 
-TBD
+- Enforce role-based access on individual routes or entire controllers.
+- Reject requests where the authenticated user lacks the required permissions.
+- Combine with `@UseAuth` to first authenticate, then authorize.
 
-## Setup
+## Basic guard pattern
 
-TBD
+Implement `Guard` and inject it with `@UseGuards`:
 
-## Usage
+```ts
+import type { ExecutionContext, Guard } from 'banhmi'
+import { Injectable, ForbiddenException } from 'banhmi'
+import { getAuthUser } from '@banhmi/auth'
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+type User = { role: 'admin' | 'user' }
 
-## API reference
+@Injectable()
+export class AdminGuard implements Guard {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const ctx = context.getCtx()
+    const user = getAuthUser<User>(ctx)
+    if (user?.role !== 'admin') {
+      throw new ForbiddenException('Admins only')
+    }
+    return true
+  }
+}
+```
 
-TBD
+Apply it to a controller or handler:
+
+```ts
+import { Controller, Get, UseGuards } from 'banhmi'
+import { UseAuth } from '@banhmi/auth'
+
+@Controller('/admin')
+@UseAuth('jwt', [jwtStrategy])
+@UseGuards(AdminGuard)
+class AdminController {
+  @Get('/')
+  dashboard() {
+    return { admin: true }
+  }
+}
+```
+
+## Authentication + authorization pipeline
+
+The recommended pattern for protected routes:
+
+1. `@UseAuth('jwt', strategies)` — authenticate (sets `ctx.state.user`).
+2. `@UseGuards(RoleGuard)` — authorize (checks `ctx.state.user.role`).
+
+```ts
+@Controller('/reports')
+class ReportsController {
+  @Get('/')
+  @UseAuth('jwt', [jwtStrategy])
+  @UseGuards(AdminGuard)
+  listReports(ctx: RouteCtx) {
+    return db.getReports()
+  }
+}
+```
+
+## Role-based access (intro)
+
+For role-based access control (RBAC) you typically:
+
+1. Encode the user's roles in the JWT payload (or look them up from a store).
+2. Read the roles in a guard via `getAuthUser(ctx)`.
+3. Compare against a required-role annotation.
+
+A minimal roles decorator + guard:
+
+```ts
+// roles.decorator.ts
+import { CUSTOM_ROUTE_METADATA } from 'banhmi'
+
+export const ROLES_KEY = Symbol('roles')
+
+export function Roles(...roles: string[]) {
+  return (_target: unknown, context: ClassMethodDecoratorContext) => {
+    context.metadata[ROLES_KEY] = roles
+  }
+}
+
+// roles.guard.ts
+import type { ExecutionContext, Guard } from 'banhmi'
+import { Injectable, ForbiddenException, ROUTE_METADATA } from 'banhmi'
+import { getAuthUser } from '@banhmi/auth'
+import { ROLES_KEY } from './roles.decorator'
+
+@Injectable()
+export class RolesGuard implements Guard {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const user = getAuthUser<{ roles: string[] }>(context.getCtx())
+    const required = (context.getHandler()[Symbol.metadata] ?? {})[ROLES_KEY] as string[] | undefined
+    if (!required || required.length === 0) return true
+    if (!user) throw new ForbiddenException('Not authenticated')
+    const hasRole = required.some((r) => user.roles.includes(r))
+    if (!hasRole) throw new ForbiddenException('Insufficient permissions')
+    return true
+  }
+}
+```
+
+> **Full RBAC patterns** (attribute-based access control, policy objects,
+> permission inheritance) are Wave 6 features.
 
 ## See also
 
-TBD
+- [Authentication](./authentication)
+- [Rate Limiting](./rate-limiting)

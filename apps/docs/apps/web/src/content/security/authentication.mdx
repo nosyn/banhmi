@@ -1,23 +1,192 @@
 # Authentication
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+`@banhmi/auth` provides strategy-based authentication. Pick a strategy (local
+password, JWT Bearer token, Google/GitHub OAuth, or better-auth bridge), attach
+it to a handler with `@UseAuth`, and read the principal with `getAuthUser(ctx)`.
 
 ## When to use
 
-TBD
+- Protect specific routes or controllers from unauthenticated access.
+- Support multiple authentication mechanisms in a single application.
+- Integrate with third-party OAuth providers or a better-auth instance.
 
 ## Setup
 
-TBD
+```bash
+bun add @banhmi/auth
+```
 
-## Usage
+## Usage — local strategy
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+<CodeFromExample slug="auth-local" />
+
+## Usage — JWT strategy
+
+<CodeFromExample slug="auth-jwt" />
+
+## Strategies
+
+### `LocalStrategy`
+
+Reads `username` and `password` from a JSON body or
+`application/x-www-form-urlencoded` form. Calls your `validate` callback to
+authenticate the credentials.
+
+```ts
+import { LocalStrategy } from '@banhmi/auth'
+import { verifyPassword } from '@banhmi/crypto'
+
+const local = new LocalStrategy({
+  validate: async ({ username, password }) => {
+    const user = await db.findByUsername(username)
+    if (!user) return null
+    const ok = await verifyPassword(password, user.passwordHash)
+    return ok ? user : null
+  },
+})
+```
+
+Custom field names:
+
+```ts
+new LocalStrategy({
+  usernameField: 'email',
+  passwordField: 'pwd',
+  validate: async ({ username, password }) => { ... },
+})
+```
+
+### `JwtStrategy`
+
+Verifies an HS256 JWT from the `Authorization: Bearer <token>` header using
+`@banhmi/jwt` under the hood. Returns the decoded payload on success.
+
+```ts
+import { JwtStrategy } from '@banhmi/auth'
+
+const jwt = new JwtStrategy({ secret: Bun.env.JWT_SECRET! })
+```
+
+Custom extractor (e.g., query parameter):
+
+```ts
+new JwtStrategy({
+  secret: '...',
+  extract: (req) => new URL(req.url).searchParams.get('token'),
+})
+```
+
+### `GoogleStrategy` / `GitHubStrategy`
+
+OAuth 2.0 authorization-code flow. Redirects the user to the provider, then
+exchanges the code on the callback route.
+
+```ts
+import { GoogleStrategy } from '@banhmi/auth'
+
+const google = new GoogleStrategy({
+  clientId: Bun.env.GOOGLE_CLIENT_ID!,
+  clientSecret: Bun.env.GOOGLE_CLIENT_SECRET!,
+  redirectUri: 'https://example.com/auth/google/callback',
+  validate: async (profile) => db.upsertUser(profile),
+})
+
+// Initiate login
+const url = await google.getAuthorizationUrl()
+return Response.redirect(url)
+
+// On callback route — @UseAuth('google') reads code+state from query string
+```
+
+### `BetterAuthStrategy`
+
+Forwards the session cookie to a better-auth `get-session` endpoint and returns
+the session user on success.
+
+```ts
+import { BetterAuthStrategy } from '@banhmi/auth'
+
+const betterAuth = new BetterAuthStrategy({
+  url: 'http://localhost:3001',
+  cookieName: 'better-auth.session_token',
+})
+```
+
+> **Note:** Full server-side session integration is planned for Wave 6.
+> Current implementation performs an HTTP round-trip to the session endpoint.
+
+## Applying authentication with `@UseAuth`
+
+```ts
+import { Controller, Get, Post } from 'banhmi'
+import { UseAuth, getAuthUser } from '@banhmi/auth'
+
+@Controller()
+class AppController {
+  @Post('/login')
+  @UseAuth('local', [local])
+  login(ctx: RouteCtx) {
+    return { user: getAuthUser(ctx) }
+  }
+
+  @Get('/me')
+  @UseAuth('jwt', [jwt])
+  me(ctx: RouteCtx) {
+    return { user: getAuthUser(ctx) }
+  }
+}
+```
+
+On success, the authenticated principal is stored on `ctx.state` and
+accessible via `getAuthUser(ctx)`. On failure, the decorator returns
+`401 Unauthorized` before the handler runs.
+
+If the named strategy is not registered, the response is `500 Internal Server
+Error` with a message indicating the missing strategy name.
+
+## `AuthModule` — DI integration
+
+For DI-managed applications, register strategies via `AuthModule.register`:
+
+```ts
+import { AuthModule } from '@banhmi/auth'
+
+@Module({
+  imports: [
+    AuthModule.register({ strategies: [local, jwt] }),
+  ],
+})
+class AppModule {}
+```
+
+The `AUTH_STRATEGIES` token is then available for injection in providers that
+need to run strategies programmatically.
 
 ## API reference
 
-TBD
+### `UseAuth(strategyName, strategies)`
+
+Method decorator. Runs the named strategy before the handler. On success, sets
+`ctx.state['banhmi:auth:user']`. On failure, returns `401`.
+
+### `AuthUser()`
+
+No-op method decorator. Documents that the handler relies on an authenticated
+principal. Use `getAuthUser(ctx)` to retrieve the value at runtime.
+
+### `getAuthUser<TUser>(ctx)`
+
+Helper function. Returns the principal stored by `@UseAuth`, cast to `TUser`,
+or `null` if not set.
+
+### `Strategy<TUser>`
+
+Abstract base class. Implement `name: string` and
+`authenticate(req, ctx): Promise<TUser | null>` to create a custom strategy.
 
 ## See also
 
-TBD
+- [Authorization](./authorization)
+- [JWT](../packages/jwt)
+- [Encryption and hashing](./encryption-and-hashing)
+- [CSRF](./csrf)

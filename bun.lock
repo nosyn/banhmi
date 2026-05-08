@@ -103,6 +103,24 @@
         "banhmi": "workspace:*",
       },
     },
+    "examples/features/auth-jwt": {
+      "name": "banhmi-feature-auth-jwt",
+      "version": "0.0.0",
+      "dependencies": {
+        "@banhmi/auth": "workspace:*",
+        "@banhmi/jwt": "workspace:*",
+        "banhmi": "workspace:*",
+      },
+    },
+    "examples/features/auth-local": {
+      "name": "banhmi-feature-auth-local",
+      "version": "0.0.0",
+      "dependencies": {
+        "@banhmi/auth": "workspace:*",
+        "@banhmi/crypto": "workspace:*",
+        "banhmi": "workspace:*",
+      },
+    },
     "examples/features/compression": {
       "name": "banhmi-feature-compression",
       "version": "0.0.0",
@@ -238,10 +256,24 @@
         "banhmi": "workspace:*",
       },
     },
+    "packages/auth": {
+      "name": "@banhmi/auth",
+      "version": "0.1.0",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/cookies": "workspace:*",
+        "@banhmi/core": "workspace:*",
+        "@banhmi/crypto": "workspace:*",
+        "@banhmi/jwt": "workspace:*",
+        "@banhmi/platform-bun": "workspace:*",
+        "banhmi": "workspace:*",
+      },
+    },
     "packages/banhmi": {
       "name": "banhmi",
       "version": "0.1.0",
       "dependencies": {
+        "@banhmi/auth": "workspace:*",
         "@banhmi/cache": "workspace:*",
         "@banhmi/common": "workspace:*",
         "@banhmi/compression": "workspace:*",
@@ -529,6 +561,8 @@
     "@banhmi-examples/middleware-fn": ["@banhmi-examples/middleware-fn@workspace:examples/features/middleware-fn"],
 
     "@banhmi-examples/versioning": ["@banhmi-examples/versioning@workspace:examples/features/versioning"],
+
+    "@banhmi/auth": ["@banhmi/auth@workspace:packages/auth"],
 
     "@banhmi/benchmarks": ["@banhmi/benchmarks@workspace:benchmarks"],
 
@@ -819,6 +853,10 @@
     "avvio": ["avvio@8.4.0", "", { "dependencies": { "@fastify/error": "^3.3.0", "fastq": "^1.17.1" } }, "sha512-CDSwaxINFy59iNwhYnkvALBwZiTydGkOecZyPkqBpABYR1KqGEsET0VOOYDwtleZSUIdeY36DC2bSZ24CO1igA=="],
 
     "banhmi": ["banhmi@workspace:packages/banhmi"],
+
+    "banhmi-feature-auth-jwt": ["banhmi-feature-auth-jwt@workspace:examples/features/auth-jwt"],
+
+    "banhmi-feature-auth-local": ["banhmi-feature-auth-local@workspace:examples/features/auth-local"],
 
     "banhmi-feature-compression": ["banhmi-feature-compression@workspace:examples/features/compression"],
 

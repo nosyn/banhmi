@@ -1,0 +1,18 @@
+{
+  "name": "@banhmi/auth",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@banhmi/common": "workspace:*",
+    "@banhmi/core": "workspace:*",
+    "@banhmi/cookies": "workspace:*",
+    "@banhmi/crypto": "workspace:*",
+    "@banhmi/jwt": "workspace:*",
+    "@banhmi/platform-bun": "workspace:*",
+    "banhmi": "workspace:*"
+  }
+}
