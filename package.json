@@ -4,7 +4,10 @@
   "workspaces": [
     "packages/*",
     "examples/*",
-    "examples/features/.template"
+    "examples/features/.template",
+    "examples/features/*",
+    "benchmarks",
+    "benchmarks/competitors/*"
   ],
   "scripts": {
     "build": "bun run --filter='*' build",
