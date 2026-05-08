@@ -72,6 +72,11 @@ export class BunAdapter implements HttpAdapter {
     this.server = null
   }
 
+  getUrl(): string {
+    if (!this.server) throw new Error('Server is not listening yet')
+    return `http://localhost:${this.server.port}`
+  }
+
   private handleFetch(
     request: Request,
     server: Server,

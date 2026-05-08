@@ -13,6 +13,7 @@ export interface HttpAdapter {
   listen(port: number): Promise<void>
   close(): Promise<void>
   use(middleware: unknown): void
+  getUrl?(): string
 }
 
 export class BanhmiApplication {
@@ -37,6 +38,12 @@ export class BanhmiApplication {
   enableShutdownHooks(): this {
     this.shutdownHooksEnabled = true
     return this
+  }
+
+  getUrl(): string {
+    const url = this.adapter.getUrl?.()
+    if (!url) throw new Error('Server is not listening yet')
+    return url
   }
 
   async listen(port: number): Promise<void> {

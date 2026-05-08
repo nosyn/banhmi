@@ -1,5 +1,5 @@
 {
-  "name": "@banhmi-feature/.template",
+  "name": "banhmi-feature-template",
   "private": true,
   "version": "0.0.0",
   "type": "module",

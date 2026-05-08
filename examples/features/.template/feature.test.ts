@@ -3,14 +3,13 @@ import type { BanhmiApplication } from 'banhmi'
 import { BanhmiFactory } from 'banhmi'
 import { AppModule } from './index'
 
-const PORT = 54410
-const BASE = `http://localhost:${PORT}`
-
 let app: BanhmiApplication
+let base: string
 
 beforeAll(async () => {
   app = await BanhmiFactory.create(AppModule)
-  await app.listen(PORT)
+  await app.listen(0)
+  base = app.getUrl()
 })
 
 afterAll(async () => {
@@ -18,7 +17,7 @@ afterAll(async () => {
 })
 
 test('template: GET / returns ok', async () => {
-  const res = await fetch(`${BASE}/`)
+  const res = await fetch(`${base}/`)
   expect(res.status).toBe(200)
   const body = (await res.json()) as { ok: boolean }
   expect(body.ok).toBe(true)
