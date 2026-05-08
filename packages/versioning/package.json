@@ -1,0 +1,14 @@
+{
+  "name": "@banhmi/versioning",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@banhmi/common": "workspace:*",
+    "@banhmi/core": "workspace:*",
+    "@banhmi/platform-bun": "workspace:*"
+  }
+}

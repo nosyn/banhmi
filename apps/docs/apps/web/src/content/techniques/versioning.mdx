@@ -1,23 +1,158 @@
 # Versioning
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+> **Status:** Available since `v0.4.0-canary.wave1` via `@banhmi/versioning`.
 
 ## When to use
 
-TBD
+Use `@banhmi/versioning` when you need to evolve your API without breaking existing clients. Version two or more controllers behind the same route path, or pin individual handlers to specific versions — all with zero impact on unversioned routes.
+
+Three strategies are supported:
+
+| Strategy | How the version travels | Example |
+|---|---|---|
+| `uri` | URL path segment | `/v1/cats` |
+| `header` | Custom request header | `X-API-Version: 2` |
+| `media-type` | `Accept` vendor MIME type | `application/vnd.myapi.v2+json` |
 
 ## Setup
 
-TBD
+The package is bundled in `banhmi`:
+
+```ts
+import { VersioningModule, Version } from '@banhmi/versioning'
+// or
+import { VersioningModule, Version } from 'banhmi'
+```
+
+Register `VersioningModule.forRoot()` in your root module:
+
+```ts
+import { Module } from 'banhmi'
+import { VersioningModule } from '@banhmi/versioning'
+
+@Module({
+  imports: [VersioningModule.forRoot({ type: 'uri', prefix: 'v' })],
+})
+class AppModule {}
+```
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+<CodeFromExample slug="versioning" />
+
+## Versioning strategies
+
+### URI strategy
+
+The version is embedded in the URL path. A prefix (default `'v'`) is stripped before route matching, so controllers are still registered at their normal paths.
+
+```ts
+VersioningModule.forRoot({ type: 'uri', prefix: 'v' })
+
+// GET /v1/cats  → matches @Version('1') @Controller('/cats')
+// GET /v2/cats  → matches @Version('2') @Controller('/cats')
+```
+
+### Header strategy
+
+The version is read from a named request header:
+
+```ts
+VersioningModule.forRoot({ type: 'header', header: 'X-API-Version' })
+
+// GET /cats + X-API-Version: 2  → matches @Version('2') controller
+```
+
+### Media-type strategy
+
+The version is parsed from the `Accept` header using the pattern
+`application/vnd.<key>.v<N>+json`:
+
+```ts
+VersioningModule.forRoot({ type: 'media-type', key: 'myapi' })
+
+// Accept: application/vnd.myapi.v3+json  → matches @Version('3') controller
+```
+
+## `@Version` decorator
+
+`@Version` can be applied to an entire controller class or to individual handler methods. Method-level always wins over class-level.
+
+```ts
+// Class-level: every handler in this controller requires version 1
+@Version('1')
+@Controller('/cats')
+class CatsV1Controller {
+  @Get()
+  findAll() { return { version: 1 } }
+}
+
+// Method-level: only this handler requires version 2
+@Controller('/cats')
+class CatsController {
+  @Version('2')
+  @Get()
+  findAll() { return { version: 2 } }
+}
+```
+
+## Unversioned routes
+
+A route **without** `@Version` always matches, regardless of whether versioning is enabled. This lets you have stable utility endpoints alongside versioned resource endpoints.
+
+## Default version
+
+Use `defaultVersion` so that clients that omit the version identifier fall back to a known version:
+
+```ts
+VersioningModule.forRoot({
+  type: 'header',
+  header: 'X-API-Version',
+  defaultVersion: '1',
+})
+```
 
 ## API reference
 
-TBD
+### `VersioningModule.forRoot(opts: VersioningOptions)`
+
+Returns a dynamic `@Module` that activates versioning on the HTTP adapter.
+
+### `VersioningOptions`
+
+```ts
+type VersioningOptions =
+  | { type: 'uri';        prefix?: string; defaultVersion?: string }
+  | { type: 'header';     header: string;  defaultVersion?: string }
+  | { type: 'media-type'; key: string;     defaultVersion?: string }
+```
+
+### `@Version(version: string)`
+
+Decorator for controller classes and methods. Pins the handler to the given version string.
+
+### `resolveVersion(req, opts)`
+
+Pure function — resolves the version string from a `Request` given the active `VersioningOptions`. Useful for unit-testing your own version-extraction logic.
+
+```ts
+import { resolveVersion } from '@banhmi/versioning'
+
+resolveVersion(new Request('http://localhost/v2/cats'), { type: 'uri', prefix: 'v' })
+// → '2'
+```
+
+### `VERSIONING_OPTIONS` token
+
+Inject this to read the resolved configuration anywhere in the DI tree.
+
+## Common pitfalls
+
+- **URI strategy requires a leading `/` in controller paths.** Controllers must be registered with `@Controller('/cats')` (not `@Controller('cats')`) so that the path-stripping regex produces a matching pathname.
+- **Version mismatch returns 404.** If no route matches the requested version and no unversioned fallback exists, the adapter responds with `404 Not Found`.
+- **Order matters for unversioned fallbacks.** When both a versioned and an unversioned controller share the same path, the versioned route takes priority for matching versions. The unversioned route is only selected when the requested version doesn't match any versioned handler.
 
 ## See also
 
-TBD
+- [`@banhmi/middleware`](/overview/middleware) — apply per-route middleware alongside versioned handlers
+- [`@banhmi/cookies`](/techniques/cookies) — version-agnostic cookie helpers

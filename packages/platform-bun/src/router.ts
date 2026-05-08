@@ -18,6 +18,8 @@ export interface RegisteredRoute {
   responseHeaders: [string, string][]
   handlerClass?: ClassConstructor
   handlerName?: string
+  /** API version string set by `@Version`, or `undefined` for unversioned routes. */
+  version?: string
 }
 
 export type MatchResult = Omit<RegisteredRoute, 'path'> & {
@@ -71,5 +73,27 @@ export class RadixRouter {
       }
     }
     return null
+  }
+
+  /**
+   * Returns **all** routes whose path pattern and HTTP method match, in
+   * registration order. Use this when version-filtering must inspect multiple
+   * candidates before picking the best match.
+   *
+   * @param method - HTTP method string (e.g. `'GET'`).
+   * @param pathname - URL pathname to match against.
+   * @returns Ordered array of all matching routes with extracted path params.
+   */
+  matchAll(method: string, pathname: string): MatchResult[] {
+    const results: MatchResult[] = []
+    for (const route of this.routes) {
+      if (route.method !== 'ALL' && route.method !== method) continue
+      const params = route.matcher(pathname)
+      if (params !== null) {
+        const { path: _path, matcher: _matcher, ...rest } = route
+        results.push({ ...rest, params })
+      }
+    }
+    return results
   }
 }

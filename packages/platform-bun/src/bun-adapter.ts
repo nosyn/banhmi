@@ -9,10 +9,57 @@ import { RadixRouter } from './router'
 import { BunWsContext, type BunWsData } from './ws-context'
 import { type ExploredGateway, WsGatewayExplorer } from './ws-gateway-explorer'
 
+/** Middleware function type used by the adapter's `use()` mechanism. */
 type MiddlewareFn = (
   req: Request,
   next: () => Promise<Response>,
 ) => Promise<Response>
+
+/**
+ * Minimal versioning-options shape. Kept as a local structural type so
+ * `@banhmi/platform-bun` does not take a hard dependency on
+ * `@banhmi/versioning`.
+ */
+type VersioningOpts =
+  | { type: 'uri'; prefix?: string; defaultVersion?: string }
+  | { type: 'header'; header: string; defaultVersion?: string }
+  | { type: 'media-type'; key: string; defaultVersion?: string }
+
+/** Resolves a version string from a request given the active strategy. */
+function resolveVersionFromRequest(
+  req: Request,
+  opts: VersioningOpts,
+): string | null {
+  switch (opts.type) {
+    case 'uri': {
+      const prefix = opts.prefix ?? 'v'
+      const pathname = new URL(req.url).pathname
+      const pattern = new RegExp(`^/${escapeRe(prefix)}(\\d+)(?:/|$)`)
+      const m = pathname.match(pattern)
+      if (m?.[1]) return m[1]
+      return opts.defaultVersion ?? null
+    }
+    case 'header': {
+      const val = req.headers.get(opts.header)
+      if (val) return val.trim()
+      return opts.defaultVersion ?? null
+    }
+    case 'media-type': {
+      const accept = req.headers.get('accept') ?? ''
+      const pattern = new RegExp(
+        `application/vnd\\.${escapeRe(opts.key)}\\.v(\\d+)\\+json`,
+        'i',
+      )
+      const m = accept.match(pattern)
+      if (m?.[1]) return m[1]
+      return opts.defaultVersion ?? null
+    }
+  }
+}
+
+function escapeRe(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
 
 export class BunAdapter implements HttpAdapter {
   private router = new RadixRouter()
@@ -21,6 +68,17 @@ export class BunAdapter implements HttpAdapter {
   private middleware: MiddlewareFn[] = []
   private server: Server | null = null
   private gateways: Array<ExploredGateway & { instance: object }> = []
+  private versioningOpts: VersioningOpts | null = null
+
+  /**
+   * Install versioning options. Called by `VersioningBootstrapper` on
+   * application bootstrap when `VersioningModule.forRoot` is used.
+   *
+   * @param opts - Active versioning strategy configuration.
+   */
+  setVersioningOptions(opts: VersioningOpts): void {
+    this.versioningOpts = opts
+  }
 
   use(middleware: unknown): void {
     if (typeof middleware !== 'function') {
@@ -154,7 +212,49 @@ export class BunAdapter implements HttpAdapter {
 
   private async dispatchRoute(request: Request): Promise<Response> {
     const url = new URL(request.url)
-    const match = this.router.match(request.method, url.pathname)
+
+    // When versioning is active, strip the version prefix from the pathname
+    // before matching (URI strategy) so routes registered at `/cats` still
+    // match requests coming in at `/v1/cats`.
+    let matchPathname = url.pathname
+    let strippedVersion: string | null = null
+
+    if (this.versioningOpts?.type === 'uri') {
+      const prefix = this.versioningOpts.prefix ?? 'v'
+      const pattern = new RegExp(`^/${escapeRe(prefix)}(\\d+)(/.*)$`)
+      const m = matchPathname.match(pattern)
+      if (m) {
+        strippedVersion = m[1] ?? null
+        matchPathname = m[2] ?? '/'
+      }
+    }
+
+    // Collect all path+method matches, then filter by version compatibility.
+    const candidates = this.router.matchAll(request.method, matchPathname)
+
+    let match = null
+
+    if (this.versioningOpts) {
+      // Resolve the requested version (from URI strip, header, or media-type)
+      const requestedVersion =
+        strippedVersion ??
+        resolveVersionFromRequest(request, this.versioningOpts)
+
+      // Prefer a versioned route that matches, fall back to unversioned
+      for (const candidate of candidates) {
+        if (candidate.version === undefined) {
+          // Unversioned route — keep as a fallback but keep looking
+          if (!match) match = candidate
+        } else if (candidate.version === requestedVersion) {
+          // Exact version match wins immediately
+          match = candidate
+          break
+        }
+      }
+    } else {
+      // No versioning configured — use the first match as before
+      match = candidates[0] ?? null
+    }
 
     if (!match) {
       return Response.json(

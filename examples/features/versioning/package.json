@@ -1,0 +1,18 @@
+{
+  "name": "@banhmi-examples/versioning",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./index.ts",
+  "scripts": {
+    "dev": "bun run index.ts",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@banhmi/common": "workspace:*",
+    "@banhmi/core": "workspace:*",
+    "@banhmi/platform-bun": "workspace:*",
+    "@banhmi/versioning": "workspace:*",
+    "banhmi": "workspace:*"
+  }
+}

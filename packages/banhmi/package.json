@@ -24,6 +24,7 @@
     "@banhmi/sqlite": "workspace:*",
     "@banhmi/static": "workspace:*",
     "@banhmi/swagger": "workspace:*",
-    "@banhmi/testing": "workspace:*"
+    "@banhmi/testing": "workspace:*",
+    "@banhmi/versioning": "workspace:*"
   }
 }

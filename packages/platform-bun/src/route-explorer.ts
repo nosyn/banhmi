@@ -18,6 +18,44 @@ import {
 } from '@banhmi/common'
 import type { RegisteredRoute } from './router'
 
+// Symbol key for @Version metadata — imported lazily to avoid a hard dep on
+// @banhmi/versioning from @banhmi/platform-bun. We use a string description
+// match so the platform package stays dependency-free.
+const VERSION_METADATA_DESC = 'banhmi:version'
+
+/**
+ * Reads the version string for a given method name from the class metadata.
+ * Method-level `@Version` (stored as a `Record<string, string>`) takes
+ * precedence over class-level `@Version` (stored as a plain string).
+ */
+function extractVersion(
+  classMeta: Record<symbol, unknown>,
+  methodName: string,
+): string | undefined {
+  // Find the symbol with description 'banhmi:version'
+  const versionSymbol = Object.getOwnPropertySymbols(classMeta).find(
+    (s) => s.description === VERSION_METADATA_DESC,
+  )
+  if (!versionSymbol) return undefined
+
+  const versionMeta = classMeta[versionSymbol]
+
+  // Method-level: stored as Record<string, string>
+  if (versionMeta !== null && typeof versionMeta === 'object') {
+    const methodVersions = versionMeta as Record<string, string>
+    if (methodVersions[methodName] !== undefined) {
+      return methodVersions[methodName]
+    }
+  }
+
+  // Class-level: stored as a plain string
+  if (typeof versionMeta === 'string') {
+    return versionMeta
+  }
+
+  return undefined
+}
+
 export class RouteExplorer {
   explore(
     instance: object,
@@ -95,6 +133,7 @@ export class RouteExplorer {
         responseHeaders: responseHeadersMap[methodName] ?? [],
         handlerClass: controllerClass,
         handlerName: methodName,
+        version: extractVersion(classMeta, methodName),
       })
     }
 
