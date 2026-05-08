@@ -1,0 +1,10 @@
+{
+  "name": "banhmi-feature-file-upload",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "dependencies": {
+    "@banhmi/multipart": "workspace:*",
+    "banhmi": "workspace:*"
+  }
+}

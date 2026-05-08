@@ -1,23 +1,89 @@
 # File Upload
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
-
-## When to use
-
-TBD
+`@banhmi/multipart` provides method decorators for handling file uploads via
+the native `Request.formData()` API — no additional dependencies required.
 
 ## Setup
 
-TBD
+```ts
+import { MultipartModule } from '@banhmi/multipart'
 
-## Usage
+@Module({
+  imports: [
+    MultipartModule.forRoot({
+      fileSize: 5_000_000, // 5 MB per file
+      files: 10,           // max 10 files per request
+      fields: 100,         // max 100 non-file fields
+    }),
+  ],
+})
+class AppModule {}
+```
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+## Single file
 
-## API reference
+Apply `@UploadedFile(fieldname)` to the handler method and call
+`getUploadedFileMeta(ctx, fieldname)` inside the handler:
 
-TBD
+```ts
+import { UploadedFile, getUploadedFileMeta } from '@banhmi/multipart'
+
+@Controller()
+class UploadController {
+  @Post('/upload')
+  @UploadedFile('avatar')
+  upload(ctx: RouteCtx) {
+    const file = getUploadedFileMeta(ctx, 'avatar')
+    return { size: file?.size, mimetype: file?.mimetype }
+  }
+}
+```
+
+## Multiple files
+
+Use `@UploadedFiles()` and `getAllFiles(ctx)`:
+
+```ts
+import { UploadedFiles, getAllFiles } from '@banhmi/multipart'
+
+@Controller()
+class UploadController {
+  @Post('/upload')
+  @UploadedFiles()
+  upload(ctx: RouteCtx) {
+    const files = getAllFiles(ctx)
+    return { count: files.length }
+  }
+}
+```
+
+## Disk storage
+
+Pass a `dest` directory to write files to disk instead of keeping them in memory:
+
+```ts
+@UploadedFile('avatar', { dest: '/tmp/uploads' })
+```
+
+When `dest` is set, `UploadedFileMeta.path` is the absolute path and
+`buffer` is `undefined`.
+
+## Limits
+
+| Option     | Default     | Description                        |
+|------------|-------------|------------------------------------|
+| `fileSize` | 5 000 000   | Max bytes per file                 |
+| `files`    | 10          | Max files per request              |
+| `fields`   | 100         | Max non-file fields per request    |
+
+Violations return **413 Payload Too Large** (file size / count) or
+**400 Bad Request** (field count / wrong content-type).
+
+## Live example
+
+{/* <CodeFromExample slug="file-upload" /> */}
 
 ## See also
 
-TBD
+- [`@banhmi/cookies`](/techniques/cookies) — cookie parsing
+- [`@banhmi/session`](/techniques/session) — server-side sessions
