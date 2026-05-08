@@ -189,6 +189,8 @@ export class SchemaBuilder {
       string,
       { type: GraphQLInputType; description?: string }
     > = {}
+
+    // First, pick up args from @Arg/@Args parameter metadata
     const argsMeta = this.getOperationArgs(resolverClass, op.methodKey)
     for (const argMeta of argsMeta) {
       const argType = this.resolveInputType(
@@ -198,6 +200,14 @@ export class SchemaBuilder {
       argsDefs[argMeta.name] = {
         type: argType,
         description: argMeta.options.description,
+      }
+    }
+
+    // Then, apply inline args from { args: { id: () => String } } in options
+    const inlineArgs = op.options.args
+    if (inlineArgs) {
+      for (const [argName, typeFn] of Object.entries(inlineArgs)) {
+        argsDefs[argName] = { type: this.resolveInputType(typeFn, false) }
       }
     }
 

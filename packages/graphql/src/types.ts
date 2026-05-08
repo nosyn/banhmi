@@ -51,6 +51,18 @@ export interface ResolverContext {
 }
 
 /**
+ * Inline argument definition for use with `@Query` / `@Mutation`.
+ *
+ * Alternative to parameter decorators (which are not part of TC39 Stage 3).
+ * Declare args inline in the operation decorator.
+ *
+ * @example
+ * @Query(() => Cat, { nullable: true, args: { id: () => String } })
+ * cat(args: { id: string }) { return this.service.findById(args.id) }
+ */
+export type InlineArgDefs = Record<string, () => unknown>
+
+/**
  * Options for the {@link Field} decorator.
  *
  * @example
@@ -68,6 +80,15 @@ export interface FieldOptions {
   complexity?: number
   /** Whether this field is a list. */
   isList?: boolean
+  /**
+   * Inline argument definitions for use with `@Query` / `@Mutation`.
+   * Alternative to `@Arg` parameter decorators (TC39 Stage 3 has no param decorators).
+   *
+   * @example
+   * @Query(() => Cat, { nullable: true, args: { id: () => String } })
+   * cat(args: { id: string }) { return this.service.findById(args.id) }
+   */
+  args?: InlineArgDefs
 }
 
 /**

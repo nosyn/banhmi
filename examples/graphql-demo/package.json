@@ -1,0 +1,12 @@
+{
+  "name": "graphql-demo",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --watch src/main.ts"
+  },
+  "dependencies": {
+    "@banhmi/graphql": "workspace:*",
+    "graphql": "^16.11.0"
+  }
+}
