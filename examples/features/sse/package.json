@@ -1,0 +1,10 @@
+{
+  "name": "banhmi-feature-sse",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "dependencies": {
+    "@banhmi/sse": "workspace:*",
+    "banhmi": "workspace:*"
+  }
+}

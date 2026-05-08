@@ -1,23 +1,86 @@
 # Server-Sent Events
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+> **Status:** Available since `v0.4.0-canary.wave1` via `@banhmi/sse`.
 
 ## When to use
 
-TBD
+Use `@banhmi/sse` when you need a server-to-client push channel that is simpler than WebSockets — live dashboards, log tails, progress tracking, or notification feeds. SSE is an HTTP/1.1 standard (`text/event-stream`), works through most proxies, and reconnects automatically in browsers. Unlike WebSockets it is unidirectional (server → client only).
 
 ## Setup
 
-TBD
+The package is bundled in `banhmi`:
+
+```ts
+import { Sse, sseToReadableStream } from '@banhmi/sse'
+// or
+import { Sse, sseToReadableStream } from 'banhmi'
+```
+
+No module registration is needed — `@Sse` is a route decorator and the helpers are plain functions.
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+<CodeFromExample slug="sse" />
 
 ## API reference
 
-TBD
+### `@Sse(path?: string)` decorator
+
+Marks a controller method as an SSE endpoint. Sets the response headers
+`Content-Type: text/event-stream`, `Cache-Control: no-cache`, and
+`Connection: keep-alive`. The method should return a `StreamableFile` whose
+stream yields UTF-8 encoded SSE frames.
+
+```ts
+@Controller()
+class EventsController {
+  @Sse('/events')
+  stream() {
+    async function* source() {
+      yield { event: 'tick', data: { ts: Date.now() } }
+    }
+    return new StreamableFile(sseToReadableStream(source()))
+  }
+}
+```
+
+### `SseEvent` type
+
+| Field   | Type      | Required | Description |
+|---------|-----------|----------|-------------|
+| `data`  | `unknown` | yes      | Event payload. Non-string values are JSON-serialised. |
+| `event` | `string`  | no       | Named event type (emits `event:` line). |
+| `id`    | `string`  | no       | Event ID for client reconnect (emits `id:` line). |
+| `retry` | `number`  | no       | Reconnect delay in ms (emits `retry:` line). |
+
+### `sseEventStream(source)`
+
+Transforms an `AsyncIterable<SseEvent>` into an `AsyncIterable<string>` of
+SSE wire-format chunks. Each chunk ends with `\n\n`.
+
+### `sseToReadableStream(source)`
+
+Converts an `AsyncIterable<SseEvent>` into a `ReadableStream<Uint8Array>`
+ready to wrap in a `StreamableFile`.
+
+### `sseHeartbeat(intervalMs)`
+
+Yields `{ event: 'heartbeat', data: {} }` every `intervalMs` milliseconds.
+Use this to keep connections alive through proxies that close idle streams.
+
+### `formatSseEvent(event)`
+
+Pure function: formats a single `SseEvent` into the SSE wire-protocol string.
+Useful for testing your event shapes without running a server.
+
+## Common pitfalls
+
+- **Return `StreamableFile`**: The handler must return a `StreamableFile` wrapping the stream — returning a plain `ReadableStream` or an async generator directly will not work.
+- **Multi-line data**: If `data` is a string that contains `\n`, each line is emitted as a separate `data:` line as required by the SSE spec. Non-string values are JSON-serialised first.
+- **Heartbeats**: Without periodic writes, many proxies will close idle SSE connections. Use `sseHeartbeat()` or ensure events arrive frequently enough.
+- **`@Sse` sets headers**: The decorator sets `Content-Type`, `Cache-Control`, and `Connection` headers automatically. You don't need `@Header()` for these.
 
 ## See also
 
-TBD
+- [`@banhmi/websocket`](/bun-native/websockets) — bidirectional real-time communication
+- [MDN: Server-Sent Events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events)
