@@ -7,6 +7,11 @@
     "migrate": "bunx --bun auth@latest migrate"
   },
   "dependencies": {
+    "@banhmi/auth": "workspace:*",
+    "@banhmi/crypto": "workspace:*",
+    "@banhmi/jwt": "workspace:*",
+    "@banhmi/security": "workspace:*",
+    "@banhmi/throttler": "workspace:*",
     "banhmi": "workspace:*",
     "better-auth": "^1.6.9"
   }

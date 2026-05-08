@@ -64,6 +64,11 @@
       "name": "better-auth-api-example",
       "version": "0.0.1",
       "dependencies": {
+        "@banhmi/auth": "workspace:*",
+        "@banhmi/crypto": "workspace:*",
+        "@banhmi/jwt": "workspace:*",
+        "@banhmi/security": "workspace:*",
+        "@banhmi/throttler": "workspace:*",
         "banhmi": "workspace:*",
         "better-auth": "^1.6.9",
       },
