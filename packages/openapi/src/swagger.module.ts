@@ -2,16 +2,54 @@ import type { ClassConstructor } from '@banhmi/common'
 import type { BanhmiApplication, ModuleNode } from '@banhmi/core'
 import { SwaggerExplorer } from './explorer'
 import type { OpenApiDocument } from './types'
+import { renderScalarHtml } from './ui/scalar'
+import { renderSwaggerHtml } from './ui/swagger'
+
+/**
+ * Options for {@link SwaggerModule.setup}.
+ */
+export interface SwaggerModuleOptions {
+  /**
+   * Which UI renderer to use.
+   *
+   * - `'scalar'` (default) — renders the Scalar API Reference UI.
+   * - `'swagger'` — renders the classic Swagger UI.
+   *
+   * @default 'scalar'
+   */
+  ui?: 'scalar' | 'swagger'
+}
 
 // biome-ignore lint/complexity/noStaticOnlyClass: intentional NestJS-style dynamic module
+/**
+ * Mounts an OpenAPI spec and interactive UI onto a running BanhmiApplication.
+ *
+ * Registers two middleware routes:
+ *  - `GET <path>/openapi.json` — serves the OpenAPI document as JSON.
+ *  - `GET <path>` — serves the chosen UI HTML (Scalar by default).
+ *
+ * @example
+ * const doc = new DocumentBuilder().setTitle('My API').setVersion('1').build()
+ * SwaggerModule.setup('/api', app, doc, { ui: 'scalar' })
+ */
 export class SwaggerModule {
+  /**
+   * Wire up the OpenAPI spec and UI middleware.
+   *
+   * @param path - Base path prefix (e.g. `'/api'`).
+   * @param app - The running BanhmiApplication instance.
+   * @param document - OpenAPI document produced by {@link DocumentBuilder.build}.
+   * @param opts - Optional renderer options.
+   */
   static setup(
     path: string,
     app: BanhmiApplication,
     document: OpenApiDocument,
+    opts?: SwaggerModuleOptions,
   ): void {
+    const ui = opts?.ui ?? 'scalar'
     const normalizedPath = path.replace(/\/$/, '')
-    const jsonPath = `${normalizedPath}-json`
+    const jsonPath = `${normalizedPath}/openapi.json`
     const uiPath = normalizedPath
 
     const explorer = new SwaggerExplorer()
@@ -24,7 +62,11 @@ export class SwaggerModule {
         return Response.json(document)
       }
       if (req.method === 'GET' && url.pathname === uiPath) {
-        return new Response(SwaggerModule.renderUi(jsonPath), {
+        const html =
+          ui === 'swagger'
+            ? renderSwaggerHtml(jsonPath)
+            : renderScalarHtml(jsonPath)
+        return new Response(html, {
           headers: { 'Content-Type': 'text/html; charset=utf-8' },
         })
       }
@@ -49,22 +91,5 @@ export class SwaggerModule {
 
     walk(node)
     return result
-  }
-
-  private static renderUi(jsonPath: string): string {
-    return `<!DOCTYPE html>
-<html>
-<head>
-  <title>Swagger UI</title>
-  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css">
-</head>
-<body>
-<div id="swagger-ui"></div>
-<script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
-<script>
-  SwaggerUIBundle({ url: '${jsonPath}', dom_id: '#swagger-ui' })
-</script>
-</body>
-</html>`
   }
 }
