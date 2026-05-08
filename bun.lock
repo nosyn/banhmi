@@ -224,6 +224,14 @@
         "banhmi": "workspace:*",
       },
     },
+    "examples/features/postgres": {
+      "name": "banhmi-feature-postgres",
+      "version": "0.0.0",
+      "dependencies": {
+        "@banhmi/postgres": "workspace:*",
+        "banhmi": "workspace:*",
+      },
+    },
     "examples/features/queue": {
       "name": "banhmi-feature-queue",
       "version": "0.0.0",
@@ -369,6 +377,7 @@
         "@banhmi/multipart": "workspace:*",
         "@banhmi/otel": "workspace:*",
         "@banhmi/platform-bun": "workspace:*",
+        "@banhmi/postgres": "workspace:*",
         "@banhmi/queue": "workspace:*",
         "@banhmi/redis": "workspace:*",
         "@banhmi/s3": "workspace:*",
@@ -531,6 +540,17 @@
       "dependencies": {
         "@banhmi/common": "workspace:*",
         "@banhmi/core": "workspace:*",
+      },
+    },
+    "packages/postgres": {
+      "name": "@banhmi/postgres",
+      "version": "0.1.0",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/core": "workspace:*",
+      },
+      "devDependencies": {
+        "@banhmi/platform-bun": "workspace:*",
       },
     },
     "packages/queue": {
@@ -767,6 +787,8 @@
     "@banhmi/otel": ["@banhmi/otel@workspace:packages/otel"],
 
     "@banhmi/platform-bun": ["@banhmi/platform-bun@workspace:packages/platform-bun"],
+
+    "@banhmi/postgres": ["@banhmi/postgres@workspace:packages/postgres"],
 
     "@banhmi/queue": ["@banhmi/queue@workspace:packages/queue"],
 
@@ -1065,6 +1087,8 @@
     "banhmi-feature-logger": ["banhmi-feature-logger@workspace:examples/features/logger"],
 
     "banhmi-feature-otel": ["banhmi-feature-otel@workspace:examples/features/otel"],
+
+    "banhmi-feature-postgres": ["banhmi-feature-postgres@workspace:examples/features/postgres"],
 
     "banhmi-feature-queue": ["banhmi-feature-queue@workspace:examples/features/queue"],
 

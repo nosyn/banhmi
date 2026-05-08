@@ -32,6 +32,7 @@
     "@banhmi/scheduling": "workspace:*",
     "@banhmi/sse": "workspace:*",
     "@banhmi/sqlite": "workspace:*",
+    "@banhmi/postgres": "workspace:*",
     "@banhmi/middleware": "workspace:*",
     "@banhmi/multipart": "workspace:*",
     "@banhmi/otel": "workspace:*",

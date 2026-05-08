@@ -1,0 +1,10 @@
+{
+  "name": "banhmi-feature-postgres",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "dependencies": {
+    "@banhmi/postgres": "workspace:*",
+    "banhmi": "workspace:*"
+  }
+}

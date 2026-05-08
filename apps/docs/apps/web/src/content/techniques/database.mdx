@@ -1,23 +1,197 @@
 # Database
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Banhmi ships three first-party database packages built on Bun's native APIs.
+Choose the one that matches your backend:
 
-## When to use
+| Package | Backend | Best for |
+|---|---|---|
+| `@banhmi/sqlite` | `bun:sqlite` | Local / embedded SQLite |
+| `@banhmi/postgres` | `Bun.SQL` (Postgres adapter) | PostgreSQL |
+| `@banhmi/mysql` | `Bun.SQL` (MySQL adapter) | MySQL / MariaDB |
 
-TBD
+All three follow the same module/repository pattern: `forRoot` registers the
+connection; `forFeature` registers per-entity repositories decorated with
+`@Repository`.
 
-## Setup
+---
 
-TBD
+## SQLite — `@banhmi/sqlite`
 
-## Usage
+Backed by Bun's built-in `bun:sqlite` driver (zero external dependencies).
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+### Setup
 
-## API reference
+```ts
+import { SqliteModule } from '@banhmi/sqlite'
+import { Module } from 'banhmi'
 
-TBD
+@Module({
+  imports: [SqliteModule.forRoot(':memory:')],
+})
+class AppModule {}
+```
+
+Pass any path accepted by `bun:sqlite` (`:memory:` for an in-memory database,
+or a file path for a persistent one).
+
+### Repository
+
+```ts
+import { BaseRepository, DATABASE_TOKEN, Repository } from '@banhmi/sqlite'
+import type { Database } from 'bun:sqlite'
+
+class User { id!: number; name!: string }
+
+@Repository(User)
+class UserRepository extends BaseRepository<User> {
+  readonly tableName = 'users'
+  static inject = [DATABASE_TOKEN] as const
+  constructor(db: Database) { super(db) }
+}
+```
+
+`BaseRepository` exposes `findAll()`, `findById(id)`, `save(data)`, `delete(id)`,
+and `transaction(fn)`.
+
+---
+
+## PostgreSQL — `@banhmi/postgres`
+
+Backed by `Bun.SQL` with the default Postgres adapter.
+
+### Setup
+
+```ts
+import { PostgresModule } from '@banhmi/postgres'
+import { Module } from 'banhmi'
+
+@Module({
+  imports: [
+    PostgresModule.forRoot({ url: Bun.env.DATABASE_URL }),
+    PostgresModule.forFeature([UserRepository]),
+  ],
+})
+class AppModule {}
+```
+
+`forRoot` accepts a `PostgresOptions` object:
+
+```ts
+type PostgresOptions = {
+  url?: string        // full connection URL; falls back to Bun.env.DATABASE_URL
+  hostname?: string
+  database?: string
+  user?: string
+  password?: string
+  max?: number        // connection pool size
+}
+```
+
+### Repository
+
+```ts
+import { BaseRepository, POSTGRES_SQL, Repository } from '@banhmi/postgres'
+import type { Sql } from '@banhmi/postgres'
+
+class User { id!: number; name!: string; email!: string }
+
+@Repository(User)
+class UserRepository extends BaseRepository<User> {
+  static inject = [POSTGRES_SQL] as const
+  constructor(sql: Sql) { super(sql) }
+}
+```
+
+`BaseRepository` exposes async methods that use `Bun.SQL` tagged-template
+literals for safe parameterisation:
+`findAll()`, `findById(id)`, `insert(entity)`, `update(id, partial)`, `delete(id)`.
+
+### Injecting the Sql instance directly
+
+```ts
+import { POSTGRES_SQL } from '@banhmi/postgres'
+import type { Sql } from '@banhmi/postgres'
+
+class ReportService {
+  static inject = [POSTGRES_SQL] as const
+  constructor(private readonly sql: Sql) {}
+
+  async activeUsers() {
+    return this.sql`SELECT * FROM users WHERE active = true`
+  }
+}
+```
+
+---
+
+## MySQL / MariaDB — `@banhmi/mysql`
+
+Backed by `Bun.SQL` with the `mysql` adapter (supported natively in Bun ≥ 1.2).
+
+### Setup
+
+```ts
+import { MysqlModule } from '@banhmi/mysql'
+import { Module } from 'banhmi'
+
+@Module({
+  imports: [
+    MysqlModule.forRoot({ url: Bun.env.MYSQL_URL }),
+    MysqlModule.forFeature([UserRepository]),
+  ],
+})
+class AppModule {}
+```
+
+`forRoot` accepts a `MysqlOptions` object:
+
+```ts
+type MysqlOptions = {
+  url?: string        // full connection URL; falls back to Bun.env.MYSQL_URL
+  hostname?: string
+  database?: string
+  user?: string
+  password?: string
+  max?: number        // connection pool size
+}
+```
+
+### Repository
+
+```ts
+import { BaseRepository, MYSQL_SQL, Repository } from '@banhmi/mysql'
+import type { Sql } from '@banhmi/mysql'
+
+class Product { id!: number; name!: string; price!: number }
+
+@Repository(Product)
+class ProductRepository extends BaseRepository<Product> {
+  static inject = [MYSQL_SQL] as const
+  constructor(sql: Sql) { super(sql) }
+}
+```
+
+API surface is identical to `@banhmi/postgres`.
+
+### Injecting the Sql instance directly
+
+```ts
+import { MYSQL_SQL } from '@banhmi/mysql'
+import type { Sql } from '@banhmi/mysql'
+
+class StatsService {
+  static inject = [MYSQL_SQL] as const
+  constructor(private readonly sql: Sql) {}
+
+  async topSellers() {
+    return this.sql`SELECT * FROM products ORDER BY sold DESC LIMIT 10`
+  }
+}
+```
+
+---
 
 ## See also
 
-TBD
+- [Drizzle ORM integration](/recipes/drizzle) (coming in Wave 4 Task 3)
+- [MongoDB integration](/techniques/mongo) (coming in Wave 4 Task 4)
