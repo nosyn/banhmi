@@ -216,6 +216,14 @@
         "banhmi": "workspace:*",
       },
     },
+    "examples/features/mysql": {
+      "name": "banhmi-feature-mysql",
+      "version": "0.0.0",
+      "dependencies": {
+        "@banhmi/mysql": "workspace:*",
+        "banhmi": "workspace:*",
+      },
+    },
     "examples/features/otel": {
       "name": "banhmi-feature-otel",
       "version": "0.0.0",
@@ -375,6 +383,7 @@
         "@banhmi/logger": "workspace:*",
         "@banhmi/middleware": "workspace:*",
         "@banhmi/multipart": "workspace:*",
+        "@banhmi/mysql": "workspace:*",
         "@banhmi/otel": "workspace:*",
         "@banhmi/platform-bun": "workspace:*",
         "@banhmi/postgres": "workspace:*",
@@ -514,6 +523,17 @@
       "devDependencies": {
         "@banhmi/platform-bun": "workspace:*",
         "banhmi": "workspace:*",
+      },
+    },
+    "packages/mysql": {
+      "name": "@banhmi/mysql",
+      "version": "0.1.0",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/core": "workspace:*",
+      },
+      "devDependencies": {
+        "@banhmi/platform-bun": "workspace:*",
       },
     },
     "packages/otel": {
@@ -783,6 +803,8 @@
     "@banhmi/middleware": ["@banhmi/middleware@workspace:packages/middleware"],
 
     "@banhmi/multipart": ["@banhmi/multipart@workspace:packages/multipart"],
+
+    "@banhmi/mysql": ["@banhmi/mysql@workspace:packages/mysql"],
 
     "@banhmi/otel": ["@banhmi/otel@workspace:packages/otel"],
 
@@ -1085,6 +1107,8 @@
     "banhmi-feature-helmet": ["banhmi-feature-helmet@workspace:examples/features/helmet"],
 
     "banhmi-feature-logger": ["banhmi-feature-logger@workspace:examples/features/logger"],
+
+    "banhmi-feature-mysql": ["banhmi-feature-mysql@workspace:examples/features/mysql"],
 
     "banhmi-feature-otel": ["banhmi-feature-otel@workspace:examples/features/otel"],
 

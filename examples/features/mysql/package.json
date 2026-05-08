@@ -1,0 +1,10 @@
+{
+  "name": "banhmi-feature-mysql",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "dependencies": {
+    "@banhmi/mysql": "workspace:*",
+    "banhmi": "workspace:*"
+  }
+}
