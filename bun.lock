@@ -116,6 +116,15 @@
         "drizzle-kit": "^0.31.10",
       },
     },
+    "examples/edge-worker": {
+      "name": "edge-worker",
+      "version": "0.1.0",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/core": "workspace:*",
+        "@banhmi/edge": "workspace:*",
+      },
+    },
     "examples/features/.template": {
       "name": "banhmi-feature-template",
       "version": "0.0.0",
@@ -392,6 +401,15 @@
         "graphql": "^16.11.0",
       },
     },
+    "examples/lambda-app": {
+      "name": "lambda-app",
+      "version": "0.1.0",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/core": "workspace:*",
+        "@banhmi/serverless": "workspace:*",
+      },
+    },
     "examples/microservices-demo": {
       "name": "banhmi-microservices-demo",
       "version": "0.0.1",
@@ -578,6 +596,15 @@
         "drizzle-orm",
         "postgres",
       ],
+    },
+    "packages/edge": {
+      "name": "@banhmi/edge",
+      "version": "0.1.0",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/core": "workspace:*",
+        "@banhmi/platform-bun": "workspace:*",
+      },
     },
     "packages/events": {
       "name": "@banhmi/events",
@@ -873,6 +900,15 @@
         "@sentry/node",
       ],
     },
+    "packages/serverless": {
+      "name": "@banhmi/serverless",
+      "version": "0.1.0",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/core": "workspace:*",
+        "@banhmi/platform-bun": "workspace:*",
+      },
+    },
     "packages/session": {
       "name": "@banhmi/session",
       "version": "0.0.1",
@@ -1031,6 +1067,8 @@
 
     "@banhmi/drizzle": ["@banhmi/drizzle@workspace:packages/drizzle"],
 
+    "@banhmi/edge": ["@banhmi/edge@workspace:packages/edge"],
+
     "@banhmi/events": ["@banhmi/events@workspace:packages/events"],
 
     "@banhmi/graphql": ["@banhmi/graphql@workspace:packages/graphql"],
@@ -1076,6 +1114,8 @@
     "@banhmi/security": ["@banhmi/security@workspace:packages/security"],
 
     "@banhmi/sentry": ["@banhmi/sentry@workspace:packages/sentry"],
+
+    "@banhmi/serverless": ["@banhmi/serverless@workspace:packages/serverless"],
 
     "@banhmi/session": ["@banhmi/session@workspace:packages/session"],
 
@@ -1543,6 +1583,8 @@
 
     "dunder-proto": ["dunder-proto@1.0.1", "", { "dependencies": { "call-bind-apply-helpers": "^1.0.1", "es-errors": "^1.3.0", "gopd": "^1.2.0" } }, "sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A=="],
 
+    "edge-worker": ["edge-worker@workspace:examples/edge-worker"],
+
     "ee-first": ["ee-first@1.1.1", "", {}, "sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow=="],
 
     "encodeurl": ["encodeurl@2.0.0", "", {}, "sha512-Q0n9HRi4m6JuGIV1eFlmvJB7ZEVxu93IrMyiMsGC0lrMJMWzRgx6WGquyfQgZVb31vhGgXnfmPNNXmxnOkRBrg=="],
@@ -1696,6 +1738,8 @@
     "jsonfile": ["jsonfile@4.0.0", "", { "optionalDependencies": { "graceful-fs": "^4.1.6" } }, "sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg=="],
 
     "kysely": ["kysely@0.28.17", "", {}, "sha512-nbD8lB9EB3wNdMhOCdx5Li8DxnLbvKByylRLcJ1h+4SkrowVeECAyZlyiKMThF7xFdRz0jSQ2MoJr+wXux2y0Q=="],
+
+    "lambda-app": ["lambda-app@workspace:examples/lambda-app"],
 
     "libphonenumber-js": ["libphonenumber-js@1.12.43", "", {}, "sha512-5n+HnmkNpgZCfaNVxrTGZHr6Lhv3gd0UtbD5lrzun3T2YNyVvCuJz9vkap2E0YWZWU1XF+0XljYAkrAJBbwbrg=="],
 
