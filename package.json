@@ -11,6 +11,8 @@
   ],
   "scripts": {
     "build": "bun run --filter='*' build",
+    "docs:build": "bun run --cwd apps/docs/apps/web build",
+    "docs:dev": "bun run --cwd apps/docs/apps/web dev",
     "test": "bun test --recursive",
     "lint": "biome check .",
     "format": "biome format --write .",
