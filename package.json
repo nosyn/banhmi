@@ -9,7 +9,13 @@
     "build": "bun run --filter='*' build",
     "test": "bun test --recursive",
     "lint": "biome check .",
-    "format": "biome format --write ."
+    "format": "biome format --write .",
+    "quality:no-anys": "bun run scripts/quality/no-anys.ts",
+    "quality:no-bangs": "bun run scripts/quality/no-bangs.ts",
+    "quality:no-reflect": "bun run scripts/quality/no-reflect.ts",
+    "quality:tsdoc": "bun run scripts/quality/tsdoc-coverage.ts",
+    "quality": "bun run quality:no-anys && bun run quality:no-bangs && bun run quality:no-reflect && bun run quality:tsdoc",
+    "typecheck": "tsc -b --pretty"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.10",
