@@ -1,7 +1,7 @@
 import type { AbstractConstructor } from '@banhmi/common'
 import { Token } from '@banhmi/common'
-import { BanhmiApplication, Container, ModuleGraph } from '@banhmi/core'
 import type { HttpAdapter } from '@banhmi/core'
+import { BanhmiApplication, Container, ModuleGraph } from '@banhmi/core'
 import { BunAdapter } from './bun-adapter'
 
 /**

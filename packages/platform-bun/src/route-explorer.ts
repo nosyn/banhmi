@@ -64,14 +64,13 @@ function resolveMiddlewareFns(entries: unknown[]): RouteMiddlewareFn[] {
           name.length > 0 &&
           name[0] === name[0]?.toUpperCase() &&
           name[0] !== name[0]?.toLowerCase()
-        if (
-          isUppercase ||
-          Object.prototype.hasOwnProperty.call(fn, 'prototype')
-        ) {
+        if (isUppercase || Object.hasOwn(fn, 'prototype')) {
           try {
-            const inst = new (mw as new () => {
-              use?: RouteMiddlewareFn
-            })()
+            const inst = new (
+              mw as new () => {
+                use?: RouteMiddlewareFn
+              }
+            )()
             if (typeof inst.use === 'function') {
               return inst.use.bind(inst)
             }

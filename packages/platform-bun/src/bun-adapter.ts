@@ -112,8 +112,11 @@ function resolveMiddlewareFnFromUnknown(
     // `class` in its source, OR by convention: named functions starting with
     // uppercase are classes. Use a try/catch to handle both.
     const name = fn.name ?? ''
-    const isUppercase = name.length > 0 && name[0] === name[0]?.toUpperCase() && name[0] !== name[0]?.toLowerCase()
-    if (isUppercase || Object.prototype.hasOwnProperty.call(fn, 'prototype')) {
+    const isUppercase =
+      name.length > 0 &&
+      name[0] === name[0]?.toUpperCase() &&
+      name[0] !== name[0]?.toLowerCase()
+    if (isUppercase || Object.hasOwn(fn, 'prototype')) {
       try {
         const inst = new (mw as new () => { use?: PipelineMiddlewareFn })()
         if (typeof inst.use === 'function') {
@@ -132,7 +135,10 @@ function resolveMiddlewareFnFromUnknown(
  * Normalises a raw route value from a `forRoutes(...)` call into a
  * `{ path, method }` pair.
  */
-function normalizeModuleRoute(route: unknown): { path: string; method: string } {
+function normalizeModuleRoute(route: unknown): {
+  path: string
+  method: string
+} {
   if (typeof route === 'string') {
     return { path: route.replace(/^\/|\/$/g, ''), method: 'ALL' }
   }
@@ -431,9 +437,7 @@ export class BunAdapter implements HttpAdapter {
     // Collect middleware: module-level bindings that match this route, then
     // controller/handler-level middleware from the route descriptor.
     const matchingModuleMiddlewares = this.moduleMiddlewareBindings
-      .filter((b) =>
-        moduleMiddlewareMatches(b, request.method, matchPathname),
-      )
+      .filter((b) => moduleMiddlewareMatches(b, request.method, matchPathname))
       .map((b) => b.fn)
 
     const allMiddlewares: PipelineMiddlewareFn[] = [

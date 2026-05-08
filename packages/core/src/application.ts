@@ -14,9 +14,9 @@ import { flattenModuleProviders, type ModuleNode } from './module-graph'
  * `BunAdapter.registerMiddlewareBindings`).
  */
 export interface MiddlewareConsumerLike {
-  apply(
-    ...mws: unknown[]
-  ): { forRoutes(...routes: unknown[]): MiddlewareConsumerLike }
+  apply(...mws: unknown[]): {
+    forRoutes(...routes: unknown[]): MiddlewareConsumerLike
+  }
 }
 
 export interface HttpAdapter {
