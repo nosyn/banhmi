@@ -165,6 +165,14 @@
         "banhmi": "workspace:*",
       },
     },
+    "examples/features/devtools": {
+      "name": "banhmi-feature-devtools",
+      "version": "0.0.0",
+      "dependencies": {
+        "@banhmi/devtools": "workspace:*",
+        "banhmi": "workspace:*",
+      },
+    },
     "examples/features/events": {
       "name": "banhmi-feature-events",
       "version": "0.0.0",
@@ -336,6 +344,7 @@
         "@banhmi/cookies": "workspace:*",
         "@banhmi/core": "workspace:*",
         "@banhmi/crypto": "workspace:*",
+        "@banhmi/devtools": "workspace:*",
         "@banhmi/events": "workspace:*",
         "@banhmi/jwt": "workspace:*",
         "@banhmi/logger": "workspace:*",
@@ -419,6 +428,15 @@
       "version": "0.1.0",
       "dependencies": {
         "banhmi": "workspace:*",
+      },
+    },
+    "packages/devtools": {
+      "name": "@banhmi/devtools",
+      "version": "1.0.0",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/core": "workspace:*",
+        "@banhmi/platform-bun": "workspace:*",
       },
     },
     "packages/events": {
@@ -717,6 +735,8 @@
 
     "@banhmi/crypto": ["@banhmi/crypto@workspace:packages/crypto"],
 
+    "@banhmi/devtools": ["@banhmi/devtools@workspace:packages/devtools"],
+
     "@banhmi/events": ["@banhmi/events@workspace:packages/events"],
 
     "@banhmi/jwt": ["@banhmi/jwt@workspace:packages/jwt"],
@@ -1014,6 +1034,8 @@
     "banhmi-feature-crypto": ["banhmi-feature-crypto@workspace:examples/features/crypto"],
 
     "banhmi-feature-csrf": ["banhmi-feature-csrf@workspace:examples/features/csrf"],
+
+    "banhmi-feature-devtools": ["banhmi-feature-devtools@workspace:examples/features/devtools"],
 
     "banhmi-feature-events": ["banhmi-feature-events@workspace:examples/features/events"],
 

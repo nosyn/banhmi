@@ -1,23 +1,48 @@
 # CI/CD Integration
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+`@banhmi/devtools` is a **development-time tool** and must not be enabled in
+production CI pipelines or deployed environments.
 
-## When to use
+## Disabling in production
 
-TBD
+The middleware automatically disables itself when `NODE_ENV=production`:
 
-## Setup
+```ts
+DevtoolsModule.forRoot()
+// Equivalent to: enabled: Bun.env.NODE_ENV !== 'production'
+```
 
-TBD
+To be explicit, pass `enabled: false`:
 
-## Usage
+```ts
+DevtoolsModule.forRoot({ enabled: false })
+```
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+## CI pipeline guidance
 
-## API reference
+In CI you typically want `NODE_ENV=test` or `NODE_ENV=ci`. In that case
+devtools will still be *enabled* (because it is not `'production'`). This is
+intentional — integration tests can assert against the `/graph.json` endpoint
+to verify the DI graph shape is correct as part of your test suite.
 
-TBD
+If you do not want devtools endpoints reachable during CI tests, set
+`enabled: false` in the test app module or set `NODE_ENV=production` in the
+CI environment.
+
+```bash
+# Disable devtools in CI:
+NODE_ENV=production bun test
+```
+
+## What never to do
+
+- Do **not** deploy with `enabled: true` in a public-facing environment. The
+  endpoint exposes your full DI graph and recent request routes, which is
+  sensitive information.
+- Do **not** remove the `DevtoolsModule.forRoot()` import entirely from your
+  production module tree if you rely on exported tokens — instead set
+  `enabled: false`.
 
 ## See also
 
-TBD
+- [Devtools Overview](./overview)

@@ -16,6 +16,7 @@
     "@banhmi/security": "workspace:*",
     "@banhmi/sentry": "workspace:*",
     "@banhmi/throttler": "workspace:*",
+    "@banhmi/devtools": "workspace:*",
     "@banhmi/common": "workspace:*",
     "@banhmi/events": "workspace:*",
     "@banhmi/compression": "workspace:*",

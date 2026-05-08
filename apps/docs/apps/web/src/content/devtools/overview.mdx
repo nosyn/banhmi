@@ -1,23 +1,96 @@
-# Overview
+# Devtools Overview
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+`@banhmi/devtools` exposes a built-in developer dashboard mounted at
+`/__banhmi/devtools` (configurable). It provides two tools:
+
+1. **DI Graph** — a nested-list HTML view (and JSON API) of every module,
+   provider, controller, and their dependency edges registered in the container.
+2. **Request Profiler** — a ring buffer of recent HTTP requests showing route,
+   method, status code, and total duration.
 
 ## When to use
 
-TBD
+Use devtools during local development to:
+
+- Understand which modules are importing which other modules.
+- Audit provider dependency chains for unexpected couplings.
+- Spot slow requests by scanning the profiler table.
+
+The middleware is disabled automatically when `NODE_ENV=production`. Never
+expose it in production — see [CI/CD Integration](./ci-cd-integration).
 
 ## Setup
 
-TBD
+```ts
+import { Module } from 'banhmi'
+import { DevtoolsModule } from '@banhmi/devtools'
 
-## Usage
+@Module({
+  imports: [
+    DevtoolsModule.forRoot(),
+    // …other modules
+  ],
+})
+class AppModule {}
+```
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+Start the app and open `http://localhost:3000/__banhmi/devtools` in your browser.
+
+## Options
+
+```ts
+type DevtoolsOptions = {
+  /** Mount the UI. Defaults to true when NODE_ENV !== 'production'. */
+  enabled?: boolean
+  /** URL prefix. Default '/__banhmi/devtools'. */
+  path?: string
+  /** Ring-buffer capacity for request records. Default 100. */
+  profileSize?: number
+}
+```
+
+### Custom path
+
+```ts
+DevtoolsModule.forRoot({ path: '/_dev' })
+// Endpoints: /_dev, /_dev/graph, /_dev/graph.json, /_dev/profile, /_dev/profile.json
+```
+
+## Endpoints
+
+| Path | Description |
+|------|-------------|
+| `<path>` | HTML index linking all four pages |
+| `<path>/graph` | HTML nested-list of modules + providers |
+| `<path>/graph.json` | `DiGraph` as JSON |
+| `<path>/profile` | HTML table of recent requests |
+| `<path>/profile.json` | `ProfileRecord[]` as JSON |
 
 ## API reference
 
-TBD
+```ts
+// DevtoolsModule — dynamic module
+DevtoolsModule.forRoot(opts?: DevtoolsOptions): typeof Module
+
+// ProfileRecorder — injectable ring buffer
+class ProfileRecorder {
+  push(record: ProfileRecord): void
+  list(): ProfileRecord[]   // most-recent first
+  clear(): void
+}
+
+// Types
+type DiNode  = { id: string; kind: 'module' | 'provider' | 'controller'; name: string }
+type DiEdge  = { from: string; to: string; kind: 'imports' | 'provides' | 'depends-on' }
+type DiGraph = { nodes: DiNode[]; edges: DiEdge[] }
+
+type ProfileStage  = { name: string; durationMs: number }
+type ProfileRecord = {
+  traceId: string; route: string; method: string; statusCode: number
+  totalMs: number; stages: ProfileStage[]; timestamp: number
+}
+```
 
 ## See also
 
-TBD
+- [CI/CD Integration](./ci-cd-integration)
