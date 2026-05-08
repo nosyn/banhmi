@@ -1,23 +1,170 @@
 # Logging
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+`@banhmi/logger` provides a structured, level-filtered logger with pluggable
+transports. Records are plain objects (`{ time, level, msg, ...ctx }`) that
+can be routed to NDJSON stdout, pretty ANSI output, or any custom destination.
 
 ## When to use
 
-TBD
+Use `@banhmi/logger` whenever you want:
+- Consistent structured log output across your application.
+- Level filtering (drop `debug` records in production, enable `trace` locally).
+- Per-class child loggers that carry identifying context on every record.
+- Multiple output transports (e.g., JSON for log aggregators + pretty for local dev).
 
 ## Setup
 
-TBD
+Register `LoggerModule.forRoot` in your root module:
 
-## Usage
+```ts
+import { Module } from 'banhmi'
+import { LoggerModule } from '@banhmi/logger'
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+@Module({
+  imports: [
+    LoggerModule.forRoot({
+      level: 'info',                      // default
+      base: { service: 'my-api' },        // attached to every record
+    }),
+  ],
+})
+class AppModule {}
+```
+
+`LoggerModule.forRoot` registers two DI tokens:
+- `ROOT_LOGGER` — the root `Logger` instance.
+- `LOGGER_OPTIONS` — the resolved `LoggerOptions`.
+
+## Injecting the root logger
+
+```ts
+import { Injectable } from 'banhmi'
+import { ROOT_LOGGER } from '@banhmi/logger'
+import type { Logger } from '@banhmi/logger'
+
+@Injectable()
+class AppService {
+  static inject = [ROOT_LOGGER] as const
+  constructor(private readonly logger: Logger) {}
+
+  doWork() {
+    this.logger.info('work started', { jobId: 1 })
+  }
+}
+```
+
+## Named child loggers
+
+Use `InjectLogger(name)` as a token in `static inject` to receive a child
+logger pre-tagged with `{ name }`:
+
+```ts
+import { Injectable } from 'banhmi'
+import { InjectLogger, ROOT_LOGGER } from '@banhmi/logger'
+import type { Logger } from '@banhmi/logger'
+
+@Injectable()
+class CatsService {
+  static inject = [InjectLogger('CatsService')] as const
+  constructor(private readonly logger: Logger) {}
+}
+```
+
+Register the provider in your module:
+
+```ts
+import { Module } from 'banhmi'
+import { InjectLogger, ROOT_LOGGER } from '@banhmi/logger'
+import type { Logger } from '@banhmi/logger'
+
+@Module({
+  providers: [
+    CatsService,
+    {
+      provide: InjectLogger('CatsService'),
+      useFactory: (root: Logger) => root.child({ name: 'CatsService' }),
+      inject: [ROOT_LOGGER],
+    },
+  ],
+})
+class CatsModule {}
+```
+
+## Creating child loggers manually
+
+```ts
+const requestLogger = this.logger.child({ requestId: req.id })
+requestLogger.info('processing request')
+// → { time: …, level: 'info', msg: 'processing request', requestId: '…', service: 'my-api' }
+```
+
+## Transports
+
+### `jsonTransport()` (default)
+
+Writes NDJSON to `process.stdout`:
+
+```ts
+LoggerModule.forRoot({ transports: [jsonTransport()] })
+```
+
+### `prettyTransport()`
+
+Writes ANSI-coloured human-readable lines to `process.stdout`:
+
+```ts
+LoggerModule.forRoot({ transports: [prettyTransport()] })
+```
+
+### Custom transport
+
+```ts
+import type { LogTransport, LogRecord } from '@banhmi/logger'
+
+const myTransport: LogTransport = {
+  write(record: LogRecord) {
+    // send to a log aggregator, file, etc.
+  },
+}
+
+LoggerModule.forRoot({ transports: [myTransport] })
+```
 
 ## API reference
 
-TBD
+### `Logger`
+
+| Method | Description |
+|---|---|
+| `fatal(msg, ctx?)` | Emit a `fatal` record |
+| `error(msg, ctx?)` | Emit an `error` record |
+| `warn(msg, ctx?)` | Emit a `warn` record |
+| `info(msg, ctx?)` | Emit an `info` record |
+| `debug(msg, ctx?)` | Emit a `debug` record |
+| `trace(msg, ctx?)` | Emit a `trace` record |
+| `child(context)` | Return a child logger merging the given context |
+
+### `LogLevel`
+
+`'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace'`
+
+### `LogRecord`
+
+```ts
+type LogRecord = { time: number; level: LogLevel; msg: string; [k: string]: unknown }
+```
+
+### `LoggerOptions`
+
+```ts
+type LoggerOptions = {
+  level?: LogLevel           // default 'info'
+  transports?: LogTransport[]  // default [jsonTransport()]
+  base?: Record<string, unknown>
+}
+```
 
 ## See also
 
-TBD
+- `@banhmi/events` — emit application-level events.
+- `@banhmi/scheduling` — schedule recurring and one-shot tasks.

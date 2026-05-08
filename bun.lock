@@ -181,6 +181,14 @@
         "banhmi": "workspace:*",
       },
     },
+    "examples/features/logger": {
+      "name": "banhmi-feature-logger",
+      "version": "0.0.0",
+      "dependencies": {
+        "@banhmi/logger": "workspace:*",
+        "banhmi": "workspace:*",
+      },
+    },
     "examples/features/middleware-fn": {
       "name": "@banhmi-examples/middleware-fn",
       "version": "0.0.1",
@@ -287,6 +295,7 @@
         "@banhmi/core": "workspace:*",
         "@banhmi/crypto": "workspace:*",
         "@banhmi/jwt": "workspace:*",
+        "@banhmi/logger": "workspace:*",
         "@banhmi/middleware": "workspace:*",
         "@banhmi/multipart": "workspace:*",
         "@banhmi/platform-bun": "workspace:*",
@@ -375,6 +384,15 @@
       },
       "devDependencies": {
         "@banhmi/platform-bun": "workspace:*",
+      },
+    },
+    "packages/logger": {
+      "name": "@banhmi/logger",
+      "version": "0.1.0",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/core": "workspace:*",
+        "banhmi": "workspace:*",
       },
     },
     "packages/middleware": {
@@ -588,6 +606,8 @@
     "@banhmi/crypto": ["@banhmi/crypto@workspace:packages/crypto"],
 
     "@banhmi/jwt": ["@banhmi/jwt@workspace:packages/jwt"],
+
+    "@banhmi/logger": ["@banhmi/logger@workspace:packages/logger"],
 
     "@banhmi/middleware": ["@banhmi/middleware@workspace:packages/middleware"],
 
@@ -876,6 +896,8 @@
     "banhmi-feature-file-upload": ["banhmi-feature-file-upload@workspace:examples/features/file-upload"],
 
     "banhmi-feature-helmet": ["banhmi-feature-helmet@workspace:examples/features/helmet"],
+
+    "banhmi-feature-logger": ["banhmi-feature-logger@workspace:examples/features/logger"],
 
     "banhmi-feature-rate-limiting": ["banhmi-feature-rate-limiting@workspace:examples/features/rate-limiting"],
 
