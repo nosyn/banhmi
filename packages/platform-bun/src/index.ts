@@ -1,6 +1,11 @@
 export { BunAdapter } from './bun-adapter'
 export { BunExecutionContext } from './execution-context'
-export { BanhmiFactory, HTTP_ADAPTER_TOKEN } from './factory'
+export {
+  BanhmiFactory,
+  CONTAINER_TOKEN,
+  HTTP_ADAPTER_TOKEN,
+  MODULE_TREE_TOKEN,
+} from './factory'
 export { GlobalExceptionFilter } from './global-filter'
 export { BunRouteCtx } from './route-ctx'
 export { RouteExplorer } from './route-explorer'

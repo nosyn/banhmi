@@ -165,6 +165,14 @@
         "banhmi": "workspace:*",
       },
     },
+    "examples/features/events": {
+      "name": "banhmi-feature-events",
+      "version": "0.0.0",
+      "dependencies": {
+        "@banhmi/events": "workspace:*",
+        "banhmi": "workspace:*",
+      },
+    },
     "examples/features/file-upload": {
       "name": "banhmi-feature-file-upload",
       "version": "0.0.0",
@@ -294,6 +302,7 @@
         "@banhmi/cookies": "workspace:*",
         "@banhmi/core": "workspace:*",
         "@banhmi/crypto": "workspace:*",
+        "@banhmi/events": "workspace:*",
         "@banhmi/jwt": "workspace:*",
         "@banhmi/logger": "workspace:*",
         "@banhmi/middleware": "workspace:*",
@@ -372,6 +381,15 @@
       "version": "0.1.0",
       "dependencies": {
         "banhmi": "workspace:*",
+      },
+    },
+    "packages/events": {
+      "name": "@banhmi/events",
+      "version": "0.1.0",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/core": "workspace:*",
+        "@banhmi/platform-bun": "workspace:*",
       },
     },
     "packages/jwt": {
@@ -604,6 +622,8 @@
     "@banhmi/core": ["@banhmi/core@workspace:packages/core"],
 
     "@banhmi/crypto": ["@banhmi/crypto@workspace:packages/crypto"],
+
+    "@banhmi/events": ["@banhmi/events@workspace:packages/events"],
 
     "@banhmi/jwt": ["@banhmi/jwt@workspace:packages/jwt"],
 
@@ -892,6 +912,8 @@
     "banhmi-feature-crypto": ["banhmi-feature-crypto@workspace:examples/features/crypto"],
 
     "banhmi-feature-csrf": ["banhmi-feature-csrf@workspace:examples/features/csrf"],
+
+    "banhmi-feature-events": ["banhmi-feature-events@workspace:examples/features/events"],
 
     "banhmi-feature-file-upload": ["banhmi-feature-file-upload@workspace:examples/features/file-upload"],
 

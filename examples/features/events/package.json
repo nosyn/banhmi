@@ -1,0 +1,10 @@
+{
+  "name": "banhmi-feature-events",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "dependencies": {
+    "@banhmi/events": "workspace:*",
+    "banhmi": "workspace:*"
+  }
+}

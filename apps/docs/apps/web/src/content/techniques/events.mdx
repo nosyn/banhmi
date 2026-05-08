@@ -1,23 +1,116 @@
 # Events
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+`@banhmi/events` provides an in-process event bus with wildcard pattern
+matching. Publish from any provider via `EventEmitter.emit` or
+`emitAsync`; subscribe declaratively with the `@OnEvent` method decorator
+or imperatively via `emitter.on`.
 
 ## When to use
 
-TBD
+- Decoupled communication between modules without a direct dependency.
+- Reacting to domain events (e.g. `user.created`, `order.shipped`).
+- Fan-out: multiple services reacting to the same event.
+- Async processing that should not block the HTTP response.
 
 ## Setup
 
-TBD
+```ts
+import { Module } from 'banhmi'
+import { EventEmitterModule } from '@banhmi/events'
 
-## Usage
+@Module({ imports: [EventEmitterModule.forRoot()] })
+class AppModule {}
+```
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+## Emitting events
+
+Inject `EVENT_EMITTER_TOKEN` and call `emit` or `emitAsync`:
+
+```ts
+import { Injectable } from 'banhmi'
+import { EventEmitter, EVENT_EMITTER_TOKEN } from '@banhmi/events'
+
+@Injectable()
+class OrderService {
+  static inject = [EVENT_EMITTER_TOKEN] as const
+  constructor(private readonly emitter: EventEmitter) {}
+
+  async placeOrder(order: Order) {
+    // ... persist
+    this.emitter.emit('order.placed', order)         // fire-and-forget
+    await this.emitter.emitAsync('order.placed', order) // await all listeners
+  }
+}
+```
+
+## Listening with `@OnEvent`
+
+Add `@OnEvent(pattern)` to any method on a registered provider or controller.
+The explorer discovers and wires it up automatically at bootstrap.
+
+```ts
+import { Injectable } from 'banhmi'
+import { OnEvent } from '@banhmi/events'
+
+@Injectable()
+class NotificationService {
+  @OnEvent('order.*')
+  async handleOrderEvent(payload: unknown, eventName: string) {
+    console.log(eventName, payload)
+  }
+}
+```
+
+Register the service in your module's `providers` array.
+
+## Wildcard patterns
+
+Segments are separated by `.`. Two wildcards are supported:
+
+| Pattern | Matches |
+|---|---|
+| `user.*` | `user.created`, `user.deleted` — exactly one more segment |
+| `user.**` | `user`, `user.created`, `user.created.email` — zero or more |
+
+## Async listeners and errors
+
+`emitAsync` runs all matching listeners concurrently with `Promise.all`.
+If any listener rejects, the returned promise rejects with that error.
+
+`emit` (synchronous) catches all listener errors and silently discards
+them so remaining listeners always run.
+
+## Imperative subscribe
+
+```ts
+const unsubscribe = emitter.on('user.*', (payload) => { /* … */ })
+// remove when done:
+unsubscribe()
+```
 
 ## API reference
 
-TBD
+### `EventEmitter`
+
+| Method | Description |
+|---|---|
+| `emit(event, payload)` | Synchronous dispatch — errors are swallowed |
+| `emitAsync(event, payload)` | Async dispatch — returns `Promise<void[]>` |
+| `on(pattern, listener)` | Subscribe; returns unsubscribe function |
+| `off(pattern, listener)` | Remove subscription |
+
+### `OnEvent(pattern, opts?)`
+
+Method decorator. Stores the pattern in `Symbol.metadata`; the explorer
+registers the method on the global emitter at bootstrap.
+
+### `EventListener`
+
+```ts
+type EventListener = (payload: unknown, eventName: string) => void | Promise<void>
+```
 
 ## See also
 
-TBD
+- `@banhmi/logger` — structured logging.
+- `@banhmi/scheduling` — schedule recurring and one-shot tasks.

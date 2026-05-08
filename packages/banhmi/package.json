@@ -16,6 +16,7 @@
     "@banhmi/security": "workspace:*",
     "@banhmi/throttler": "workspace:*",
     "@banhmi/common": "workspace:*",
+    "@banhmi/events": "workspace:*",
     "@banhmi/compression": "workspace:*",
     "@banhmi/cookies": "workspace:*",
     "@banhmi/config": "workspace:*",
