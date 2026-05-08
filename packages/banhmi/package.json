@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@banhmi/cache": "workspace:*",
+    "@banhmi/crypto": "workspace:*",
     "@banhmi/common": "workspace:*",
     "@banhmi/compression": "workspace:*",
     "@banhmi/cookies": "workspace:*",

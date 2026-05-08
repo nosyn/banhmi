@@ -119,6 +119,13 @@
         "banhmi": "workspace:*",
       },
     },
+    "examples/features/crypto": {
+      "name": "banhmi-feature-crypto",
+      "version": "0.0.0",
+      "dependencies": {
+        "@banhmi/crypto": "workspace:*",
+      },
+    },
     "examples/features/file-upload": {
       "name": "banhmi-feature-file-upload",
       "version": "0.0.0",
@@ -209,6 +216,7 @@
         "@banhmi/config": "workspace:*",
         "@banhmi/cookies": "workspace:*",
         "@banhmi/core": "workspace:*",
+        "@banhmi/crypto": "workspace:*",
         "@banhmi/jwt": "workspace:*",
         "@banhmi/middleware": "workspace:*",
         "@banhmi/multipart": "workspace:*",
@@ -277,6 +285,13 @@
       "version": "0.1.0",
       "dependencies": {
         "@banhmi/common": "workspace:*",
+      },
+    },
+    "packages/crypto": {
+      "name": "@banhmi/crypto",
+      "version": "0.1.0",
+      "dependencies": {
+        "banhmi": "workspace:*",
       },
     },
     "packages/jwt": {
@@ -468,6 +483,8 @@
     "@banhmi/cookies": ["@banhmi/cookies@workspace:packages/cookies"],
 
     "@banhmi/core": ["@banhmi/core@workspace:packages/core"],
+
+    "@banhmi/crypto": ["@banhmi/crypto@workspace:packages/crypto"],
 
     "@banhmi/jwt": ["@banhmi/jwt@workspace:packages/jwt"],
 
@@ -740,6 +757,8 @@
     "banhmi-feature-compression": ["banhmi-feature-compression@workspace:examples/features/compression"],
 
     "banhmi-feature-cookies": ["banhmi-feature-cookies@workspace:examples/features/cookies"],
+
+    "banhmi-feature-crypto": ["banhmi-feature-crypto@workspace:examples/features/crypto"],
 
     "banhmi-feature-file-upload": ["banhmi-feature-file-upload@workspace:examples/features/file-upload"],
 

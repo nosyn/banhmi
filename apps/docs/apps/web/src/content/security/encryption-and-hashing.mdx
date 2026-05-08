@@ -1,23 +1,65 @@
 # Encryption and Hashing
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+`@banhmi/crypto` provides pure helper functions for password hashing (Argon2id)
+and symmetric encryption (AES-256-GCM). No DI or module registration required —
+just import and call.
 
 ## When to use
 
-TBD
+- Hashing user passwords before storing them in a database.
+- Encrypting sensitive values at rest (e.g. tokens, secrets, PII fields).
+- Generating cryptographically secure random tokens for session IDs, CSRF
+  tokens, password-reset links, etc.
 
 ## Setup
 
-TBD
+```bash
+bun add @banhmi/crypto
+```
+
+No module registration needed. All exports are plain async functions.
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+<CodeFromExample slug="crypto" />
 
 ## API reference
 
-TBD
+### `hashPassword(plain, opts?)`
+
+Hashes a password with Argon2id via `Bun.password`. Options: `algorithm`
+(`'argon2id'` default), `memoryCost` (KiB, default 19456), `timeCost`
+(iterations, default 2).
+
+### `verifyPassword(plain, hash)`
+
+Returns `true` when `plain` matches the Argon2 `hash`, `false` otherwise.
+
+### `generateKey()`
+
+Generates a fresh 256-bit AES-GCM key and returns it as a base64-URL string.
+
+### `encrypt(plaintext, keyBase64)`
+
+Encrypts `plaintext` with AES-256-GCM. Returns `{ ciphertext, iv }` — both
+base64-URL encoded. A fresh 12-byte IV is generated per call.
+
+### `decrypt(payload, keyBase64)`
+
+Decrypts `{ ciphertext, iv }` from `encrypt`. Throws if the auth tag fails
+(tampered ciphertext or wrong key).
+
+### `randomBytes(length)`
+
+Returns a `Uint8Array` of `length` cryptographically random bytes.
+
+### `randomToken(bytes?)`
+
+Returns a URL-safe base64 token (no `+`, `/`, `=`). Default 32 bytes → 43
+chars.
 
 ## See also
 
-TBD
+- [CSRF protection](./csrf) — uses `randomToken` for double-submit cookies.
+- [Authentication](./authentication) — uses `hashPassword`/`verifyPassword`
+  in local strategy.
