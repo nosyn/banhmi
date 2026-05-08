@@ -14,8 +14,9 @@ export class JwtService {
   }
 
   async sign(payload: Record<string, unknown>): Promise<string> {
+    const alg = this.options.algorithm ?? 'HS256'
     const builder = new SignJWT(payload as JWTPayload)
-      .setProtectedHeader({ alg: 'HS256' })
+      .setProtectedHeader({ alg })
       .setIssuedAt()
 
     if (this.options.expiresIn)
@@ -28,6 +29,7 @@ export class JwtService {
 
   async verify(token: string): Promise<JWTPayload> {
     const { payload } = await jwtVerify(token, this.secretKey, {
+      algorithms: [this.options.algorithm ?? 'HS256'],
       issuer: this.options.issuer,
       audience: this.options.audience,
     })
