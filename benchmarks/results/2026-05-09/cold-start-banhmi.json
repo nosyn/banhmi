@@ -1,0 +1,8 @@
+{
+  "competitor": "banhmi",
+  "date": "2026-05-09",
+  "firstStatus": 200,
+  "pollAttempts": 2,
+  "startupMs": 154,
+  "scenario": "cold-start"
+}

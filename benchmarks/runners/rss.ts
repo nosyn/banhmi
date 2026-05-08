@@ -37,6 +37,25 @@ async function readRssKb(pid: number): Promise<number> {
 }
 
 /**
+ * Find the PID of the process listening on a given port using `lsof`.
+ * Returns null if not found.
+ */
+async function findPidByPort(port: number): Promise<number | null> {
+  return new Promise((resolve) => {
+    const child = spawn('lsof', ['-t', '-i', `TCP:${port}`, '-sTCP:LISTEN'])
+    let stdout = ''
+    child.stdout.on('data', (b: Buffer) => {
+      stdout += b.toString()
+    })
+    child.on('error', () => resolve(null))
+    child.on('exit', () => {
+      const pid = Number.parseInt(stdout.trim().split('\n')[0] ?? '', 10)
+      resolve(Number.isNaN(pid) ? null : pid)
+    })
+  })
+}
+
+/**
  * Spawn a competitor process, let it idle for `idleSeconds`, then snapshot RSS.
  *
  * @param cwd - Working directory of the competitor (absolute path).
@@ -54,12 +73,8 @@ export async function measureRssIdle(
     stdio: ['ignore', 'pipe', 'pipe'],
   })
 
-  const pid = child.pid
-  if (pid === undefined) throw new Error('Failed to get competitor PID')
-
-  // Wait for the process to boot and stabilise
-  const bootWait = Math.min(5_000, idleSeconds * 1_000)
-  await sleep(bootWait)
+  const spawnedPid = child.pid
+  if (spawnedPid === undefined) throw new Error('Failed to get competitor PID')
 
   // Wait for server to be ready
   const url = `http://localhost:${port}/`
@@ -73,15 +88,24 @@ export async function measureRssIdle(
     }
   }
 
+  // Resolve the actual listening PID (may differ from spawned PID under `bun run`)
+  const listeningPid = (await findPidByPort(port)) ?? spawnedPid
+
   // Idle for the remaining time
-  const elapsed = Math.round(bootWait / 1_000)
-  const remaining = idleSeconds - elapsed
-  if (remaining > 0) await sleep(remaining * 1_000)
+  await sleep(idleSeconds * 1_000)
 
   try {
-    const rssKb = await readRssKb(pid)
-    return { idleSeconds, pid, rssKb }
+    const rssKb = await readRssKb(listeningPid)
+    return { idleSeconds, pid: listeningPid, rssKb }
   } finally {
     child.kill('SIGTERM')
+    // Also kill the listening process if it differs from the spawned one
+    if (listeningPid !== spawnedPid) {
+      try {
+        process.kill(listeningPid, 'SIGTERM')
+      } catch {
+        // best-effort
+      }
+    }
   }
 }

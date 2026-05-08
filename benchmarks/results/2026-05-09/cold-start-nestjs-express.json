@@ -1,0 +1,8 @@
+{
+  "competitor": "nestjs-express",
+  "date": "2026-05-09",
+  "firstStatus": 200,
+  "pollAttempts": 4,
+  "startupMs": 309,
+  "scenario": "cold-start"
+}

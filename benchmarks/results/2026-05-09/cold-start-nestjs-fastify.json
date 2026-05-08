@@ -1,0 +1,8 @@
+{
+  "competitor": "nestjs-fastify",
+  "date": "2026-05-09",
+  "firstStatus": 200,
+  "pollAttempts": 4,
+  "startupMs": 307,
+  "scenario": "cold-start"
+}
