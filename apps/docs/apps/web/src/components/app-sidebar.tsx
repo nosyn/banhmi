@@ -1,5 +1,5 @@
-import * as React from "react"
-
+import * as React from 'react'
+import { Link, useRouterState } from '@tanstack/react-router'
 import {
   Sidebar,
   SidebarContent,
@@ -12,162 +12,33 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   SidebarRail,
-} from "@workspace/ui/components/sidebar"
-import { RowsIcon } from "@phosphor-icons/react"
+} from '@workspace/ui/components/sidebar'
+import { RowsIcon } from '@phosphor-icons/react'
+import docRoutes from '../content/doc-routes.json'
 
-// This is sample data.
-const data = {
-  navMain: [
-    {
-      title: "Getting Started",
-      url: "#",
-      items: [
-        {
-          title: "Installation",
-          url: "#",
-        },
-        {
-          title: "Project Structure",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Build Your Application",
-      url: "#",
-      items: [
-        {
-          title: "Routing",
-          url: "#",
-        },
-        {
-          title: "Data Fetching",
-          url: "#",
-          isActive: true,
-        },
-        {
-          title: "Rendering",
-          url: "#",
-        },
-        {
-          title: "Caching",
-          url: "#",
-        },
-        {
-          title: "Styling",
-          url: "#",
-        },
-        {
-          title: "Optimizing",
-          url: "#",
-        },
-        {
-          title: "Configuring",
-          url: "#",
-        },
-        {
-          title: "Testing",
-          url: "#",
-        },
-        {
-          title: "Authentication",
-          url: "#",
-        },
-        {
-          title: "Deploying",
-          url: "#",
-        },
-        {
-          title: "Upgrading",
-          url: "#",
-        },
-        {
-          title: "Examples",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "API Reference",
-      url: "#",
-      items: [
-        {
-          title: "Components",
-          url: "#",
-        },
-        {
-          title: "File Conventions",
-          url: "#",
-        },
-        {
-          title: "Functions",
-          url: "#",
-        },
-        {
-          title: "next.config.js Options",
-          url: "#",
-        },
-        {
-          title: "CLI",
-          url: "#",
-        },
-        {
-          title: "Edge Runtime",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Architecture",
-      url: "#",
-      items: [
-        {
-          title: "Accessibility",
-          url: "#",
-        },
-        {
-          title: "Fast Refresh",
-          url: "#",
-        },
-        {
-          title: "Next.js Compiler",
-          url: "#",
-        },
-        {
-          title: "Supported Browsers",
-          url: "#",
-        },
-        {
-          title: "Turbopack",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Community",
-      url: "#",
-      items: [
-        {
-          title: "Contribution Guide",
-          url: "#",
-        },
-      ],
-    },
-  ],
-}
+type Item = { slug: string; title: string }
+type Section = { items: Item[]; slug: string; title: string }
+const sections = (docRoutes as { sections: Section[] }).sections
+
+const itemHref = (sectionSlug: string, itemSlug: string) =>
+  `/docs/${sectionSlug}/${itemSlug}`
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { location } = useRouterState()
+  const currentPath = location.pathname
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" render={<a href="#" />}>
+            <SidebarMenuButton size="lg" render={<Link to="/" />}>
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                 <RowsIcon className="size-4" />
               </div>
               <div className="flex flex-col gap-0.5 leading-none">
-                <span className="font-medium">Documentation</span>
-                <span className="">v1.0.0</span>
+                <span className="font-medium">Banhmi Docs</span>
+                <span>v1.0.0</span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -176,29 +47,34 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu>
-            {data.navMain.map((item) => (
-              <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton
-                  render={<a href={item.url} className="font-medium" />}
-                >
-                  {item.title}
-                </SidebarMenuButton>
-                {item.items?.length ? (
+            {sections.map((section) => {
+              const items =
+                section.items.length > 0
+                  ? section.items
+                  : [{ slug: 'index', title: section.title }]
+              return (
+                <SidebarMenuItem key={section.slug}>
+                  <SidebarMenuButton className="font-medium">
+                    {section.title}
+                  </SidebarMenuButton>
                   <SidebarMenuSub>
-                    {item.items.map((item) => (
-                      <SidebarMenuSubItem key={item.title}>
-                        <SidebarMenuSubButton
-                          isActive={item.isActive}
-                          render={<a href={item.url} />}
-                        >
-                          {item.title}
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                    ))}
+                    {items.map((item) => {
+                      const href = itemHref(section.slug, item.slug)
+                      return (
+                        <SidebarMenuSubItem key={`${section.slug}/${item.slug}`}>
+                          <SidebarMenuSubButton
+                            isActive={currentPath === href}
+                            render={<Link to={href} />}
+                          >
+                            {item.title}
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      )
+                    })}
                   </SidebarMenuSub>
-                ) : null}
-              </SidebarMenuItem>
-            ))}
+                </SidebarMenuItem>
+              )
+            })}
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
