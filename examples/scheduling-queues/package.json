@@ -1,0 +1,22 @@
+{
+  "name": "banhmi-example-scheduling-queues",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --watch src/main.ts"
+  },
+  "dependencies": {
+    "@banhmi/core": "workspace:*",
+    "@banhmi/devtools": "workspace:*",
+    "@banhmi/events": "workspace:*",
+    "@banhmi/logger": "workspace:*",
+    "@banhmi/platform-bun": "workspace:*",
+    "@banhmi/queue": "workspace:*",
+    "@banhmi/redis": "workspace:*",
+    "@banhmi/scheduling": "workspace:*",
+    "@banhmi/testing": "workspace:*",
+    "banhmi": "workspace:*",
+    "ioredis": "^5.10.1"
+  }
+}

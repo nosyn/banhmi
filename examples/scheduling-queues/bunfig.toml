@@ -1,0 +1,2 @@
+[test]
+preload = ["../../packages/common/src/polyfill-symbol-metadata.ts"]

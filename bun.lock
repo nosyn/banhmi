@@ -319,6 +319,23 @@
         "banhmi": "workspace:*",
       },
     },
+    "examples/scheduling-queues": {
+      "name": "banhmi-example-scheduling-queues",
+      "version": "0.0.0",
+      "dependencies": {
+        "@banhmi/core": "workspace:*",
+        "@banhmi/devtools": "workspace:*",
+        "@banhmi/events": "workspace:*",
+        "@banhmi/logger": "workspace:*",
+        "@banhmi/platform-bun": "workspace:*",
+        "@banhmi/queue": "workspace:*",
+        "@banhmi/redis": "workspace:*",
+        "@banhmi/scheduling": "workspace:*",
+        "@banhmi/testing": "workspace:*",
+        "banhmi": "workspace:*",
+        "ioredis": "^5.10.1",
+      },
+    },
     "packages/auth": {
       "name": "@banhmi/auth",
       "version": "0.1.0",
@@ -1020,6 +1037,8 @@
     "avvio": ["avvio@8.4.0", "", { "dependencies": { "@fastify/error": "^3.3.0", "fastq": "^1.17.1" } }, "sha512-CDSwaxINFy59iNwhYnkvALBwZiTydGkOecZyPkqBpABYR1KqGEsET0VOOYDwtleZSUIdeY36DC2bSZ24CO1igA=="],
 
     "banhmi": ["banhmi@workspace:packages/banhmi"],
+
+    "banhmi-example-scheduling-queues": ["banhmi-example-scheduling-queues@workspace:examples/scheduling-queues"],
 
     "banhmi-feature-auth-jwt": ["banhmi-feature-auth-jwt@workspace:examples/features/auth-jwt"],
 
