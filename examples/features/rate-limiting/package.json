@@ -1,0 +1,10 @@
+{
+  "name": "banhmi-feature-rate-limiting",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "dependencies": {
+    "@banhmi/throttler": "workspace:*",
+    "banhmi": "workspace:*"
+  }
+}

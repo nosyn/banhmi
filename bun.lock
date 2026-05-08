@@ -169,6 +169,14 @@
         "banhmi": "workspace:*",
       },
     },
+    "examples/features/rate-limiting": {
+      "name": "banhmi-feature-rate-limiting",
+      "version": "0.0.0",
+      "dependencies": {
+        "@banhmi/throttler": "workspace:*",
+        "banhmi": "workspace:*",
+      },
+    },
     "examples/features/serialization": {
       "name": "banhmi-feature-serialization",
       "version": "0.0.0",
@@ -254,6 +262,7 @@
         "@banhmi/static": "workspace:*",
         "@banhmi/swagger": "workspace:*",
         "@banhmi/testing": "workspace:*",
+        "@banhmi/throttler": "workspace:*",
         "@banhmi/transform": "workspace:*",
         "@banhmi/validation": "workspace:*",
         "@banhmi/versioning": "workspace:*",
@@ -461,6 +470,22 @@
         "@banhmi/platform-bun": "workspace:*",
       },
     },
+    "packages/throttler": {
+      "name": "@banhmi/throttler",
+      "version": "0.1.0",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/core": "workspace:*",
+        "@banhmi/platform-bun": "workspace:*",
+        "banhmi": "workspace:*",
+      },
+      "peerDependencies": {
+        "@banhmi/redis": "workspace:*",
+      },
+      "optionalPeers": [
+        "@banhmi/redis",
+      ],
+    },
     "packages/transform": {
       "name": "@banhmi/transform",
       "version": "0.0.1",
@@ -548,6 +573,8 @@
     "@banhmi/swagger": ["@banhmi/swagger@workspace:packages/swagger"],
 
     "@banhmi/testing": ["@banhmi/testing@workspace:packages/testing"],
+
+    "@banhmi/throttler": ["@banhmi/throttler@workspace:packages/throttler"],
 
     "@banhmi/transform": ["@banhmi/transform@workspace:packages/transform"],
 
@@ -806,6 +833,8 @@
     "banhmi-feature-file-upload": ["banhmi-feature-file-upload@workspace:examples/features/file-upload"],
 
     "banhmi-feature-helmet": ["banhmi-feature-helmet@workspace:examples/features/helmet"],
+
+    "banhmi-feature-rate-limiting": ["banhmi-feature-rate-limiting@workspace:examples/features/rate-limiting"],
 
     "banhmi-feature-serialization": ["banhmi-feature-serialization@workspace:examples/features/serialization"],
 

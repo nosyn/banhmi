@@ -1,6 +1,7 @@
 export * from '@banhmi/cache'
 export * from '@banhmi/crypto'
 export * from '@banhmi/security'
+export * from '@banhmi/throttler'
 export * from '@banhmi/common'
 export * from '@banhmi/compression'
 export * from '@banhmi/config'

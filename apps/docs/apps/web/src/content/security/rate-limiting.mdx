@@ -1,23 +1,91 @@
-# Rate limiting
+# Rate Limiting
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+`@banhmi/throttler` provides token-bucket rate limiting. Use it to protect
+APIs from abuse by capping requests per IP (or any custom key) within a
+sliding time window.
 
 ## When to use
 
-TBD
+Add `ThrottlerModule.forRoot()` to limit requests globally. Override the
+default on specific routes with `@Throttle`; exempt a route with
+`@SkipThrottle`.
 
 ## Setup
 
-TBD
+```bash
+bun add @banhmi/throttler
+```
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+<CodeFromExample slug="rate-limiting" />
+
+## Configuration
+
+```ts
+ThrottlerModule.forRoot({
+  ttl: 60_000,              // window in ms (required)
+  limit: 100,               // max requests per window (required)
+  storage: new MemoryThrottlerStorage(),  // default; swap for Redis
+  keyGenerator: (req) => req.headers.get('x-forwarded-for') ?? 'unknown',
+})
+```
+
+## Per-route overrides
+
+```ts
+@Controller()
+class ApiController {
+  @Get('/upload')
+  @Throttle({ ttl: 60_000, limit: 5 })   // tighter limit for this route
+  upload() { ... }
+
+  @Get('/health')
+  @SkipThrottle()                          // no limit for health check
+  health() { return { ok: true } }
+}
+```
+
+## Response headers
+
+Every response includes:
+
+| Header | Description |
+|---|---|
+| `X-RateLimit-Limit` | Maximum requests in the window |
+| `X-RateLimit-Remaining` | Requests remaining in the current window |
+| `X-RateLimit-Reset` | Unix-ms timestamp when the window resets |
+
+When the limit is exceeded, the response is `429 Too Many Requests` with an
+additional `Retry-After` header (seconds until reset).
+
+## Redis storage
+
+For distributed deployments, use the Redis subpath export:
+
+```ts
+import { RedisThrottlerStorage } from '@banhmi/throttler/redis'
+ThrottlerModule.forRoot({ ttl: 60_000, limit: 100, storage: new RedisThrottlerStorage(redisClient) })
+```
 
 ## API reference
 
-TBD
+### `ThrottlerModule.forRoot(opts)`
+
+Registers the throttler middleware with the given options.
+
+### `@Throttle({ ttl, limit })`
+
+Class or method decorator. Overrides the module default for the decorated
+controller or handler.
+
+### `@SkipThrottle()`
+
+Class or method decorator. Exempts the decorated controller or handler from
+rate limiting entirely.
 
 ## See also
 
-TBD
+- [Helmet](./helmet)
+- [CORS](./cors)
+- [CSRF](./csrf)
