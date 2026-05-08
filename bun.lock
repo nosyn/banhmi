@@ -141,6 +141,14 @@
         "banhmi": "workspace:*",
       },
     },
+    "examples/features/session": {
+      "name": "banhmi-feature-session",
+      "version": "0.0.0",
+      "dependencies": {
+        "@banhmi/session": "workspace:*",
+        "banhmi": "workspace:*",
+      },
+    },
     "examples/features/sse": {
       "name": "banhmi-feature-sse",
       "version": "0.0.0",
@@ -193,6 +201,7 @@
         "@banhmi/platform-bun": "workspace:*",
         "@banhmi/redis": "workspace:*",
         "@banhmi/s3": "workspace:*",
+        "@banhmi/session": "workspace:*",
         "@banhmi/sqlite": "workspace:*",
         "@banhmi/sse": "workspace:*",
         "@banhmi/static": "workspace:*",
@@ -318,6 +327,26 @@
         "@banhmi/platform-bun": "workspace:*",
       },
     },
+    "packages/session": {
+      "name": "@banhmi/session",
+      "version": "0.0.1",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/cookies": "workspace:*",
+        "@banhmi/core": "workspace:*",
+      },
+      "devDependencies": {
+        "@banhmi/platform-bun": "workspace:*",
+        "@banhmi/redis": "workspace:*",
+        "banhmi": "workspace:*",
+      },
+      "peerDependencies": {
+        "@banhmi/redis": "workspace:*",
+      },
+      "optionalPeers": [
+        "@banhmi/redis",
+      ],
+    },
     "packages/sqlite": {
       "name": "@banhmi/sqlite",
       "version": "0.3.0",
@@ -437,6 +466,8 @@
     "@banhmi/redis": ["@banhmi/redis@workspace:packages/redis"],
 
     "@banhmi/s3": ["@banhmi/s3@workspace:packages/s3"],
+
+    "@banhmi/session": ["@banhmi/session@workspace:packages/session"],
 
     "@banhmi/sqlite": ["@banhmi/sqlite@workspace:packages/sqlite"],
 
@@ -697,6 +728,8 @@
     "banhmi-feature-serialization": ["banhmi-feature-serialization@workspace:examples/features/serialization"],
 
     "banhmi-feature-serve-static": ["banhmi-feature-serve-static@workspace:examples/features/serve-static"],
+
+    "banhmi-feature-session": ["banhmi-feature-session@workspace:examples/features/session"],
 
     "banhmi-feature-sse": ["banhmi-feature-sse@workspace:examples/features/sse"],
 

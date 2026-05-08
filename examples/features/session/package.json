@@ -1,0 +1,10 @@
+{
+  "name": "banhmi-feature-session",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "dependencies": {
+    "@banhmi/session": "workspace:*",
+    "banhmi": "workspace:*"
+  }
+}

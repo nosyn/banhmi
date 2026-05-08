@@ -1,23 +1,102 @@
 # Session
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
-
-## When to use
-
-TBD
+`@banhmi/session` provides server-side sessions with a pluggable store,
+signed cookies via HMAC-SHA256, and a clean decorator-driven API.
 
 ## Setup
 
-TBD
+```ts
+import { SessionModule } from '@banhmi/session'
 
-## Usage
+@Module({
+  imports: [
+    SessionModule.forRoot({
+      secret: process.env.SESSION_SECRET,
+      cookie: { maxAge: 86400, secure: true },
+    }),
+  ],
+})
+class AppModule {}
+```
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+## Basic usage
 
-## API reference
+Apply `@Session(opts)` to the handler method and call `getSession(ctx)` inside
+the handler:
 
-TBD
+```ts
+import { Session, getSession } from '@banhmi/session'
+
+@Controller()
+class CounterController {
+  @Get('/')
+  @Session({ secret: 'my-secret' })
+  async index(ctx: RouteCtx) {
+    const s = getSession(ctx)
+    const count = (s.get<number>('count') ?? 0) + 1
+    s.set('count', count)
+    return { count }
+  }
+}
+```
+
+## SessionRef API
+
+| Method | Description |
+|--------|-------------|
+| `get<T>(key)` | Read a session value |
+| `set(key, value)` | Write a session value (marks dirty) |
+| `destroy()` | Clear data and send an expiry cookie |
+| `regenerate()` | New id, preserve data — call after privilege change |
+
+## Stores
+
+### Memory (default)
+
+```ts
+import { MemorySessionStore } from '@banhmi/session'
+
+SessionModule.forRoot({
+  secret: 'my-secret',
+  store: new MemorySessionStore(),
+})
+```
+
+Suitable for development. Data is lost on restart.
+
+### Redis
+
+```ts
+import { RedisSessionStore } from '@banhmi/session/redis'
+import { RedisModule } from '@banhmi/redis'
+
+// Instantiate the Redis store with your RedisService instance
+const redisStore = new RedisSessionStore(redisService)
+
+SessionModule.forRoot({
+  secret: 'my-secret',
+  store: redisStore,
+})
+```
+
+Import from the `@banhmi/session/redis` subpath to avoid pulling in
+`ioredis` unless it's installed.
+
+## Cookie options
+
+| Option      | Default      | Description              |
+|-------------|--------------|--------------------------|
+| `name`      | `banhmi.sid` | Cookie name              |
+| `maxAge`    | 86400        | TTL in seconds           |
+| `secure`    | `false`      | HTTPS-only flag          |
+| `sameSite`  | `'lax'`      | SameSite policy          |
+| `httpOnly`  | `true`       | HttpOnly flag            |
+
+## Live example
+
+{/* <CodeFromExample slug="session" /> */}
 
 ## See also
 
-TBD
+- [`@banhmi/cookies`](/techniques/cookies) — cookie parsing and signing
+- [`@banhmi/redis`](/techniques/redis) — Redis integration

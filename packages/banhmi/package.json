@@ -24,6 +24,7 @@
     "@banhmi/sqlite": "workspace:*",
     "@banhmi/middleware": "workspace:*",
     "@banhmi/multipart": "workspace:*",
+    "@banhmi/session": "workspace:*",
     "@banhmi/static": "workspace:*",
     "@banhmi/swagger": "workspace:*",
     "@banhmi/testing": "workspace:*",
