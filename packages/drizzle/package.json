@@ -1,0 +1,33 @@
+{
+  "name": "@banhmi/drizzle",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@banhmi/common": "workspace:*",
+    "@banhmi/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@banhmi/platform-bun": "workspace:*",
+    "drizzle-orm": "^0.43.1"
+  },
+  "peerDependencies": {
+    "drizzle-orm": ">=0.30",
+    "drizzle-kit": ">=0.20",
+    "postgres": ">=3"
+  },
+  "peerDependenciesMeta": {
+    "drizzle-orm": {
+      "optional": true
+    },
+    "drizzle-kit": {
+      "optional": true
+    },
+    "postgres": {
+      "optional": true
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "banhmi-feature-drizzle",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "dependencies": {
+    "@banhmi/drizzle": "workspace:*",
+    "banhmi": "workspace:*",
+    "drizzle-orm": "^0.43.1"
+  }
+}

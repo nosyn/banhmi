@@ -1,0 +1,127 @@
+# Drizzle ORM
+
+`@banhmi/drizzle` integrates [Drizzle ORM](https://orm.drizzle.team/) into
+Banhmi's DI system. `DrizzleModule.forRoot(opts)` initialises a drizzle `db`
+instance via a driver factory and registers it under the `DRIZZLE_DB` token.
+
+Two drivers ship out of the box:
+
+| Driver | Peer deps | Notes |
+|---|---|---|
+| `sqliteDriver` | `drizzle-orm` | Uses `bun:sqlite` (built into Bun — no install) |
+| `postgresJsDriver` | `drizzle-orm`, `postgres` | Uses the `postgres-js` client |
+
+Drivers are **lazy**: their adapter modules are imported inside `build()` so
+unused drivers don't require their peer deps to be installed.
+
+## When to use
+
+- You want Drizzle's type-safe query builder and schema inference.
+- You need a zero-runtime-overhead ORM that runs natively on Bun.
+- You want to share a Drizzle schema across your app and DI container.
+
+## Setup
+
+```bash
+# SQLite driver (no extra runtime dep — bun:sqlite is built-in)
+bun add drizzle-orm @banhmi/drizzle
+
+# Postgres-js driver
+bun add drizzle-orm postgres @banhmi/drizzle
+```
+
+## SQLite quick-start
+
+```ts
+import { DrizzleModule, sqliteDriver } from '@banhmi/drizzle'
+import { Module } from 'banhmi'
+import * as schema from './schema'
+
+@Module({
+  imports: [
+    DrizzleModule.forRoot({
+      driver: sqliteDriver({ filename: './db.sqlite' }),
+      schema,                     // enables db.query.* relational API
+    }),
+  ],
+})
+class AppModule {}
+```
+
+## Postgres quick-start
+
+```ts
+import { DrizzleModule, postgresJsDriver } from '@banhmi/drizzle'
+import { Module } from 'banhmi'
+
+@Module({
+  imports: [
+    DrizzleModule.forRoot({
+      driver: postgresJsDriver({
+        url: Bun.env.DATABASE_URL ?? '',
+        max: 10,
+      }),
+    }),
+  ],
+})
+class AppModule {}
+```
+
+## Injecting the db
+
+Use `@InjectDb()` as a readable marker alongside the `static inject` tuple:
+
+```ts
+import { DRIZZLE_DB, InjectDb } from '@banhmi/drizzle'
+import type { BunSQLiteDatabase } from 'drizzle-orm/bun-sqlite'
+
+class CatService {
+  static inject = [DRIZZLE_DB] as const
+
+  constructor(@InjectDb() private readonly db: BunSQLiteDatabase) {}
+
+  findAll() {
+    return this.db.select().from(cats).all()
+  }
+}
+```
+
+## Usage
+
+{/* <CodeFromExample slug="drizzle" /> */}
+
+## API reference
+
+### `DrizzleModule.forRoot(opts)`
+
+| Option | Type | Description |
+|---|---|---|
+| `driver` | `DrizzleDriver` | The driver factory (`sqliteDriver` or `postgresJsDriver`) |
+| `schema` | `unknown` | Optional schema object for relational query API |
+
+### `sqliteDriver(opts)`
+
+| Option | Type | Description |
+|---|---|---|
+| `filename` | `string` | SQLite file path. Use `':memory:'` for in-memory. |
+| `schema` | `unknown` | Optional — forwarded to the drizzle factory |
+
+### `postgresJsDriver(opts)`
+
+| Option | Type | Description |
+|---|---|---|
+| `url` | `string` | Full Postgres connection URL |
+| `max` | `number?` | Max pool size (forwarded to `postgres`) |
+| `schema` | `unknown` | Optional — forwarded to the drizzle factory |
+
+### Tokens
+
+| Token | Type | Description |
+|---|---|---|
+| `DRIZZLE_DB` | `unknown` | The drizzle `db` instance (cast to your drizzle DB type) |
+
+## See also
+
+- [bun:sqlite](/bun-native/bun-sqlite) — raw SQLite without Drizzle.
+- [Database](/techniques/database) — Bun.sql postgres + mysql.
+- [Mongo](/techniques/mongo) — MongoDB integration.

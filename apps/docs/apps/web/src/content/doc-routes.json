@@ -225,7 +225,8 @@
         { "slug": "commander", "title": "Commander" },
         { "slug": "async-local-storage", "title": "Async local storage" },
         { "slug": "necord", "title": "Necord" },
-        { "slug": "suites", "title": "Suites (Automock)" }
+        { "slug": "suites", "title": "Suites (Automock)" },
+        { "slug": "drizzle", "title": "Drizzle ORM" }
       ]
     },
     {
