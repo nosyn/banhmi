@@ -1,23 +1,72 @@
 # Other Features
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+## SDL export (`generateSdl`)
 
-## When to use
+`generateSdl` walks `@ApiProperty` metadata on model classes and produces a
+GraphQL SDL string. This is the bridge between `@banhmi/openapi` (Wave 5) and the
+upcoming `@banhmi/graphql` package (Wave 7).
 
-TBD
+```ts
+import { ApiProperty } from '@banhmi/openapi'
+import { generateSdl } from '@banhmi/openapi'
 
-## Setup
+class User {
+  @ApiProperty({ type: 'number', format: 'int' })
+  id: number
 
-TBD
+  @ApiProperty({ type: 'string' })
+  name: string
 
-## Usage
+  @ApiProperty({ type: 'string', required: false })
+  bio?: string
+}
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+class Post {
+  @ApiProperty({ type: 'string' })
+  title: string
 
-## API reference
+  @ApiProperty({ type: User })
+  author: User
+}
 
-TBD
+const sdl = generateSdl([User, Post])
+// type User {
+//   id: Int!
+//   name: String!
+//   bio: String
+// }
+//
+// type Post {
+//   title: String!
+//   author: User!
+// }
+```
+
+### Type mapping
+
+| `@ApiProperty` type    | GraphQL type |
+|------------------------|-------------|
+| `'string'`             | `String`    |
+| `'number'` (default)   | `Float`     |
+| `'number'` + `format:'int'` | `Int` |
+| `'boolean'`            | `Boolean`   |
+| `['string']`           | `[String!]` |
+| Class ref              | Type name   |
+
+Required properties (default) end with `!`. Pass `required: false` for optional.
+
+## `@ApiExtraModels`
+
+Register additional model classes in `components/schemas` even if they are not
+directly referenced in a route:
+
+```ts
+@ApiExtraModels(PaginationDto)
+@Controller('/items')
+export class ItemsController {}
+```
 
 ## See also
 
-TBD
+- [Decorators](./decorators) — full decorator reference
+- [Types and Parameters](./types-and-parameters) — type mapping

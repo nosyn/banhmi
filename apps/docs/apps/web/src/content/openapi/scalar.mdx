@@ -1,23 +1,62 @@
-# Scalar
+# Scalar UI
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+`@banhmi/openapi` uses [Scalar](https://scalar.com) as the **default** API documentation
+renderer. Scalar loads its assets from the jsDelivr CDN. The classic Swagger UI is
+available as an opt-in.
 
-## When to use
+## Switching renderers
 
-TBD
+Pass the `ui` option to `SwaggerModule.setup`:
 
-## Setup
+```ts
+// Default — Scalar UI
+SwaggerModule.setup('/api', app, doc)
+SwaggerModule.setup('/api', app, doc, { ui: 'scalar' })
 
-TBD
+// Classic Swagger UI
+SwaggerModule.setup('/api', app, doc, { ui: 'swagger' })
+```
+
+## Scalar theme
+
+Use `renderScalarHtml` directly if you need theme or title customisation:
+
+```ts
+import { renderScalarHtml } from '@banhmi/openapi'
+
+const html = renderScalarHtml('/api/openapi.json', {
+  theme: 'purple',
+  title: 'My API Docs',
+})
+```
+
+Available themes: `default`, `alternate`, `moon`, `purple`, `solarized`, `bluePlanet`,
+`deepSpace`, `saturn`, `kepler`, `elysiajs`, `fastify`, `mars`.
+
+## Serving assets locally
+
+The CDN script tag in `renderScalarHtml` points to:
+
+```
+https://cdn.jsdelivr.net/npm/@scalar/api-reference
+```
+
+To pin a specific version or serve from a local bundle, call `renderScalarHtml` with
+a custom HTML wrapper instead of using `SwaggerModule.setup`.
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+{/* <CodeFromExample slug="openapi-scalar" /> */}
+{/* <CodeFromExample slug="openapi-swagger-ui" /> */}
 
 ## API reference
 
-TBD
+| Function | Description |
+|----------|-------------|
+| `renderScalarHtml(specUrl, opts?)` | Returns Scalar UI HTML string |
+| `renderSwaggerHtml(specUrl, opts?)` | Returns Swagger UI HTML string |
 
 ## See also
 
-TBD
+- [Introduction](./introduction) — initial setup
+- [Decorators](./decorators) — full decorator reference

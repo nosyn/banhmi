@@ -1,23 +1,54 @@
 # Security
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+`@banhmi/openapi` provides three security decorators that map to OpenAPI
+`securitySchemes`: `@ApiBearerAuth`, `@ApiCookieAuth`, and `@ApiSecurity`.
 
-## When to use
+## Bearer authentication
 
-TBD
+Register the scheme in `DocumentBuilder`, then apply the decorator:
 
-## Setup
+```ts
+// main.ts
+const doc = new DocumentBuilder()
+  .setTitle('My API')
+  .setVersion('1')
+  .addBearerAuth()  // registers 'bearerAuth' scheme
+  .build()
 
-TBD
+// controller.ts
+@ApiBearerAuth()                    // applies to all routes in controller
+@Controller('/admin')
+export class AdminController {
+  @ApiBearerAuth('custom-scheme')   // or apply per-handler
+  @Get('/secret')
+  secret() {}
+}
+```
 
-## Usage
+## Cookie authentication
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+const doc = new DocumentBuilder()
+  .setTitle('My API')
+  .setVersion('1')
+  .build()
+// Register cookie scheme manually:
+// doc.components.securitySchemes.cookieAuth = { type: 'apiKey', in: 'cookie', name: 'session' }
 
-## API reference
+@ApiCookieAuth()
+@Controller('/profile')
+export class ProfileController {}
+```
 
-TBD
+## Named security schemes
+
+```ts
+@ApiSecurity('oauth2-scopes')
+@Get('/protected')
+protected() {}
+```
 
 ## See also
 
-TBD
+- [Decorators](./decorators) — full decorator reference
+- [Introduction](./introduction) — initial setup

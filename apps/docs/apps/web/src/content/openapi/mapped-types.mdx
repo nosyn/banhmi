@@ -1,23 +1,36 @@
 # Mapped Types
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Mapped types let you derive DTO variants (e.g. `PartialType`, `PickType`,
+`OmitType`) that carry over `@ApiProperty` metadata. This feature is **planned**
+for a future wave; the current Wave 5 ships the decorator primitives on which
+mapped types will be built.
 
-## When to use
+## Planned API
 
-TBD
+```ts
+// Future wave — not yet available
+import { PartialType, PickType, OmitType } from '@banhmi/openapi'
 
-## Setup
+class UpdateCatDto extends PartialType(CreateCatDto) {}
+class CatSummaryDto extends PickType(CreateCatDto, ['name'] as const) {}
+```
 
-TBD
+## Current workaround
 
-## Usage
+Manually re-declare the DTO with the desired properties and `@ApiProperty`
+decorators:
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+class UpdateCatDto {
+  @ApiProperty({ type: 'string', required: false })
+  name?: string
 
-## API reference
-
-TBD
+  @ApiProperty({ type: 'number', required: false })
+  age?: number
+}
+```
 
 ## See also
 
-TBD
+- [Decorators](./decorators) — `@ApiProperty` reference
+- [CLI Plugin](./cli-plugin) — auto-inject decorators

@@ -1,23 +1,105 @@
 # Decorators
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+`@banhmi/openapi` exports a full set of decorators matching NestJS `@nestjs/swagger`.
+All decorators use TC39 Stage 3 syntax and write to `Symbol.metadata` — no
+`reflect-metadata` required.
 
-## When to use
+## Controller decorators
 
-TBD
+### `@ApiTags(...names)`
 
-## Setup
+Tag a controller with one or more documentation tags.
 
-TBD
+```ts
+@ApiTags('cats', 'animals')
+@Controller('/cats')
+export class CatsController {}
+```
+
+### `@ApiBearerAuth(name?)`
+
+Require Bearer token authentication (scheme name defaults to `'bearerAuth'`).
+
+```ts
+@ApiBearerAuth()
+@Controller('/admin')
+export class AdminController {}
+```
+
+### `@ApiCookieAuth(name?)`
+
+Require cookie-based authentication.
+
+### `@ApiSecurity(name)`
+
+Apply any named security scheme defined in `DocumentBuilder`.
+
+### `@ApiExtraModels(...classes)`
+
+Register additional model classes in `components/schemas`.
+
+## Handler decorators
+
+### `@ApiOperation({ summary, description, deprecated })`
+
+```ts
+@ApiOperation({ summary: 'List cats', description: 'Returns all cats.' })
+@Get()
+findAll() {}
+```
+
+### `@ApiParam({ name, type, description, required })`
+
+Document a path parameter.
+
+### `@ApiQuery({ name, type, description, required })`
+
+Document a query parameter.
+
+### `@ApiBody({ type, description, required })`
+
+Document the request body.
+
+### `@ApiResponse({ status, description, type, schema })`
+
+Document a response. Multiple decorators may be stacked.
+
+```ts
+@ApiResponse({ status: 200, description: 'Cat found', type: Cat })
+@ApiResponse({ status: 404, description: 'Not found' })
+@Get('/:id')
+findOne() {}
+```
+
+### `@ApiExcludeEndpoint()`
+
+Exclude the decorated handler from the generated spec.
+
+## Property decorators
+
+### `@ApiProperty(opts?)`
+
+Document a class property for the OpenAPI schema.
+
+```ts
+export class Cat {
+  @ApiProperty({ type: 'string', example: 'Whiskers', description: 'Cat name' })
+  name: string
+
+  @ApiProperty({ type: 'number', required: false })
+  age?: number
+}
+```
+
+### `@ApiHideProperty()`
+
+Exclude a property from the generated schema.
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
-
-## API reference
-
-TBD
+{/* <CodeFromExample slug="openapi-scalar" /> */}
 
 ## See also
 
-TBD
+- [Types and Parameters](./types-and-parameters) — type mapping reference
+- [CLI Plugin](./cli-plugin) — auto-inject `@ApiProperty` without writing decorators

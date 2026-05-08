@@ -1,23 +1,59 @@
-# Introduction
+# OpenAPI Introduction
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+`@banhmi/openapi` provides first-class OpenAPI 3.1.0 support for Banhmi applications.
+It ships a `DocumentBuilder` for constructing the spec, a `SwaggerExplorer` that
+walks your controller metadata, `SwaggerModule.setup()` to mount the UI and JSON
+endpoint, and a full set of decorators matching NestJS `@nestjs/swagger`.
 
 ## When to use
 
-TBD
+Use `@banhmi/openapi` whenever you want to expose a self-documenting HTTP API.
+The Scalar UI (default) or classic Swagger UI is served alongside the raw JSON spec.
 
 ## Setup
 
-TBD
+```bash
+# Already included in banhmi — or install directly:
+bun add @banhmi/openapi
+```
+
+```ts
+// main.ts
+import { DocumentBuilder, SwaggerModule } from '@banhmi/openapi'
+import { BanhmiFactory } from '@banhmi/platform-bun'
+import { AppModule } from './app.module'
+
+const app = await BanhmiFactory.create(AppModule)
+
+const doc = new DocumentBuilder()
+  .setTitle('My API')
+  .setVersion('1.0.0')
+  .setDescription('Built with Banhmi')
+  .build()
+
+SwaggerModule.setup('/api', app, doc)
+await app.listen(3000)
+// Scalar UI:   http://localhost:3000/api
+// OpenAPI JSON: http://localhost:3000/api/openapi.json
+```
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+{/* <CodeFromExample slug="openapi-scalar" /> */}
 
 ## API reference
 
-TBD
+| Export | Description |
+|--------|-------------|
+| `DocumentBuilder` | Fluent builder for OpenAPI documents |
+| `SwaggerModule.setup(path, app, doc, opts?)` | Mount UI + JSON endpoint |
+| `SwaggerExplorer` | Walks controllers and populates `doc.paths` |
+| `renderScalarHtml(specUrl, opts?)` | Render Scalar UI HTML |
+| `renderSwaggerHtml(specUrl, opts?)` | Render Swagger UI HTML |
+| `generateSdl(models)` | Generate GraphQL SDL from decorated models |
 
 ## See also
 
-TBD
+- [Scalar UI](./scalar) — switching between Scalar and Swagger UI
+- [Decorators](./decorators) — full decorator reference
+- [CLI Plugin](./cli-plugin) — auto-infer `@ApiProperty` from class shapes

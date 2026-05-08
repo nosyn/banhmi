@@ -1,23 +1,49 @@
 # Operations
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+An *operation* in OpenAPI corresponds to a single route handler. Use `@ApiOperation`
+and `@ApiResponse` to document what each handler does.
 
-## When to use
+## Describing an operation
 
-TBD
+```ts
+@ApiOperation({
+  summary: 'Get a cat by ID',
+  description: 'Returns a single cat. Throws 404 if not found.',
+  deprecated: false,
+})
+@Get('/:id')
+findOne() {}
+```
 
-## Setup
+## Documenting responses
 
-TBD
+Stack multiple `@ApiResponse` decorators for each possible HTTP status:
+
+```ts
+@ApiResponse({ status: 200, description: 'Cat found', type: Cat })
+@ApiResponse({ status: 404, description: 'Cat not found' })
+@ApiResponse({ status: 401, description: 'Unauthorised' })
+@Get('/:id')
+findOne() {}
+```
+
+## Excluding an endpoint
+
+Use `@ApiExcludeEndpoint()` to hide an internal handler from the generated spec:
+
+```ts
+@ApiExcludeEndpoint()
+@Get('/healthz')
+health() {
+  return { ok: true }
+}
+```
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
-
-## API reference
-
-TBD
+{/* <CodeFromExample slug="openapi-scalar" /> */}
 
 ## See also
 
-TBD
+- [Decorators](./decorators) — full decorator reference
+- [Types and Parameters](./types-and-parameters) — parameter docs

@@ -10,6 +10,7 @@
     "@banhmi/cookies": "workspace:*",
     "@banhmi/core": "workspace:*",
     "@banhmi/middleware": "workspace:*",
+    "@banhmi/openapi": "workspace:*",
     "@banhmi/platform-bun": "workspace:*",
     "@banhmi/validation": "workspace:*",
     "@banhmi/versioning": "workspace:*",

@@ -81,6 +81,7 @@
         "@banhmi/cookies": "workspace:*",
         "@banhmi/core": "workspace:*",
         "@banhmi/middleware": "workspace:*",
+        "@banhmi/openapi": "workspace:*",
         "@banhmi/platform-bun": "workspace:*",
         "@banhmi/validation": "workspace:*",
         "@banhmi/versioning": "workspace:*",
@@ -252,6 +253,22 @@
       "version": "0.0.0",
       "dependencies": {
         "@banhmi/mysql": "workspace:*",
+        "banhmi": "workspace:*",
+      },
+    },
+    "examples/features/openapi-scalar": {
+      "name": "banhmi-feature-openapi-scalar",
+      "version": "0.0.0",
+      "dependencies": {
+        "@banhmi/openapi": "workspace:*",
+        "banhmi": "workspace:*",
+      },
+    },
+    "examples/features/openapi-swagger-ui": {
+      "name": "banhmi-feature-openapi-swagger-ui",
+      "version": "0.0.0",
+      "dependencies": {
+        "@banhmi/openapi": "workspace:*",
         "banhmi": "workspace:*",
       },
     },
@@ -1198,6 +1215,10 @@
     "banhmi-feature-mongo": ["banhmi-feature-mongo@workspace:examples/features/mongo"],
 
     "banhmi-feature-mysql": ["banhmi-feature-mysql@workspace:examples/features/mysql"],
+
+    "banhmi-feature-openapi-scalar": ["banhmi-feature-openapi-scalar@workspace:examples/features/openapi-scalar"],
+
+    "banhmi-feature-openapi-swagger-ui": ["banhmi-feature-openapi-swagger-ui@workspace:examples/features/openapi-swagger-ui"],
 
     "banhmi-feature-otel": ["banhmi-feature-otel@workspace:examples/features/otel"],
 

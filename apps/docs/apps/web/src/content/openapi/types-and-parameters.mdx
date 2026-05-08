@@ -1,23 +1,47 @@
 # Types and Parameters
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+This page covers how `@banhmi/openapi` maps TypeScript types to OpenAPI 3.1.0
+schemas, and how to document path and query parameters.
 
-## When to use
+## Type mapping
 
-TBD
+`@ApiProperty` accepts a `type` string or a class reference:
 
-## Setup
+| TypeScript / value | `type` option | OpenAPI schema |
+|--------------------|---------------|---------------|
+| `string`           | `'string'`    | `{ type: 'string' }` |
+| `number` (default) | `'number'`    | `{ type: 'number', format: 'float' }` |
+| `number` (integer) | `'number'` + `format: 'int'` | `{ type: 'integer' }` |
+| `boolean`          | `'boolean'`   | `{ type: 'boolean' }` |
+| `string[]`         | `['string']`  | `{ type: 'array', items: { type: 'string' } }` |
+| Class              | `MyClass`     | `{ $ref: '#/components/schemas/MyClass' }` |
 
-TBD
+## Path parameters
 
-## Usage
+```ts
+@ApiParam({ name: 'id', type: 'string', description: 'Resource ID', required: true })
+@Get('/:id')
+findOne() {}
+```
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+## Query parameters
 
-## API reference
+```ts
+@ApiQuery({ name: 'limit', type: 'number', required: false, description: 'Max results' })
+@ApiQuery({ name: 'offset', type: 'number', required: false })
+@Get()
+findAll() {}
+```
 
-TBD
+## Request body
+
+```ts
+@ApiBody({ type: CreateCatDto, description: 'Cat data', required: true })
+@Post()
+create() {}
+```
 
 ## See also
 
-TBD
+- [Decorators](./decorators) — full decorator reference
+- [SDL export](./other-features) — generating GraphQL SDL from decorated models

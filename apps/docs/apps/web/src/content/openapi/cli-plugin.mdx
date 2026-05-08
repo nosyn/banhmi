@@ -1,23 +1,83 @@
 # CLI Plugin
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+The `@banhmi/openapi/cli` plugin automatically injects `@ApiProperty()` decorators
+on class properties that have explicit TypeScript type annotations but no existing
+`@ApiProperty`, `@ApiHideProperty`, or `@Exclude` decorator.
+
+This mirrors the behaviour of the NestJS CLI plugin — write plain DTOs and get
+fully documented OpenAPI schemas without manual decoration.
 
 ## When to use
 
-TBD
+Use the plugin when you have many DTO classes and don't want to annotate every
+property by hand. The plugin is conservative: it only annotates properties with
+explicit `: Type` annotations and skips everything else.
 
 ## Setup
 
-TBD
+### Option 1 — `bunfig.toml` preload (recommended)
 
-## Usage
+```toml
+# bunfig.toml
+preload = ["@banhmi/openapi/cli"]
+```
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+### Option 2 — Programmatic
 
-## API reference
+```ts
+import '@banhmi/openapi/cli'
+```
 
-TBD
+## How it works
+
+The plugin registers a Bun file-loader hook that scans each TypeScript source file
+for annotatable properties and inserts `@ApiProperty()` before them at load time.
+The original file is never modified on disk.
+
+**Annotated:**
+```ts
+class Cat {
+  name: string         // → @ApiProperty() name: string
+  age?: number         // → @ApiProperty() age?: number
+}
+```
+
+**Skipped (already decorated):**
+```ts
+class Cat {
+  @ApiProperty({ example: 'Whiskers' })
+  name: string         // unchanged
+
+  @ApiHideProperty()
+  secret: string       // unchanged
+
+  @Exclude()
+  internal: string     // unchanged
+}
+```
+
+**Skipped (access modifiers):**
+```ts
+class Cat {
+  private id: number   // skipped — private
+  static count: number // skipped — static
+  readonly tag: string // skipped — readonly
+}
+```
+
+## `transformSource` function
+
+For unit-testing or custom tooling, the underlying transform is exported as a
+pure function:
+
+```ts
+import { transformSource } from '@banhmi/openapi/cli'
+
+const output = transformSource(`class A { name: string }`)
+// → 'class A {\n  @ApiProperty()\n  name: string\n}'
+```
 
 ## See also
 
-TBD
+- [Decorators](./decorators) — manual decorator reference
+- [Types and Parameters](./types-and-parameters) — type mapping
