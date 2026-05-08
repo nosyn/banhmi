@@ -1,0 +1,10 @@
+{
+  "name": "banhmi-feature-compression",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "dependencies": {
+    "@banhmi/compression": "workspace:*",
+    "banhmi": "workspace:*"
+  }
+}

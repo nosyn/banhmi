@@ -12,6 +12,7 @@
   "dependencies": {
     "@banhmi/cache": "workspace:*",
     "@banhmi/common": "workspace:*",
+    "@banhmi/compression": "workspace:*",
     "@banhmi/config": "workspace:*",
     "@banhmi/core": "workspace:*",
     "@banhmi/jwt": "workspace:*",

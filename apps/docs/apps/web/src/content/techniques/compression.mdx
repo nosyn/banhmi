@@ -1,23 +1,78 @@
 # Compression
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+> **Status:** Available since `v0.4.0-canary.wave1` via `@banhmi/compression`.
 
 ## When to use
 
-TBD
+Use `@banhmi/compression` when your Banhmi API returns large text-based responses — JSON, HTML, CSS, JavaScript, or SVG — and you want to reduce wire size. The middleware negotiates the best encoding (`gzip` or `deflate`) from the client's `Accept-Encoding` header and compresses the response body using `Bun.gzipSync()` / `Bun.deflateSync()`. Binary content types (images, video, already-compressed archives) are skipped automatically.
 
 ## Setup
 
-TBD
+The package is bundled in `banhmi`:
+
+```ts
+import { CompressionModule } from '@banhmi/compression'
+// or
+import { CompressionModule } from 'banhmi'
+```
+
+Register `CompressionModule.forRoot()` in your root module:
+
+```ts
+import { Module } from 'banhmi'
+import { CompressionModule } from '@banhmi/compression'
+
+@Module({
+  imports: [CompressionModule.forRoot()],
+})
+class AppModule {}
+```
+
+No `app.use()` call is needed — the middleware installs itself on the HTTP adapter at application bootstrap.
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+<CodeFromExample slug="compression" />
 
 ## API reference
 
-TBD
+### `CompressionModule.forRoot(opts?: CompressionOptions)`
+
+Returns a dynamic `@Module` that registers the compression middleware.
+
+### `CompressionOptions`
+
+| Field       | Type                                | Default                             | Description |
+|-------------|-------------------------------------|-------------------------------------|-------------|
+| `threshold` | `number`                            | `1024`                              | Minimum body size in bytes to compress. Smaller bodies are passed through. |
+| `encodings` | `Array<'gzip' \| 'deflate'>`        | `['gzip']`                          | Ordered list of encodings to negotiate. First match with the client wins. |
+| `level`     | `number`                            | `6`                                 | zlib compression level `1` (fastest) to `9` (best compression). |
+| `filter`    | `(contentType: string) => boolean`  | compresses text/JSON/JS/CSS/SVG/XML | Predicate deciding whether a content-type should be compressed. |
+
+### `COMPRESSION_OPTIONS` token
+
+Inject this token to read the resolved configuration:
+
+```ts
+import { COMPRESSION_OPTIONS } from '@banhmi/compression'
+```
+
+### `negotiateEncoding(acceptEncoding, preferred)`
+
+Pure function that picks the best encoding from an `Accept-Encoding` header. Useful for unit testing your own compression logic.
+
+### `defaultFilter(contentType)`
+
+The default content-type predicate. Returns `true` for text, JSON, JavaScript, CSS, SVG, and XML content types.
+
+## Common pitfalls
+
+- **Bun's `fetch` always sends `Accept-Encoding`**: In tests, use an explicit `{ 'accept-encoding': 'br' }` header to simulate a client that doesn't accept gzip/deflate — Bun `fetch` adds `gzip, deflate, br, zstd` automatically.
+- **Double compression**: The middleware checks `content-encoding` on the outgoing response. If it's already set, compression is skipped, so wrapping with another compressor is safe.
+- **Threshold**: Tiny responses (< 1024 bytes by default) are never compressed. Compression overhead would exceed the savings at small sizes.
+- **`Vary: accept-encoding`**: The middleware always sets this header so downstream caches serve the correct variant to each client.
 
 ## See also
 
-TBD
+- [`Bun.gzipSync()` docs](https://bun.sh/docs/api/utils#bun-gzipsync) — synchronous gzip compression
+- [`@banhmi/static`](/recipes/serve-static) — serve pre-compressed static files
