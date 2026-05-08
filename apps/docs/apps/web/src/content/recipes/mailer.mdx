@@ -1,0 +1,120 @@
+# Mailer
+
+`@banhmi/mailer` provides email sending via the `nodemailer` SMTP transport with optional template rendering using `eta` or `edge.js`.
+
+## Setup
+
+Install the package and the `nodemailer` peer dependency:
+
+```bash
+bun add @banhmi/mailer nodemailer
+```
+
+Register `MailerModule.forRoot()` in your root module:
+
+```ts
+import { Module } from 'banhmi'
+import { MailerModule } from '@banhmi/mailer'
+
+@Module({
+  imports: [
+    MailerModule.forRoot({
+      transport: {
+        host: 'smtp.example.com',
+        port: 587,
+        secure: false,
+        auth: { user: 'me@example.com', pass: 'secret' },
+      },
+      defaults: { from: 'noreply@example.com' },
+      templateDir: './templates',
+      templateEngine: 'eta',
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+## Sending emails
+
+Inject `MailerService` into your providers:
+
+```ts
+import { Injectable } from 'banhmi'
+import { MailerService } from '@banhmi/mailer'
+
+@Injectable()
+export class UserService {
+  static inject = [MailerService] as const
+
+  constructor(private readonly mailer: MailerService) {}
+
+  async sendWelcome(email: string, name: string) {
+    await this.mailer.send({
+      to: email,
+      subject: 'Welcome!',
+      template: 'welcome',
+      context: { name },
+    })
+  }
+}
+```
+
+## Template rendering
+
+When `templateDir` is set, use the `template` field on a message to render an email template. The handler's `context` is passed as template locals.
+
+**`templates/welcome.eta`:**
+
+```html
+<html>
+  <body>
+    <h1>Welcome, <%= it.name %>!</h1>
+    <p>Thanks for signing up.</p>
+  </body>
+</html>
+```
+
+Install `eta` for rendering:
+
+```bash
+bun add eta
+```
+
+## Sending plain text/HTML
+
+```ts
+await mailer.send({
+  to: 'user@example.com',
+  subject: 'Hello',
+  text: 'Plain text fallback',
+  html: '<p>Rich HTML body</p>',
+})
+```
+
+## API reference
+
+### `MailerModule.forRoot(opts: MailerOptions)`
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `transport` | `SmtpTransport` | SMTP connection options (required) |
+| `defaults.from` | `string` | Default sender address |
+| `templateDir` | `string` | Directory containing template files |
+| `templateEngine` | `'eta' \| 'edge'` | Template engine (default: `'eta'`) |
+
+### `MailerService.send(message: MailMessage): Promise<void>`
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `to` | `string \| string[]` | Recipient(s) |
+| `from` | `string` | Sender (falls back to `defaults.from`) |
+| `subject` | `string` | Email subject |
+| `text` | `string` | Plain text body |
+| `html` | `string` | HTML body |
+| `template` | `string` | Template name (requires `templateDir`) |
+| `context` | `Record<string, unknown>` | Template locals |
+
+## See also
+
+- [nodemailer docs](https://nodemailer.com/)
+- [eta docs](https://eta.js.org/)

@@ -25,6 +25,7 @@
     "@banhmi/config": "workspace:*",
     "@banhmi/core": "workspace:*",
     "@banhmi/health": "workspace:*",
+    "@banhmi/mailer": "workspace:*",
     "@banhmi/jwt": "workspace:*",
     "@banhmi/logger": "workspace:*",
     "@banhmi/platform-bun": "workspace:*",

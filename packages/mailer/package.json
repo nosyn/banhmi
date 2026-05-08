@@ -1,0 +1,22 @@
+{
+  "name": "@banhmi/mailer",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "peerDependencies": {
+    "nodemailer": ">=6.0.0"
+  },
+  "peerDependenciesMeta": {
+    "nodemailer": {
+      "optional": false
+    }
+  },
+  "dependencies": {
+    "@banhmi/common": "workspace:*",
+    "@banhmi/core": "workspace:*",
+    "banhmi": "workspace:*"
+  }
+}
