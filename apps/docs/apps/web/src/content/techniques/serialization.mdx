@@ -1,23 +1,119 @@
 # Serialization
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Available since `v0.4.0-canary.wave1` via `@banhmi/transform`.
 
 ## When to use
 
-TBD
+Use `@banhmi/transform` when you need to control the shape of objects returned
+from your API — excluding sensitive fields, renaming keys for API consumers,
+applying custom transforms, or restricting fields to specific roles/groups.
+
+It is a pure-function alternative to `class-transformer` that stores all
+metadata via `Symbol.metadata` (TC39 Stage 3 decorators) with no
+`reflect-metadata` dependency.
 
 ## Setup
 
-TBD
+```ts
+import { Exclude, Expose, Transform, Type, serialize } from '@banhmi/transform'
+// or via the banhmi meta-package:
+import { Exclude, Expose, Transform, Type, serialize } from 'banhmi'
+```
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+<CodeFromExample slug="serialization" />
 
 ## API reference
 
-TBD
+### `serialize<T>(input, dto, opts?): unknown`
+
+Serialize `input` according to the decorator metadata on the `dto` class.
+
+```ts
+serialize(user, UserDto)
+serialize(user, UserDto, { groups: ['admin'] })
+```
+
+Behaviour:
+- Properties with **no decorator** are included by default.
+- `@Exclude()` drops the property.
+- `@Expose({ name })` renames the output key.
+- `@Expose({ groups })` restricts the field; omitted when `opts.groups` has no intersection.
+- `@Transform(fn)` runs `fn(value, instance)` and uses its return value.
+- `@Type(() => Cls)` recurses into nested objects or arrays.
+
+### `deserialize<T>(plain, dto): T`
+
+Minimal plain-object → class instance conversion. Copies `plain` keys onto a
+fresh `dto` instance without type coercion. `@Type` recursion is a Wave 6
+enhancement.
+
+### `@Exclude()`
+
+Drop the decorated property from `serialize()` output.
+
+### `@Expose(opts?)`
+
+Mark the property as included. Options:
+
+| Field | Type | Description |
+|---|---|---|
+| `name` | `string` | Override the output key name. |
+| `groups` | `string[]` | Restrict this field to the listed groups. |
+
+### `@Transform(fn)`
+
+Run `fn(value, instance)` during serialisation. The return value replaces the
+original.
+
+### `@Type(() => Cls)`
+
+Recurse into `Cls` metadata for nested objects or arrays.
+
+### `type TransformOptions`
+
+```ts
+type TransformOptions = { groups?: string[] }
+```
+
+## Common patterns
+
+### Exclude a sensitive field
+
+```ts
+class UserDto {
+  @Exclude()
+  password: string
+}
+```
+
+### Rename an output key
+
+```ts
+class UserDto {
+  @Expose({ name: 'user_id' })
+  id: number
+}
+```
+
+### Role-based field visibility
+
+```ts
+class UserDto {
+  name: string
+
+  @Expose({ groups: ['admin'] })
+  email: string
+}
+
+// Regular response
+const payload = serialize(user, UserDto)
+// Admin response
+const adminPayload = serialize(user, UserDto, { groups: ['admin'] })
+```
 
 ## See also
 
-TBD
+- [`@banhmi/validation`](/techniques/validation) — validate incoming DTOs
+- [TC39 Stage 3 decorators proposal](https://github.com/tc39/proposal-decorators)

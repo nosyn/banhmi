@@ -26,6 +26,7 @@
     "@banhmi/static": "workspace:*",
     "@banhmi/swagger": "workspace:*",
     "@banhmi/testing": "workspace:*",
+    "@banhmi/transform": "workspace:*",
     "@banhmi/validation": "workspace:*",
     "@banhmi/versioning": "workspace:*"
   }

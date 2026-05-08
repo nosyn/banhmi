@@ -1,0 +1,15 @@
+{
+  "name": "@banhmi/transform",
+  "private": false,
+  "version": "0.0.1",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@banhmi/common": "workspace:*",
+    "banhmi": "workspace:*"
+  }
+}

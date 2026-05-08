@@ -116,6 +116,14 @@
         "banhmi": "workspace:*",
       },
     },
+    "examples/features/serialization": {
+      "name": "banhmi-feature-serialization",
+      "version": "0.0.0",
+      "dependencies": {
+        "@banhmi/transform": "workspace:*",
+        "banhmi": "workspace:*",
+      },
+    },
     "examples/features/serve-static": {
       "name": "banhmi-feature-serve-static",
       "version": "0.0.0",
@@ -181,6 +189,7 @@
         "@banhmi/static": "workspace:*",
         "@banhmi/swagger": "workspace:*",
         "@banhmi/testing": "workspace:*",
+        "@banhmi/transform": "workspace:*",
         "@banhmi/validation": "workspace:*",
         "@banhmi/versioning": "workspace:*",
       },
@@ -336,6 +345,14 @@
         "@banhmi/platform-bun": "workspace:*",
       },
     },
+    "packages/transform": {
+      "name": "@banhmi/transform",
+      "version": "0.0.1",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "banhmi": "workspace:*",
+      },
+    },
     "packages/validation": {
       "name": "@banhmi/validation",
       "version": "0.0.1",
@@ -407,6 +424,8 @@
     "@banhmi/swagger": ["@banhmi/swagger@workspace:packages/swagger"],
 
     "@banhmi/testing": ["@banhmi/testing@workspace:packages/testing"],
+
+    "@banhmi/transform": ["@banhmi/transform@workspace:packages/transform"],
 
     "@banhmi/validation": ["@banhmi/validation@workspace:packages/validation"],
 
@@ -649,6 +668,8 @@
     "banhmi-feature-compression": ["banhmi-feature-compression@workspace:examples/features/compression"],
 
     "banhmi-feature-cookies": ["banhmi-feature-cookies@workspace:examples/features/cookies"],
+
+    "banhmi-feature-serialization": ["banhmi-feature-serialization@workspace:examples/features/serialization"],
 
     "banhmi-feature-serve-static": ["banhmi-feature-serve-static@workspace:examples/features/serve-static"],
 
