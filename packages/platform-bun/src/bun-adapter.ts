@@ -1,7 +1,11 @@
 import type { ClassConstructor, Interceptor } from '@banhmi/common'
 import type { HttpAdapter } from '@banhmi/core'
 import type { Server, ServerWebSocket } from 'bun'
-import { type RegisteredFilter, runEnhancerPipeline } from './enhancer-pipeline'
+import {
+  type PipelineMiddlewareFn,
+  type RegisteredFilter,
+  runEnhancerPipeline,
+} from './enhancer-pipeline'
 import { BunExecutionContext } from './execution-context'
 import { BunRouteCtx } from './route-ctx'
 import { RouteExplorer } from './route-explorer'
@@ -9,8 +13,8 @@ import { RadixRouter } from './router'
 import { BunWsContext, type BunWsData } from './ws-context'
 import { type ExploredGateway, WsGatewayExplorer } from './ws-gateway-explorer'
 
-/** Middleware function type used by the adapter's `use()` mechanism. */
-type MiddlewareFn = (
+/** Pre-request middleware function type used by `use()`. */
+type PreRequestMiddlewareFn = (
   req: Request,
   next: () => Promise<Response>,
 ) => Promise<Response>
@@ -24,6 +28,19 @@ type VersioningOpts =
   | { type: 'uri'; prefix?: string; defaultVersion?: string }
   | { type: 'header'; header: string; defaultVersion?: string }
   | { type: 'media-type'; key: string; defaultVersion?: string }
+
+/**
+ * A module-level middleware binding: a resolved function + route pattern.
+ * Kept as a structural type so `@banhmi/platform-bun` does not hard-depend
+ * on `@banhmi/middleware`.
+ */
+interface ModuleMiddlewareBinding {
+  fn: PipelineMiddlewareFn
+  /** Normalised path (no leading/trailing slashes, e.g. `'cats'`). */
+  path: string
+  /** HTTP method filter, `'ALL'` means any method. */
+  method: string
+}
 
 /** Resolves a version string from a request given the active strategy. */
 function resolveVersionFromRequest(
@@ -61,11 +78,102 @@ function escapeRe(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
+/**
+ * Resolves an `unknown` middleware (fn or class) to a `PipelineMiddlewareFn`
+ * or `null` if it cannot be resolved.
+ *
+ * Class constructors are detected by having a `.prototype` object AND by
+ * being constructable (i.e. not an arrow function). Arrow functions have no
+ * `.prototype` at all; regular functions and class constructors do. We
+ * distinguish a class from a regular function by trying `new` — but since we
+ * can't know ahead of time, we check for `prototype` existing (arrow fns don't
+ * have it) AND the function having an uppercase first letter as a heuristic,
+ * OR just always try to instantiate if prototype.use exists on the instance.
+ */
+function resolveMiddlewareFnFromUnknown(
+  mw: unknown,
+): PipelineMiddlewareFn | null {
+  if (typeof mw !== 'function') return null
+
+  const fn = mw as { prototype?: Record<string, unknown>; name?: string }
+
+  // Check if it looks like a class constructor (has prototype, and prototype
+  // has a 'use' function — either as method or will be set in constructor).
+  if (fn.prototype) {
+    // Try to detect class-like: prototype.use is a function (method on proto)
+    if (typeof fn.prototype.use === 'function') {
+      const inst = new (mw as new () => { use: PipelineMiddlewareFn })()
+      return inst.use.bind(inst)
+    }
+
+    // Class with 'use' as an instance field (not on prototype) — instantiate
+    // and check the instance.
+    // We detect a class constructor by checking if the function body contains
+    // `class` in its source, OR by convention: named functions starting with
+    // uppercase are classes. Use a try/catch to handle both.
+    const name = fn.name ?? ''
+    const isUppercase = name.length > 0 && name[0] === name[0]?.toUpperCase() && name[0] !== name[0]?.toLowerCase()
+    if (isUppercase || Object.prototype.hasOwnProperty.call(fn, 'prototype')) {
+      try {
+        const inst = new (mw as new () => { use?: PipelineMiddlewareFn })()
+        if (typeof inst.use === 'function') {
+          return inst.use.bind(inst)
+        }
+      } catch {
+        // Not a constructor — fall through to plain function
+      }
+    }
+  }
+
+  return mw as PipelineMiddlewareFn
+}
+
+/**
+ * Normalises a raw route value from a `forRoutes(...)` call into a
+ * `{ path, method }` pair.
+ */
+function normalizeModuleRoute(route: unknown): { path: string; method: string } {
+  if (typeof route === 'string') {
+    return { path: route.replace(/^\/|\/$/g, ''), method: 'ALL' }
+  }
+
+  if (route !== null && typeof route === 'object') {
+    const r = route as { path?: string; method?: string }
+    return {
+      path: (r.path ?? '').replace(/^\/|\/$/g, ''),
+      method: r.method ?? 'ALL',
+    }
+  }
+
+  return { path: '', method: 'ALL' }
+}
+
+/**
+ * Returns `true` when the given request matches a module middleware binding.
+ * Path match: the request pathname (stripped of version prefix if applicable)
+ * must equal or start with `/<binding.path>/`.
+ */
+function moduleMiddlewareMatches(
+  binding: ModuleMiddlewareBinding,
+  method: string,
+  pathname: string,
+): boolean {
+  if (binding.method !== 'ALL' && binding.method !== method) return false
+  const prefix = `/${binding.path}`
+  return (
+    pathname === prefix ||
+    pathname.startsWith(`${prefix}/`) ||
+    // Handle empty path as match-all
+    binding.path === ''
+  )
+}
+
 export class BunAdapter implements HttpAdapter {
   private router = new RadixRouter()
   private explorer = new RouteExplorer()
   private wsExplorer = new WsGatewayExplorer()
-  private middleware: MiddlewareFn[] = []
+  private preRequestMiddleware: PreRequestMiddlewareFn[] = []
+  private moduleMiddlewareBindings: ModuleMiddlewareBinding[] = []
   private server: Server | null = null
   private gateways: Array<ExploredGateway & { instance: object }> = []
   private versioningOpts: VersioningOpts | null = null
@@ -80,13 +188,51 @@ export class BunAdapter implements HttpAdapter {
     this.versioningOpts = opts
   }
 
+  /**
+   * Register a module-level middleware binding.
+   *
+   * Called by `MiddlewareBootstrapper` during application bootstrap after
+   * processing all `configure(consumer)` calls. Bindings are matched against
+   * requests at dispatch time.
+   *
+   * @param binding - The middleware function and its route pattern.
+   */
+  registerMiddlewareBinding(binding: ModuleMiddlewareBinding): void {
+    this.moduleMiddlewareBindings.push(binding)
+  }
+
+  /**
+   * Called by `BanhmiApplication` after walking all module `configure()`
+   * hooks. Receives raw `{ mws, routes }` bindings, resolves middleware
+   * functions, normalises route patterns, and stores them for dispatch-time
+   * matching.
+   *
+   * @param rawBindings - Array of `{ mws: unknown[]; routes: unknown[] }` collected
+   *   from each `configure()` call.
+   */
+  registerMiddlewareBindings(rawBindings: unknown[]): void {
+    for (const raw of rawBindings) {
+      const binding = raw as { mws: unknown[]; routes: unknown[] }
+      const fns = binding.mws
+        .map((mw) => resolveMiddlewareFnFromUnknown(mw))
+        .filter((fn): fn is PipelineMiddlewareFn => fn !== null)
+
+      for (const route of binding.routes) {
+        const { path, method } = normalizeModuleRoute(route)
+        for (const fn of fns) {
+          this.moduleMiddlewareBindings.push({ fn, path, method })
+        }
+      }
+    }
+  }
+
   use(middleware: unknown): void {
     if (typeof middleware !== 'function') {
       throw new TypeError(
         `BunAdapter.use() expects a function, got ${typeof middleware}`,
       )
     }
-    this.middleware.push(middleware as MiddlewareFn)
+    this.preRequestMiddleware.push(middleware as PreRequestMiddlewareFn)
   }
 
   registerController(
@@ -207,7 +353,9 @@ export class BunAdapter implements HttpAdapter {
   }
 
   private handleRequest(request: Request): Promise<Response> {
-    return this.runMiddleware(request, () => this.dispatchRoute(request))
+    return this.runPreRequestMiddleware(request, () =>
+      this.dispatchRoute(request),
+    )
   }
 
   private async dispatchRoute(request: Request): Promise<Response> {
@@ -280,6 +428,19 @@ export class BunAdapter implements HttpAdapter {
       filterInstance: new F() as RegisteredFilter['filterInstance'],
     }))
 
+    // Collect middleware: module-level bindings that match this route, then
+    // controller/handler-level middleware from the route descriptor.
+    const matchingModuleMiddlewares = this.moduleMiddlewareBindings
+      .filter((b) =>
+        moduleMiddlewareMatches(b, request.method, matchPathname),
+      )
+      .map((b) => b.fn)
+
+    const allMiddlewares: PipelineMiddlewareFn[] = [
+      ...matchingModuleMiddlewares,
+      ...match.middlewares,
+    ]
+
     return runEnhancerPipeline(
       execCtx,
       () => match.handler(routeCtx),
@@ -288,14 +449,15 @@ export class BunAdapter implements HttpAdapter {
       filterInstances,
       match.httpCode ?? 200,
       match.responseHeaders,
+      allMiddlewares,
     )
   }
 
-  private async runMiddleware(
+  private async runPreRequestMiddleware(
     request: Request,
     final: () => Promise<Response>,
   ): Promise<Response> {
-    const chain = [...this.middleware]
+    const chain = [...this.preRequestMiddleware]
 
     const execute = (index: number): Promise<Response> => {
       const mw = chain[index]

@@ -105,6 +105,17 @@
         "banhmi": "workspace:*",
       },
     },
+    "examples/features/middleware-fn": {
+      "name": "@banhmi-examples/middleware-fn",
+      "version": "0.0.1",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/core": "workspace:*",
+        "@banhmi/middleware": "workspace:*",
+        "@banhmi/platform-bun": "workspace:*",
+        "banhmi": "workspace:*",
+      },
+    },
     "examples/features/serve-static": {
       "name": "banhmi-feature-serve-static",
       "version": "0.0.0",
@@ -122,6 +133,17 @@
         "banhmi": "workspace:*",
       },
     },
+    "examples/features/versioning": {
+      "name": "@banhmi-examples/versioning",
+      "version": "0.0.1",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/core": "workspace:*",
+        "@banhmi/platform-bun": "workspace:*",
+        "@banhmi/versioning": "workspace:*",
+        "banhmi": "workspace:*",
+      },
+    },
     "packages/banhmi": {
       "name": "banhmi",
       "version": "0.1.0",
@@ -133,6 +155,7 @@
         "@banhmi/cookies": "workspace:*",
         "@banhmi/core": "workspace:*",
         "@banhmi/jwt": "workspace:*",
+        "@banhmi/middleware": "workspace:*",
         "@banhmi/platform-bun": "workspace:*",
         "@banhmi/redis": "workspace:*",
         "@banhmi/s3": "workspace:*",
@@ -141,6 +164,7 @@
         "@banhmi/static": "workspace:*",
         "@banhmi/swagger": "workspace:*",
         "@banhmi/testing": "workspace:*",
+        "@banhmi/versioning": "workspace:*",
       },
     },
     "packages/cache": {
@@ -205,6 +229,15 @@
         "jose": "^6.2.3",
       },
       "devDependencies": {
+        "@banhmi/platform-bun": "workspace:*",
+      },
+    },
+    "packages/middleware": {
+      "name": "@banhmi/middleware",
+      "version": "0.1.0",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/core": "workspace:*",
         "@banhmi/platform-bun": "workspace:*",
       },
     },
@@ -285,9 +318,22 @@
         "@banhmi/platform-bun": "workspace:*",
       },
     },
+    "packages/versioning": {
+      "name": "@banhmi/versioning",
+      "version": "0.1.0",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/core": "workspace:*",
+        "@banhmi/platform-bun": "workspace:*",
+      },
+    },
   },
   "packages": {
     "@babel/runtime": ["@babel/runtime@7.29.2", "", {}, "sha512-JiDShH45zKHWyGe4ZNVRrCjBz8Nh9TMmZG1kh4QTK8hCBTWBi8Da+i7s1fJw7/lYpM4ccepSNfqzZ/QvABBi5g=="],
+
+    "@banhmi-examples/middleware-fn": ["@banhmi-examples/middleware-fn@workspace:examples/features/middleware-fn"],
+
+    "@banhmi-examples/versioning": ["@banhmi-examples/versioning@workspace:examples/features/versioning"],
 
     "@banhmi/benchmarks": ["@banhmi/benchmarks@workspace:benchmarks"],
 
@@ -307,6 +353,8 @@
 
     "@banhmi/jwt": ["@banhmi/jwt@workspace:packages/jwt"],
 
+    "@banhmi/middleware": ["@banhmi/middleware@workspace:packages/middleware"],
+
     "@banhmi/platform-bun": ["@banhmi/platform-bun@workspace:packages/platform-bun"],
 
     "@banhmi/redis": ["@banhmi/redis@workspace:packages/redis"],
@@ -322,6 +370,8 @@
     "@banhmi/swagger": ["@banhmi/swagger@workspace:packages/swagger"],
 
     "@banhmi/testing": ["@banhmi/testing@workspace:packages/testing"],
+
+    "@banhmi/versioning": ["@banhmi/versioning@workspace:packages/versioning"],
 
     "@better-auth/core": ["@better-auth/core@1.6.9", "", { "dependencies": { "@opentelemetry/semantic-conventions": "^1.39.0", "@standard-schema/spec": "^1.1.0", "zod": "^4.3.6" }, "peerDependencies": { "@better-auth/utils": "0.4.0", "@better-fetch/fetch": "1.1.21", "@cloudflare/workers-types": ">=4", "@opentelemetry/api": "^1.9.0", "better-call": "1.3.5", "jose": "^6.1.0", "kysely": "^0.28.5", "nanostores": "^1.0.1" }, "optionalPeers": ["@cloudflare/workers-types", "@opentelemetry/api"] }, "sha512-ADFk5pwmLybmc+LvYvXJ6M1x2oY/EyYLkwLuH0x28FUq12DfjL0wnE7g+WRDf3yozDO+qIxTpFGXDGwLKbfz0w=="],
 

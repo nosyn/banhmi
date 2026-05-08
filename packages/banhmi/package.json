@@ -22,6 +22,7 @@
     "@banhmi/s3": "workspace:*",
     "@banhmi/sse": "workspace:*",
     "@banhmi/sqlite": "workspace:*",
+    "@banhmi/middleware": "workspace:*",
     "@banhmi/static": "workspace:*",
     "@banhmi/swagger": "workspace:*",
     "@banhmi/testing": "workspace:*",

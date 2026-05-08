@@ -16,12 +16,97 @@ import {
   RESPONSE_HEADERS_METADATA,
   ROUTE_METADATA,
 } from '@banhmi/common'
-import type { RegisteredRoute } from './router'
+import type { RegisteredRoute, RouteMiddlewareFn } from './router'
 
 // Symbol key for @Version metadata — imported lazily to avoid a hard dep on
 // @banhmi/versioning from @banhmi/platform-bun. We use a string description
 // match so the platform package stays dependency-free.
 const VERSION_METADATA_DESC = 'banhmi:version'
+
+// Symbol descriptions for @UseMiddleware — avoids hard dep on @banhmi/middleware.
+const USE_MIDDLEWARE_DESC = 'banhmi:use_middleware'
+const METHOD_USE_MIDDLEWARE_DESC = 'banhmi:method_use_middleware'
+
+/**
+ * Finds a symbol in `obj` by its `.description` string.
+ */
+function findSymbol(
+  obj: Record<symbol, unknown>,
+  desc: string,
+): symbol | undefined {
+  return Object.getOwnPropertySymbols(obj).find((s) => s.description === desc)
+}
+
+/**
+ * Resolves middleware fn-or-class entries to plain `RouteMiddlewareFn`s.
+ * Class constructors are detected by having a `.prototype` object and either
+ * a `prototype.use` method or a `use` instance field.
+ */
+function resolveMiddlewareFns(entries: unknown[]): RouteMiddlewareFn[] {
+  return entries
+    .map((mw) => {
+      if (typeof mw !== 'function') return null
+
+      const fn = mw as {
+        prototype?: Record<string, unknown>
+        name?: string
+      }
+
+      if (fn.prototype) {
+        if (typeof fn.prototype.use === 'function') {
+          const inst = new (mw as new () => { use: RouteMiddlewareFn })()
+          return inst.use.bind(inst)
+        }
+
+        // Instance-field class: try constructing and check `inst.use`
+        const name = fn.name ?? ''
+        const isUppercase =
+          name.length > 0 &&
+          name[0] === name[0]?.toUpperCase() &&
+          name[0] !== name[0]?.toLowerCase()
+        if (
+          isUppercase ||
+          Object.prototype.hasOwnProperty.call(fn, 'prototype')
+        ) {
+          try {
+            const inst = new (mw as new () => {
+              use?: RouteMiddlewareFn
+            })()
+            if (typeof inst.use === 'function') {
+              return inst.use.bind(inst)
+            }
+          } catch {
+            // Not a constructor
+          }
+        }
+      }
+
+      return mw as RouteMiddlewareFn
+    })
+    .filter((fn): fn is RouteMiddlewareFn => fn !== null)
+}
+
+/**
+ * Extracts controller-level and method-level `@UseMiddleware` entries from
+ * the class metadata.
+ */
+function extractMiddlewares(
+  classMeta: Record<symbol, unknown>,
+  methodName: string,
+): RouteMiddlewareFn[] {
+  const classSymbol = findSymbol(classMeta, USE_MIDDLEWARE_DESC)
+  const classMws: unknown[] = classSymbol
+    ? ((classMeta[classSymbol] as unknown[]) ?? [])
+    : []
+
+  const methodSymbol = findSymbol(classMeta, METHOD_USE_MIDDLEWARE_DESC)
+  const methodMwsMap = methodSymbol
+    ? ((classMeta[methodSymbol] as Record<string, unknown[]>) ?? {})
+    : {}
+  const methodMws: unknown[] = methodMwsMap[methodName] ?? []
+
+  return resolveMiddlewareFns([...classMws, ...methodMws])
+}
 
 /**
  * Reads the version string for a given method name from the class metadata.
@@ -134,6 +219,7 @@ export class RouteExplorer {
         handlerClass: controllerClass,
         handlerName: methodName,
         version: extractVersion(classMeta, methodName),
+        middlewares: extractMiddlewares(classMeta, methodName),
       })
     }
 

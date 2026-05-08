@@ -1,23 +1,132 @@
 # Middleware
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+> **Status:** Available since `v0.4.0-canary.wave1` via `@banhmi/middleware`.
 
-## When to use
+## What is middleware?
 
-TBD
+Middleware is a function that runs **before** guards and interceptors in the request pipeline. It has access to the raw `Request`, the `RouteCtx`, and a `next()` callback that advances to the rest of the pipeline.
+
+```
+Request → [pre-request middleware] → [module middleware] → [controller middleware] → [handler middleware] → Guards → Interceptors → Handler → Response
+```
+
+Middleware can:
+- Inspect and log requests
+- Mutate response headers after `await next()`
+- Short-circuit the pipeline by returning a `Response` without calling `next()`
 
 ## Setup
 
-TBD
+```ts
+import { UseMiddleware } from '@banhmi/middleware'
+// or
+import { UseMiddleware } from 'banhmi'
+```
+
+No module registration is required — `@UseMiddleware` and `configure()` work out of the box.
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+<CodeFromExample slug="middleware-fn" />
+
+## Binding scopes
+
+### Module-level binding via `configure()`
+
+Implement `configure(consumer: MiddlewareConsumer)` on your module class to bind middleware to route patterns:
+
+```ts
+import type { MiddlewareConsumer } from '@banhmi/middleware'
+
+@Module({ controllers: [CatsController, DogsController] })
+class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(LoggerMiddleware)
+      .forRoutes('cats')           // path prefix
+
+    consumer
+      .apply(AuthMiddleware)
+      .forRoutes({ path: 'admin', method: 'POST' })  // path + method
+  }
+}
+```
+
+### Controller-level binding via `@UseMiddleware`
+
+```ts
+@UseMiddleware(LoggerMiddleware)
+@Controller('/cats')
+class CatsController {}
+```
+
+### Handler-level binding via `@UseMiddleware`
+
+```ts
+@Controller('/cats')
+class CatsController {
+  @UseMiddleware(RateLimitMiddleware)
+  @Post()
+  create(ctx: RouteCtx) { ... }
+}
+```
+
+## Functional middleware
+
+```ts
+import type { MiddlewareFn } from '@banhmi/middleware'
+
+const logger: MiddlewareFn = async (req, ctx, next) => {
+  console.log(req.method, new URL(req.url).pathname)
+  return next()
+}
+```
+
+## Class-based middleware
+
+```ts
+import type { BanhmiMiddleware, MiddlewareFn } from '@banhmi/middleware'
+
+class AuthMiddleware implements BanhmiMiddleware {
+  use: MiddlewareFn = async (req, ctx, next) => {
+    const token = req.headers.get('authorization')
+    if (!token) return new Response('Unauthorized', { status: 401 })
+    return next()
+  }
+}
+```
 
 ## API reference
 
-TBD
+### `type MiddlewareFn`
+
+```ts
+type MiddlewareFn = (
+  req: Request,
+  ctx: RouteCtx,
+  next: () => Promise<Response>,
+) => Promise<Response>
+```
+
+### `interface BanhmiMiddleware`
+
+```ts
+interface BanhmiMiddleware { use: MiddlewareFn }
+```
+
+### `interface MiddlewareConsumer`
+
+Fluent API available inside `configure(consumer)`:
+
+```ts
+consumer.apply(...mws).forRoutes(...routes)
+```
+
+### `@UseMiddleware(...mws)`
+
+Decorator for controller classes and handler methods.
 
 ## See also
 
-TBD
+- [`@banhmi/versioning`](/techniques/versioning) — version-specific route matching
+- [`@banhmi/compression`](/techniques/compression) — compress responses with a global middleware

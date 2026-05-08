@@ -7,6 +7,16 @@ import type {
 
 export type InterceptorOrClass = ClassConstructor | Interceptor
 
+/**
+ * Resolved middleware function type used at the route level.
+ * Matches `MiddlewareFn` from `@banhmi/middleware` structurally.
+ */
+export type RouteMiddlewareFn = (
+  req: Request,
+  ctx: RouteCtx,
+  next: () => Promise<Response>,
+) => Promise<Response>
+
 export interface RegisteredRoute {
   method: HttpMethod
   path: string
@@ -20,6 +30,11 @@ export interface RegisteredRoute {
   handlerName?: string
   /** API version string set by `@Version`, or `undefined` for unversioned routes. */
   version?: string
+  /**
+   * Resolved middleware functions collected from class-level and method-level
+   * `@UseMiddleware` decorators, in order (class-level first, then method-level).
+   */
+  middlewares: RouteMiddlewareFn[]
 }
 
 export type MatchResult = Omit<RegisteredRoute, 'path'> & {
