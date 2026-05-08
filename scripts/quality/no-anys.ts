@@ -9,6 +9,16 @@ const PATTERNS = [
   /\bas\s+any\b/g, // `as any`
 ]
 
+/**
+ * Strips `//` line comments and `/* … *\/` block comments while preserving
+ * line counts (so violation line numbers stay accurate).
+ *
+ * Known limitation: a `//` inside a string or template literal is treated
+ * as the start of a comment, which can mask real `: any` violations on the
+ * same line (e.g. `const u = 'http://x'; const v: any = 1`). Downstream
+ * checks (Biome, tsc) catch most of these. A pinned test documents the
+ * current behaviour.
+ */
 const stripComments = (src: string): string =>
   src
     .replace(/\/\/[^\n]*/g, '')

@@ -46,6 +46,7 @@ test('preserves line numbers across single-line comments', () => {
   const source = ['// header', '', 'const x: any = 1'].join('\n')
   const violations = findAnyUsages([{ path: 'b.ts', source }])
   expect(violations[0].line).toBe(3)
+  expect(violations[0].path).toBe('b.ts')
 })
 
 test('flags `: any` inside a string literal (known limitation, documented)', () => {
@@ -56,4 +57,15 @@ test('flags `: any` inside a string literal (known limitation, documented)', () 
     { path: 'c.ts', source: "const msg = 'expected: any'" },
   ])
   expect(violations).toHaveLength(1)
+})
+
+test('known limitation: `//` inside a string masks a real violation later on the line', () => {
+  // The scanner does not parse strings. A `//` inside a string literal is
+  // treated as the start of a comment and erases the rest of the line,
+  // which can hide a real `: any` after it. Pinned so a future fix is
+  // detectable as a behaviour change.
+  const violations = findAnyUsages([
+    { path: 'a.ts', source: "const u = 'http://x'; const v: any = 1" },
+  ])
+  expect(violations).toHaveLength(0) // current (buggy) behaviour
 })
