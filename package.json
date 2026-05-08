@@ -3,7 +3,8 @@
   "private": true,
   "workspaces": [
     "packages/*",
-    "examples/*"
+    "examples/*",
+    "examples/features/.template"
   ],
   "scripts": {
     "build": "bun run --filter='*' build",

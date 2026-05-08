@@ -36,6 +36,14 @@
         "drizzle-kit": "^0.31.10",
       },
     },
+    "examples/features/.template": {
+      "name": "@banhmi-feature/.template",
+      "version": "0.0.0",
+      "dependencies": {
+        "@banhmi/testing": "workspace:*",
+        "banhmi": "workspace:*",
+      },
+    },
     "packages/banhmi": {
       "name": "banhmi",
       "version": "0.1.0",
@@ -159,6 +167,8 @@
   },
   "packages": {
     "@babel/runtime": ["@babel/runtime@7.29.2", "", {}, "sha512-JiDShH45zKHWyGe4ZNVRrCjBz8Nh9TMmZG1kh4QTK8hCBTWBi8Da+i7s1fJw7/lYpM4ccepSNfqzZ/QvABBi5g=="],
+
+    "@banhmi-feature/.template": ["@banhmi-feature/.template@workspace:examples/features/.template"],
 
     "@banhmi/cache": ["@banhmi/cache@workspace:packages/cache"],
 
