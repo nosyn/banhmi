@@ -1,23 +1,78 @@
 # Raw Body
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Access the verbatim request bytes before JSON parsing — useful for webhook
+signature verification (Stripe, GitHub, etc.) and custom binary parsers.
 
 ## When to use
 
-TBD
+- **Webhook verification** — compute an HMAC over the raw bytes and compare it
+  to the `x-hub-signature` (or equivalent) header.
+- **Binary upload processing** — read image or audio bytes directly.
+- **Custom parsers** — parse exotic content types yourself.
 
 ## Setup
 
-TBD
+Pass `{ rawBody: true }` to `BanhmiFactory.create`:
+
+```ts
+import { BanhmiFactory } from '@banhmi/platform-bun'
+import { AppModule } from './app.module'
+
+const app = await BanhmiFactory.create(AppModule, { rawBody: true })
+await app.listen(3000)
+```
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+When `rawBody: true` is set, `ctx.rawBody` is a `Uint8Array` containing the
+exact bytes that arrived over the wire.  The normal `ctx.json()` / `ctx.text()`
+methods still work because the body is buffered internally first.
+
+```ts
+import { Controller, Post } from '@banhmi/common'
+import type { BunRouteCtx } from '@banhmi/platform-bun'
+import { createHmac } from 'node:crypto'
+
+@Controller('/webhook')
+export class WebhookController {
+  @Post('/')
+  async verify(ctx: BunRouteCtx) {
+    const sig = ctx.headers.get('x-hub-signature-256') ?? ''
+    const rawBody = ctx.rawBody  // Uint8Array | undefined
+
+    if (!rawBody) {
+      return Response.json({ error: 'rawBody not enabled' }, { status: 500 })
+    }
+
+    const secret = Bun.env['WEBHOOK_SECRET'] ?? ''
+    const digest = createHmac('sha256', secret)
+      .update(rawBody)
+      .digest('hex')
+
+    if (`sha256=${digest}` !== sig) {
+      return Response.json({ error: 'Invalid signature' }, { status: 401 })
+    }
+
+    const payload = JSON.parse(Buffer.from(rawBody).toString())
+    return { received: true, event: payload.event }
+  }
+}
+```
 
 ## API reference
 
-TBD
+### `BanhmiFactory.create(AppModule, { rawBody: true })`
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `rawBody` | `boolean` | `false` | Buffer the request body as `Uint8Array` and expose it as `ctx.rawBody`. |
+
+### `ctx.rawBody: Uint8Array | undefined`
+
+Available on `RouteCtx` (and `BunRouteCtx`) only when `rawBody: true` was
+passed at application creation time.  `undefined` otherwise.
 
 ## See also
 
-TBD
+- [Request Lifecycle](/deployment/request-lifecycle)
+- [Edge & Serverless](/deployment/edge)

@@ -1,23 +1,45 @@
 # Keep-Alive Connections
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Bun's `Bun.serve` supports keep-alive by default.  Banhmi exposes the
+`idleTimeout` knob so you can tune connection reuse for your workload.
 
 ## When to use
 
-TBD
+- **High-throughput APIs** — reduce per-request TCP handshake cost by keeping
+  connections alive between requests.
+- **Resource-constrained environments** — lower `idleTimeout` to prevent idle
+  connections from occupying file descriptors.
 
 ## Setup
 
-TBD
+```ts
+import { BanhmiFactory } from '@banhmi/platform-bun'
+import { AppModule } from './app.module'
 
-## Usage
+const app = await BanhmiFactory.create(AppModule, {
+  // Idle connections are closed after 30 seconds (default: Bun's built-in)
+  idleTimeout: 30,
+})
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+await app.listen(3000)
+```
 
 ## API reference
 
-TBD
+### `BanhmiFactory.create(AppModule, { idleTimeout })`
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `idleTimeout` | `number` | Bun default | Maximum number of seconds an idle keep-alive connection stays open before the server closes it. Maps to `Bun.serve`'s `idleTimeout`. |
+
+## Notes
+
+- Bun's default idle timeout is suitable for most workloads; override it only
+  when you have measured a need.
+- Setting `idleTimeout: 0` disables the idle timeout (connections stay open
+  until the client closes them or the server shuts down).
 
 ## See also
 
-TBD
+- [HTTPS & Multiple Servers](/deployment/https-and-multiple-servers)
+- [Standalone Apps](/deployment/standalone-apps)

@@ -1,23 +1,69 @@
 # Hot Reload
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Banhmi applications are plain Bun scripts; hot-reload is handled entirely by
+Bun's built-in `--watch` flag.  No framework plugin or extra package is needed.
 
 ## When to use
 
-TBD
+Use hot reload during local development to avoid restarting the server
+manually after each source change.
 
 ## Setup
 
-TBD
+```bash
+# Start the dev server and reload on every file change
+bun --watch src/main.ts
+```
+
+Bun monitors all files imported by `src/main.ts` (transitively).  When any
+file changes, Bun re-executes the script from scratch.  This includes re-running
+`BanhmiFactory.create`, module lifecycle hooks, and `app.listen`.
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+### Recommended `main.ts` layout
 
-## API reference
+```ts
+import { BanhmiFactory } from '@banhmi/platform-bun'
+import { AppModule } from './app.module'
 
-TBD
+const app = await BanhmiFactory.create(AppModule)
+await app.listen(Number(Bun.env['PORT'] ?? 3000))
+console.log(`Server running on port ${app.getUrl()}`)
+```
+
+Run with:
+
+```bash
+bun --watch src/main.ts
+```
+
+### `package.json` script
+
+```json
+{
+  "scripts": {
+    "dev": "bun --watch src/main.ts"
+  }
+}
+```
+
+```bash
+bun run dev
+```
+
+## Caveats
+
+- **Port in use** — if the previous process is still binding the port when
+  the reload fires, you may see `EADDRINUSE`.  Bun automatically kills the old
+  process before starting the new one, so this is rare in practice.
+- **State reset** — every reload runs a fresh process; all in-memory state
+  (module-scoped variables, singletons) is re-initialised.  Use an external
+  store (Redis, SQLite, …) for state you want to survive reloads.
+- **Slow modules** — large dependency trees can make cold starts noticeable.
+  Keep your module graph lean in development.
 
 ## See also
 
-TBD
+- [Standalone Apps](/deployment/standalone-apps)
+- [Keep-Alive Connections](/deployment/keep-alive)

@@ -1,23 +1,89 @@
 # Common Errors
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+A reference for the most frequently encountered runtime errors, their causes,
+and how to fix them.
 
-## When to use
+## `Cannot find module '@banhmi/...'`
 
-TBD
+**Cause:** Workspace symlinks are missing (e.g. after a fresh `git clone`
+without `bun install`).
 
-## Setup
+**Fix:**
+```bash
+bun install
+```
 
-TBD
+## `Symbol.metadata is undefined`
 
-## Usage
+**Cause:** The `polyfill-symbol-metadata.ts` preload is missing from
+`bunfig.toml` in the affected package.
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+**Fix:** Add the preload to the package's `bunfig.toml`:
+```toml
+[test]
+preload = ["../common/src/polyfill-symbol-metadata.ts"]
+```
 
-## API reference
+## `Error: Server is not listening yet`
 
-TBD
+**Cause:** `app.getUrl()` was called before `app.listen()` completed.
+
+**Fix:** Await `app.listen(port)` fully before calling `app.getUrl()`.
+
+## `EADDRINUSE: address already in use`
+
+**Cause:** The port is already bound by another process (or a previous dev
+server that didn't stop cleanly).
+
+**Fix:**
+```bash
+# Find and kill the process on the port
+lsof -ti :3000 | xargs kill -9
+```
+
+Or pass `0` as the port to let the OS pick a free one (useful in tests):
+```ts
+await app.listen(0)
+```
+
+## `rawBody is undefined`
+
+**Cause:** A handler reads `ctx.rawBody` but the application was not created
+with `rawBody: true`.
+
+**Fix:**
+```ts
+const app = await BanhmiFactory.create(AppModule, { rawBody: true })
+```
+
+## `ForbiddenException: Forbidden`
+
+**Cause:** A `@UseGuards` guard returned `false` or threw.
+
+**Fix:** Check the guard's `canActivate` logic and ensure the request carries
+the expected auth token or role.
+
+## `404 Not Found` for a route you defined
+
+**Cause:** Common reasons:
+- Controller prefix doesn't match (e.g. `/cats` vs `cats`).
+- Route method mismatch (`@Get` vs `@Post`).
+- Controller not listed in the module's `controllers` array.
+
+**Fix:** Verify the `@Controller` prefix, the HTTP-method decorator, and the
+module declaration.
+
+## `TypeError: ctx.json is not a function`
+
+**Cause:** The handler parameter is typed as `RouteCtx` but Banhmi cannot
+inject it because the parameter is not the first argument or the handler does
+not accept `RouteCtx`.
+
+**Fix:** Ensure the first (and only) parameter of the handler is typed as
+`RouteCtx` (or `BunRouteCtx`).
 
 ## See also
 
-TBD
+- [Request Lifecycle](/deployment/request-lifecycle)
+- [Standalone Apps](/deployment/standalone-apps)
+- [Raw Body](/deployment/raw-body)

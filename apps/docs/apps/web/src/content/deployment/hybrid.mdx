@@ -1,23 +1,72 @@
 # Hybrid Application
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+A hybrid application runs both an HTTP server and one or more microservice
+transports in the same process.  This lets a single deployment handle REST
+requests from clients and also participate in a microservices mesh.
 
 ## When to use
 
-TBD
+Use a hybrid app when:
+- You need an HTTP API (for browsers, mobile apps, etc.) and a TCP/Redis/NATS
+  microservice listener in the same Node/Bun process.
+- You are migrating a monolith to microservices gradually and want both
+  interfaces live during the transition.
 
 ## Setup
 
-TBD
+```ts
+import { BanhmiFactory } from '@banhmi/platform-bun'
+import { InMemoryTransport } from '@banhmi/microservices'
+import { AppModule } from './app.module'
+
+const app = await BanhmiFactory.create(AppModule)
+
+// Register one or more microservice transports
+const transport = new InMemoryTransport()
+app.connectMicroservice({ transport })
+
+// Start all microservice transports
+await app.startAllMicroservices()
+
+// Start the HTTP server
+await app.listen(3000)
+```
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+// Cats HTTP + orders microservice in one process
+import { BanhmiFactory } from '@banhmi/platform-bun'
+import { tcpTransport } from '@banhmi/microservices'
+import { AppModule } from './app.module'
+
+const app = await BanhmiFactory.create(AppModule)
+app.connectMicroservice({ transport: tcpTransport({ port: 3001 }) })
+await app.startAllMicroservices()
+await app.listen(3000)
+console.log('HTTP on :3000, microservice TCP on :3001')
+```
 
 ## API reference
 
-TBD
+### `app.connectMicroservice(opts: MicroserviceOptions): this`
+
+Registers a microservice transport to be started alongside the HTTP server.
+Returns `this` for chaining so calls can be stacked.
+
+```ts
+interface MicroserviceOptions {
+  transport: Transport  // any @banhmi/microservices transport
+}
+```
+
+### `app.startAllMicroservices(): Promise<void>`
+
+Starts all registered transports concurrently by calling `transport.listen()`
+on each one.  Resolves when all transports are ready to accept messages.
 
 ## See also
 
-TBD
+- [Microservices Overview](/microservices/overview)
+- [Request Lifecycle](/deployment/request-lifecycle)
+- [Edge & Serverless](/deployment/edge)

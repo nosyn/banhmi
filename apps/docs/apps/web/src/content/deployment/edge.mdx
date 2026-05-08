@@ -1,23 +1,117 @@
-# Edge / Serverless
+# Edge & Serverless Deployment
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Banhmi supports edge runtimes (Cloudflare Workers, Vercel Edge, Deno Deploy)
+and serverless runtimes (AWS Lambda) through two thin adapter packages that
+skip `Bun.serve` and instead expose a standard `Request → Response` pipeline.
 
-## When to use
+## Edge runtimes (`@banhmi/edge`)
 
-TBD
+### Installation
 
-## Setup
+```bash
+bun add @banhmi/edge
+```
 
-TBD
+### Cloudflare Workers
 
-## Usage
+```ts
+// src/index.ts  (wrangler.toml: main = "src/index.ts")
+import { createEdgeHandler } from '@banhmi/edge'
+import { AppModule } from './app.module'
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+export default { fetch: await createEdgeHandler(AppModule) }
+```
 
-## API reference
+### Vercel Edge / Deno Deploy
 
-TBD
+```ts
+import { createEdgeHandler } from '@banhmi/edge'
+import { AppModule } from './app.module'
+
+export const handler = await createEdgeHandler(AppModule)
+```
+
+### Options
+
+```ts
+export interface EdgeHandlerOptions {
+  /**
+   * Strip a global prefix from incoming URLs before routing.
+   * Routes registered at `/cats` will match `/api/cats` when `globalPrefix: 'api'`.
+   */
+  globalPrefix?: string
+}
+```
+
+### How it works
+
+`createEdgeHandler` builds the full Banhmi module tree, runs lifecycle hooks
+(`onModuleInit`, `onApplicationBootstrap`), and registers controllers — but
+never calls `Bun.serve`.  Instead it returns a
+`(req: Request) => Promise<Response>` function that dispatches each request
+through the enhancer pipeline (middleware → guards → interceptors → handler →
+filters).
+
+The returned handler is stateless with respect to individual requests and is
+safe to share across multiple invocations in the same isolate.
+
+## AWS Lambda (`@banhmi/serverless`)
+
+### Installation
+
+```bash
+bun add @banhmi/serverless
+```
+
+### Usage
+
+```ts
+// src/index.ts
+import { createLambdaHandler } from '@banhmi/serverless'
+import { AppModule } from './app.module'
+
+export const handler = await createLambdaHandler(AppModule)
+```
+
+Deploy via AWS SAM, CDK, Serverless Framework, or any Lambda-compatible
+tool.  The handler works with both API Gateway v1 (REST API) and v2 (HTTP API).
+
+### API Gateway v1 / v2
+
+The adapter detects the event format automatically:
+
+- **v1** — `event.httpMethod` + `event.path`
+- **v2** — `event.requestContext.http.method` + `event.rawPath`
+
+Both formats are translated into a `Request` and the `Response` is translated
+back into the `{ statusCode, headers, body, isBase64Encoded }` shape that API
+Gateway expects.
+
+### Binary responses
+
+```ts
+export const handler = await createLambdaHandler(AppModule, {
+  binaryMimeTypes: ['image/png', 'application/octet-stream'],
+})
+```
+
+Response bodies with a matching `content-type` are base64-encoded and
+`isBase64Encoded: true` is set in the result.
+
+## Local development
+
+Both adapters can be tested locally without any cloud account:
+
+```bash
+# Edge worker — starts Bun.serve wrapping the edge handler
+bun run dev   # examples/edge-worker
+
+# Lambda — invoke the handler with a synthetic event in tests
+bun test      # examples/lambda-app
+```
 
 ## See also
 
-TBD
+- [Raw Body](/deployment/raw-body)
+- [Hybrid Application](/deployment/hybrid)
+- [Request Lifecycle](/deployment/request-lifecycle)

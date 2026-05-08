@@ -1,23 +1,74 @@
 # HTTPS & Multiple Servers
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Banhmi's `BunAdapter` passes TLS options directly to `Bun.serve`, giving you
+full HTTPS support with zero extra dependencies.
 
 ## When to use
 
-TBD
+- Production services that terminate TLS at the app layer (rather than at a
+  reverse proxy).
+- Local development with self-signed certificates for testing mixed-content or
+  HSTS behaviour.
 
-## Setup
+## Setup — HTTPS only
 
-TBD
+Pass the `https` option to `BanhmiFactory.create`:
 
-## Usage
+```ts
+import { readFileSync } from 'node:fs'
+import { BanhmiFactory } from '@banhmi/platform-bun'
+import { AppModule } from './app.module'
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+const app = await BanhmiFactory.create(AppModule, {
+  https: {
+    key:  readFileSync('server.key',  'utf8'),
+    cert: readFileSync('server.cert', 'utf8'),
+  },
+})
+
+await app.listen(443)
+```
+
+## Setup — HTTP + HTTPS (multiple servers)
+
+For dual HTTP/HTTPS support, create a second `BunAdapter` instance that shares
+the same module tree, or use a reverse proxy (nginx, Caddy) in front of a
+plain HTTP Banhmi app.
+
+The simplest in-process approach:
+
+```ts
+import { BanhmiFactory } from '@banhmi/platform-bun'
+import { AppModule } from './app.module'
+
+// HTTP on port 80
+const http = await BanhmiFactory.create(AppModule)
+await http.listen(80)
+
+// HTTPS on port 443 — separate factory call, same module
+const https = await BanhmiFactory.create(AppModule, {
+  https: { key: tlsKey, cert: tlsCert },
+})
+await https.listen(443)
+```
+
+## Generating a self-signed certificate (for testing)
+
+```bash
+openssl req -x509 -newkey rsa:2048 -keyout server.key -out server.cert \
+  -days 365 -nodes -subj '/CN=localhost'
+```
 
 ## API reference
 
-TBD
+### `BanhmiFactory.create(AppModule, opts?)`
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `https` | `{ key: string; cert: string }` | PEM-encoded key and certificate for TLS. |
+| `idleTimeout` | `number` | Max seconds a keep-alive connection stays open. |
 
 ## See also
 
-TBD
+- [Keep-Alive Connections](/deployment/keep-alive)
+- [Standalone Apps](/deployment/standalone-apps)

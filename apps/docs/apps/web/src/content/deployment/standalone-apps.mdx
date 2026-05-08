@@ -1,23 +1,82 @@
 # Standalone Apps
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+A standalone Banhmi app is a single Bun process that bootstraps the module
+graph, runs lifecycle hooks, and opens an HTTP server — no separate server
+binary or orchestrator required.
 
 ## When to use
 
-TBD
+- Microservices that run as individual containers or processes.
+- Scripts that expose an HTTP endpoint for health-check or one-off operations.
+- Any deployment where you want the simplest possible runtime (no Nginx, no
+  PM2, just `bun run`).
 
 ## Setup
 
-TBD
+```ts
+// src/main.ts
+import { BanhmiFactory } from '@banhmi/platform-bun'
+import { AppModule } from './app.module'
 
-## Usage
+const app = await BanhmiFactory.create(AppModule)
+app.enableShutdownHooks()   // optional: handle SIGTERM/SIGINT gracefully
+await app.listen(Number(Bun.env['PORT'] ?? 3000))
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+console.log(`Listening on ${app.getUrl()}`)
+```
+
+## Running
+
+```bash
+# Development
+bun --watch src/main.ts
+
+# Production
+bun src/main.ts
+```
+
+## Graceful shutdown
+
+Call `app.enableShutdownHooks()` before `app.listen()` to have Banhmi
+automatically call `onModuleDestroy` / `onApplicationShutdown` lifecycle hooks
+when `SIGTERM` or `SIGINT` is received.
+
+```ts
+const app = await BanhmiFactory.create(AppModule)
+app.enableShutdownHooks()
+await app.listen(3000)
+```
+
+## Docker
+
+```dockerfile
+FROM oven/bun:1 AS runner
+WORKDIR /app
+COPY . .
+RUN bun install --frozen-lockfile
+CMD ["bun", "src/main.ts"]
+```
 
 ## API reference
 
-TBD
+### `BanhmiFactory.create(AppModule, opts?)`
+
+Returns a `BanhmiApplication` instance.
+
+### `app.listen(port: number): Promise<void>`
+
+Runs lifecycle hooks, registers controllers, and opens the HTTP server.
+
+### `app.getUrl(): string`
+
+Returns the base URL of the running server (e.g. `http://localhost:3000`).
+
+### `app.close(): Promise<void>`
+
+Stops the server and runs shutdown lifecycle hooks.
 
 ## See also
 
-TBD
+- [Hot Reload](/deployment/hot-reload)
+- [HTTPS & Multiple Servers](/deployment/https-and-multiple-servers)
+- [Hybrid Application](/deployment/hybrid)
