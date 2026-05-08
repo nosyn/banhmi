@@ -1,6 +1,10 @@
 # Wave 1 Follow-up — Pre-existing `: any` Violations in `packages/common/`
 
+**STATUS: RESOLVED in Wave 10, commit `83b9707`.**
+
 Found by `bun run quality:no-anys` at the close of Wave 0 (commit `a4d6d648550e41170d2280cce7defa24c5b5128c`).
+
+`quality:no-anys` is now CLEAN.
 
 Each entry needs to be replaced with a typed alternative (`unknown` + narrowing, generics, or a concrete interface).
 
