@@ -225,6 +225,14 @@
         "banhmi": "workspace:*",
       },
     },
+    "examples/features/mongo": {
+      "name": "banhmi-feature-mongo",
+      "version": "0.0.0",
+      "dependencies": {
+        "@banhmi/mongo": "workspace:*",
+        "banhmi": "workspace:*",
+      },
+    },
     "examples/features/mysql": {
       "name": "banhmi-feature-mysql",
       "version": "0.0.0",
@@ -392,6 +400,7 @@
         "@banhmi/jwt": "workspace:*",
         "@banhmi/logger": "workspace:*",
         "@banhmi/middleware": "workspace:*",
+        "@banhmi/mongo": "workspace:*",
         "@banhmi/multipart": "workspace:*",
         "@banhmi/mysql": "workspace:*",
         "@banhmi/otel": "workspace:*",
@@ -544,6 +553,23 @@
         "@banhmi/core": "workspace:*",
         "@banhmi/platform-bun": "workspace:*",
       },
+    },
+    "packages/mongo": {
+      "name": "@banhmi/mongo",
+      "version": "0.1.0",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/core": "workspace:*",
+      },
+      "devDependencies": {
+        "@banhmi/platform-bun": "workspace:*",
+      },
+      "peerDependencies": {
+        "mongodb": ">=6",
+      },
+      "optionalPeers": [
+        "mongodb",
+      ],
     },
     "packages/multipart": {
       "name": "@banhmi/multipart",
@@ -835,6 +861,8 @@
     "@banhmi/logger": ["@banhmi/logger@workspace:packages/logger"],
 
     "@banhmi/middleware": ["@banhmi/middleware@workspace:packages/middleware"],
+
+    "@banhmi/mongo": ["@banhmi/mongo@workspace:packages/mongo"],
 
     "@banhmi/multipart": ["@banhmi/multipart@workspace:packages/multipart"],
 
@@ -1143,6 +1171,8 @@
     "banhmi-feature-helmet": ["banhmi-feature-helmet@workspace:examples/features/helmet"],
 
     "banhmi-feature-logger": ["banhmi-feature-logger@workspace:examples/features/logger"],
+
+    "banhmi-feature-mongo": ["banhmi-feature-mongo@workspace:examples/features/mongo"],
 
     "banhmi-feature-mysql": ["banhmi-feature-mysql@workspace:examples/features/mysql"],
 

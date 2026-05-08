@@ -1,0 +1,10 @@
+{
+  "name": "banhmi-feature-mongo",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "dependencies": {
+    "@banhmi/mongo": "workspace:*",
+    "banhmi": "workspace:*"
+  }
+}

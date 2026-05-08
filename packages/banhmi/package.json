@@ -33,6 +33,7 @@
     "@banhmi/sse": "workspace:*",
     "@banhmi/sqlite": "workspace:*",
     "@banhmi/drizzle": "workspace:*",
+    "@banhmi/mongo": "workspace:*",
     "@banhmi/postgres": "workspace:*",
     "@banhmi/mysql": "workspace:*",
     "@banhmi/middleware": "workspace:*",

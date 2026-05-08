@@ -1,23 +1,132 @@
 # Mongo
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+`@banhmi/mongo` integrates the native `mongodb` driver into Banhmi's DI system.
+`MongoModule.forRoot(opts)` connects a `MongoClient`, selects the target
+database, and registers the `Db` instance under the `MONGO_DB` token.
+
+`MongoModule.forFeature(repositories)` registers `@Repository(Entity)`-decorated
+classes as providers. Each repository extends `MongoRepository<T>` which wraps
+a `Collection<T>` with a concise async API (`findById`, `findOne`, `find`,
+`insertOne`, `updateOne`, `deleteOne`).
+
+Requires `mongodb ≥ 6` as a peer dependency.
 
 ## When to use
 
-TBD
+- You need document-oriented storage with flexible schemas.
+- You want native MongoDB features (aggregation, change streams, transactions).
+- You want typed collection access with structural typing.
 
 ## Setup
 
-TBD
+```bash
+bun add mongodb @banhmi/mongo
+```
+
+## Module registration
+
+```ts
+import { Module } from 'banhmi'
+import { MongoModule } from '@banhmi/mongo'
+
+@Module({
+  imports: [
+    MongoModule.forRoot({
+      url: Bun.env.MONGO_URL ?? 'mongodb://localhost:27017',
+      database: 'mydb',
+    }),
+    MongoModule.forFeature([CatRepository]),
+  ],
+})
+class AppModule {}
+```
+
+## Defining a repository
+
+```ts
+import { MONGO_DB, MongoRepository, Repository } from '@banhmi/mongo'
+
+interface Cat {
+  _id?: unknown
+  name: string
+  breed: string
+}
+
+class CatEntity {}        // decorator target — class name used as collection name
+
+@Repository(CatEntity)
+class CatRepository extends MongoRepository<Cat> {
+  static inject = [MONGO_DB] as const
+  constructor(db: { collection: (name: string) => unknown }) {
+    super(db as never)
+  }
+
+  // Override to customise the collection name:
+  override get collectionName() { return 'cats' }
+}
+```
+
+## MongoRepository API
+
+| Method | Signature | Description |
+|---|---|---|
+| `findById` | `(id: string) => Promise<T \| null>` | Finds by `_id` (ObjectId or string) |
+| `findOne` | `(filter) => Promise<T \| null>` | First match |
+| `find` | `(filter) => Promise<T[]>` | All matches |
+| `insertOne` | `(doc) => Promise<InsertOneResult>` | Inserts a document |
+| `updateOne` | `(filter, update) => Promise<UpdateResult>` | Updates first match |
+| `deleteOne` | `(filter) => Promise<DeleteResult>` | Deletes first match |
+
+## Injecting the Db directly
+
+```ts
+import { MONGO_DB, InjectMongo } from '@banhmi/mongo'
+
+class AnalyticsService {
+  static inject = [MONGO_DB] as const
+  constructor(@InjectMongo() private readonly db: Db) {}
+
+  async countCats(): Promise<number> {
+    return this.db.collection('cats').countDocuments()
+  }
+}
+```
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+{/* <CodeFromExample slug="mongo" /> */}
+
+## Collection name
+
+By default, `MongoRepository` lowercases the entity class name to derive the
+collection name. E.g. `class CatEntity` → collection `catentity`. Override
+`get collectionName()` in the subclass to customise it.
 
 ## API reference
 
-TBD
+### `MongoModule.forRoot(opts)`
+
+| Option | Type | Description |
+|---|---|---|
+| `url` | `string` | Full MongoDB connection URL |
+| `database` | `string` | Database name |
+
+### `MongoModule.forFeature(repositories, entities?)`
+
+| Param | Type | Description |
+|---|---|---|
+| `repositories` | `ClassConstructor[]` | `@Repository`-decorated repo classes |
+| `entities` | `ClassConstructor[]?` | Entities for bare `Collection<T>` tokens |
+
+### Tokens
+
+| Token | Type | Description |
+|---|---|---|
+| `MONGO_DB` | `Db` | MongoDB `Db` instance for the configured database |
+| `InjectCollection(Entity)` | `Collection<T>` | Typed collection token for an entity |
 
 ## See also
 
-TBD
+- [Database](/techniques/database) — Bun.sql postgres + mysql.
+- [Drizzle ORM](/recipes/drizzle) — Type-safe ORM via drizzle-orm.
+- [bun:sqlite](/bun-native/bun-sqlite) — Embedded SQLite.
