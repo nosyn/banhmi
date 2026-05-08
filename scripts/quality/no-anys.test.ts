@@ -34,3 +34,26 @@ test('ignores comments', () => {
   ])
   expect(violations).toHaveLength(0)
 })
+
+test('reports correct line number for violation after a multi-line block comment', () => {
+  const source = ['/*', ' * doc', ' */', 'const x: any = 1'].join('\n')
+  const violations = findAnyUsages([{ path: 'a.ts', source }])
+  expect(violations).toHaveLength(1)
+  expect(violations[0].line).toBe(4)
+})
+
+test('preserves line numbers across single-line comments', () => {
+  const source = ['// header', '', 'const x: any = 1'].join('\n')
+  const violations = findAnyUsages([{ path: 'b.ts', source }])
+  expect(violations[0].line).toBe(3)
+})
+
+test('flags `: any` inside a string literal (known limitation, documented)', () => {
+  // The script does not parse strings; `: any` substrings inside string
+  // literals are treated as code. This test pins the current behaviour so
+  // future regressions are obvious.
+  const violations = findAnyUsages([
+    { path: 'c.ts', source: "const msg = 'expected: any'" },
+  ])
+  expect(violations).toHaveLength(1)
+})

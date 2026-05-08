@@ -10,7 +10,11 @@ const PATTERNS = [
 ]
 
 const stripComments = (src: string): string =>
-  src.replace(/\/\/.*$/gm, '').replace(/\/\*[\s\S]*?\*\//g, '')
+  src
+    .replace(/\/\/[^\n]*/g, '')
+    .replace(/\/\*[\s\S]*?\*\//g, (m) =>
+      '\n'.repeat((m.match(/\n/g) ?? []).length),
+    )
 
 export function findAnyUsages(files: SourceFile[]): Violation[] {
   const out: Violation[] = []
@@ -35,6 +39,12 @@ async function main(): Promise<number> {
   const files: SourceFile[] = []
   for await (const path of glob.scan({ cwd: process.cwd() })) {
     files.push({ path, source: await Bun.file(path).text() })
+  }
+  if (files.length === 0) {
+    console.error(
+      'no-anys: no source files matched — are you running from the repo root?',
+    )
+    return 1
   }
   const violations = findAnyUsages(files)
   if (violations.length === 0) {
