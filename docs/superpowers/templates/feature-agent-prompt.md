@@ -4,13 +4,16 @@
 
 ## Context
 
-- Repository: `/Users/nosyn/personal/banhmi`
+Replace `<REPO_ROOT>` with the absolute path to the repo before dispatching.
+
+- Repository: `<REPO_ROOT>`
 - Wave spec: `<WAVE_SPEC_PATH>`
 - Wave plan: `<WAVE_PLAN_PATH>`
 - Package skeleton: `<PACKAGE_PATH>`
 - NestJS reference URL: `<NESTJS_DOC_URL>`
 - Example template directory: `examples/features/.template/`
 - Feature slug: `<FEATURE_SLUG>`
+- Master spec: `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md` (read Section 11.4 for the doc-page template).
 
 ## Task
 
@@ -40,11 +43,11 @@ Implement the feature listed in the wave plan under `### Feature: <FEATURE_SLUG>
 Before reporting completion, run:
 
 ```bash
-cd /Users/nosyn/personal/banhmi
+cd "<REPO_ROOT>"
 bun test --recursive
 bun run lint
 bun run quality
-bun run docs:build
+bun run --cwd apps/docs/apps/web build
 ```
 
 All four must succeed.
