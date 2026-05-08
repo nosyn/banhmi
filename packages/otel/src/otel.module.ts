@@ -27,12 +27,12 @@ class OtelBootstrapService implements OnApplicationBootstrap {
 
       if (exporters.includes('console')) {
         const { ConsoleSpanExporter } = require('@opentelemetry/sdk-trace-node')
-        sdkConfig['traceExporter'] = new ConsoleSpanExporter()
+        sdkConfig.traceExporter = new ConsoleSpanExporter()
       } else if (exporters.includes('otlp')) {
         const {
           OTLPTraceExporter,
         } = require('@opentelemetry/exporter-trace-otlp-http')
-        sdkConfig['traceExporter'] = new OTLPTraceExporter()
+        sdkConfig.traceExporter = new OTLPTraceExporter()
       }
 
       if (this.opts.resource) {
@@ -40,7 +40,7 @@ class OtelBootstrapService implements OnApplicationBootstrap {
         const {
           SEMRESATTRS_SERVICE_NAME,
         } = require('@opentelemetry/semantic-conventions')
-        sdkConfig['resource'] = new Resource({
+        sdkConfig.resource = new Resource({
           [SEMRESATTRS_SERVICE_NAME]: this.opts.serviceName,
           ...this.opts.resource,
         })
@@ -49,7 +49,7 @@ class OtelBootstrapService implements OnApplicationBootstrap {
         const {
           SEMRESATTRS_SERVICE_NAME,
         } = require('@opentelemetry/semantic-conventions')
-        sdkConfig['resource'] = new Resource({
+        sdkConfig.resource = new Resource({
           [SEMRESATTRS_SERVICE_NAME]: this.opts.serviceName,
         })
       }

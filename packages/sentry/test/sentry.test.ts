@@ -62,10 +62,10 @@ describe('SentryModule init', () => {
 
     expect(sentry.init).toHaveBeenCalledTimes(1)
     const [initOpts] = sentry.init.mock.calls[0]
-    expect((initOpts as Record<string, unknown>)['dsn']).toBe(opts.dsn)
-    expect((initOpts as Record<string, unknown>)['environment']).toBe('test')
-    expect((initOpts as Record<string, unknown>)['tracesSampleRate']).toBe(0.5)
-    expect((initOpts as Record<string, unknown>)['release']).toBe('v1.0.0')
+    expect((initOpts as Record<string, unknown>).dsn).toBe(opts.dsn)
+    expect((initOpts as Record<string, unknown>).environment).toBe('test')
+    expect((initOpts as Record<string, unknown>).tracesSampleRate).toBe(0.5)
+    expect((initOpts as Record<string, unknown>).release).toBe('v1.0.0')
   })
 
   test('init is NOT called when enabled is false', () => {
@@ -92,7 +92,7 @@ describe('SentryModule init', () => {
     })
 
     const [initOpts] = sentry.init.mock.calls[0]
-    expect((initOpts as Record<string, unknown>)['tracesSampleRate']).toBe(0)
+    expect((initOpts as Record<string, unknown>).tracesSampleRate).toBe(0)
   })
 })
 
@@ -182,7 +182,7 @@ describe('SentryInterceptor', () => {
 
     expect(sentry.startSpan).toHaveBeenCalledTimes(1)
     const [spanCtx] = sentry.startSpan.mock.calls[0]
-    expect((spanCtx as Record<string, unknown>)['op']).toBe('http.server')
+    expect((spanCtx as Record<string, unknown>).op).toBe('http.server')
   })
 
   test('skips startSpan when tracesSampleRate is 0', async () => {
@@ -236,7 +236,7 @@ describe('SentryInterceptor', () => {
     await interceptor.intercept(makeContext('http://localhost/api/users'), next)
 
     const [spanCtx] = sentry.startSpan.mock.calls[0]
-    expect((spanCtx as Record<string, unknown>)['name']).toBe(
+    expect((spanCtx as Record<string, unknown>).name).toBe(
       'http://localhost/api/users',
     )
   })

@@ -36,8 +36,8 @@ describe('Queue', () => {
     expect(redis.hset).toHaveBeenCalledTimes(1)
     const [hashKey, hashData] = redis.hset.mock.calls[0]
     expect(hashKey).toBe(`emails:job:${job.id}`)
-    expect((hashData as Record<string, string>)['name']).toBe('send')
-    expect(JSON.parse((hashData as Record<string, string>)['data'])).toEqual({
+    expect((hashData as Record<string, string>).name).toBe('send')
+    expect(JSON.parse((hashData as Record<string, string>).data)).toEqual({
       email: 'user@example.com',
     })
   })
@@ -85,7 +85,7 @@ describe('Queue', () => {
     await queue.add('send', {}, { attempts: 3 })
 
     const [, hashData] = redis.hset.mock.calls[0]
-    expect((hashData as Record<string, string>)['attempts']).toBe('3')
+    expect((hashData as Record<string, string>).attempts).toBe('3')
   })
 
   test('add stores backoff config in hash', async () => {
@@ -99,10 +99,8 @@ describe('Queue', () => {
     )
 
     const [, hashData] = redis.hset.mock.calls[0]
-    expect((hashData as Record<string, string>)['backoffType']).toBe(
-      'exponential',
-    )
-    expect((hashData as Record<string, string>)['backoffDelay']).toBe('1000')
+    expect((hashData as Record<string, string>).backoffType).toBe('exponential')
+    expect((hashData as Record<string, string>).backoffDelay).toBe('1000')
   })
 
   test('add returns unique ids for multiple jobs', async () => {

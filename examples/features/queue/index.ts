@@ -4,15 +4,9 @@
 // GET  /email/sent — returns the send count from the processor
 
 import type { ProcessorContext } from '@banhmi/queue'
-import {
-  InjectQueue,
-  Process,
-  Processor,
-  type Queue,
-  QueueModule,
-} from '@banhmi/queue'
+import { InjectQueue, Process, Processor, type Queue } from '@banhmi/queue'
 import type { RouteCtx } from 'banhmi'
-import { Controller, Get, Injectable, Module, Post } from 'banhmi'
+import { Controller, Get, Injectable, Post } from 'banhmi'
 
 // counter shared between producer and processor in this demo
 export let sendCount = 0

@@ -3,12 +3,11 @@ import type {
   OnApplicationBootstrap,
   OnApplicationShutdown,
 } from '@banhmi/common'
-import { Module } from '@banhmi/common'
 import type { Container, ModuleNode } from '@banhmi/core'
 import { CONTAINER_TOKEN, MODULE_TREE_TOKEN } from '@banhmi/platform-bun'
 import type { Redis } from 'ioredis'
 import { PROCESSOR_METADATA } from './metadata'
-import { getQueueToken, QUEUE_OPTIONS } from './tokens'
+import { QUEUE_OPTIONS } from './tokens'
 import type { QueueOptions } from './types'
 import { Worker } from './worker'
 

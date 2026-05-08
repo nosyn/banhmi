@@ -108,7 +108,7 @@ describe('Worker', () => {
     await worker.stop()
 
     expect(callCount).toBe(1)
-    expect(redis._data[`emails:job:${jobId}`]['status']).toBe('completed')
+    expect(redis._data[`emails:job:${jobId}`].status).toBe('completed')
   })
 
   test('catch-all @Process() handles unmatched job names', async () => {
@@ -192,8 +192,8 @@ describe('Worker', () => {
 
     // should have attempted 3 times
     expect(callCount).toBe(3)
-    expect(redis._data[`emails:job:${jobId}`]['status']).toBe('failed')
-    expect(redis._data[`emails:job:${jobId}`]['attemptsMade']).toBe('3')
+    expect(redis._data[`emails:job:${jobId}`].status).toBe('failed')
+    expect(redis._data[`emails:job:${jobId}`].attemptsMade).toBe('3')
   })
 
   test('exponential backoff doubles the delay on each retry', async () => {
@@ -280,7 +280,7 @@ describe('Worker', () => {
     await worker.stop()
 
     expect(callCount).toBe(0)
-    expect(redis._data[`emails:job:${jobId}`]['status']).toBe('failed')
+    expect(redis._data[`emails:job:${jobId}`].status).toBe('failed')
   })
 
   test('delayed jobs are promoted to waiting when score <= now', async () => {

@@ -109,7 +109,7 @@ export class Worker {
     const hashKey = `${this.queueName}:job:${jobId}`
     const raw = (await this.redis.hgetall(hashKey)) as unknown as RawJob | null
 
-    if (!raw || !raw.id) return
+    if (!raw?.id) return
 
     const job: Job<unknown> = {
       id: raw.id,
