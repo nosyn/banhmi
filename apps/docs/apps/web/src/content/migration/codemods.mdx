@@ -1,23 +1,149 @@
 # Codemods
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+The `nestjs-to-banhmi` script automates the mechanical parts of migrating a NestJS codebase to Banhmi. It performs source-level text rewrites and writes the results back in place.
 
-## When to use
+## Installation
 
-TBD
+The script ships in the Banhmi repository under `scripts/codemods/` and requires Bun 1.x.
 
-## Setup
+```bash
+# from repo root — no install step needed
+bun scripts/codemods/nestjs-to-banhmi.ts 'src/**/*.ts'
+```
 
-TBD
+Or install globally via the CLI package (when available):
+
+```bash
+bun add -g @banhmi/cli
+banhmi-migrate 'src/**/*.ts'
+```
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```
+nestjs-to-banhmi.ts <glob> [options]
 
-## API reference
+Arguments:
+  glob           Glob pattern for TypeScript files to rewrite
+                 (quote it to prevent shell expansion)
 
-TBD
+Options:
+  --dry          Print what would change without writing files
+  --help, -h     Show this help message
+
+Examples:
+  # Dry-run over the whole src tree
+  bun nestjs-to-banhmi.ts 'src/**/*.ts' --dry
+
+  # Write changes in place
+  bun nestjs-to-banhmi.ts 'src/**/*.ts'
+
+  # Single file
+  bun nestjs-to-banhmi.ts src/app.module.ts
+```
+
+## Rewrites applied
+
+### Package imports (`imports.ts`)
+
+Simple string replacement on `from '...'` specifiers:
+
+| From | To |
+|---|---|
+| `@nestjs/common` | `@banhmi/common` |
+| `@nestjs/core` | `@banhmi/core` |
+| `@nestjs/swagger` | `@banhmi/openapi` |
+| `@nestjs/config` | `@banhmi/config` |
+| `@nestjs/jwt` | `@banhmi/jwt` |
+| `@nestjs/throttler` | `@banhmi/throttler` |
+| `@nestjs/microservices` | `@banhmi/microservices` |
+| `@nestjs/passport` | `@banhmi/auth` |
+
+Both single-quoted and double-quoted import paths are handled.
+
+### `@Inject` → `static inject` (`inject-to-static.ts`)
+
+Constructor parameter decorators of the form:
+
+```ts
+constructor(@Inject(MY_TOKEN) private svc: MyService) {}
+```
+
+are rewritten to:
+
+```ts
+static inject = [MY_TOKEN] as const
+constructor(private svc: MyService) {}
+```
+
+Rules:
+- Multiple `@Inject` parameters in the same constructor are combined into a single `static inject` tuple.
+- The token expression is preserved verbatim.
+- The `@Inject` import is removed from the import list.
+- If a `static inject` already exists on the class, the new tokens are appended.
+
+**Limitation:** The rewrite uses regex-based heuristics. Complex cases (nested generics in parameter types, multi-line decorators with comments) may need manual fixup. Always review the diff before committing.
+
+### Swagger → OpenAPI (`swagger-to-openapi.ts`)
+
+Renames `@nestjs/swagger` decorators that changed name:
+
+| NestJS swagger | Banhmi openapi |
+|---|---|
+| `ApiProperty` | `ApiProperty` (unchanged) |
+| `ApiOperation` | `ApiOperation` (unchanged) |
+| `ApiResponse` | `ApiResponse` (unchanged) |
+| `ApiBearerAuth` | `ApiBearerAuth` (unchanged) |
+| `ApiTags` | `ApiTags` (unchanged) |
+
+Most swagger decorator names are identical. The rewrite only changes the import path (handled by the imports rewrite above).
+
+## Step-by-step migration workflow
+
+1. **Run `--dry` first** to preview changes:
+
+   ```bash
+   bun scripts/codemods/nestjs-to-banhmi.ts 'src/**/*.ts' --dry
+   ```
+
+2. **Apply the rewrites:**
+
+   ```bash
+   bun scripts/codemods/nestjs-to-banhmi.ts 'src/**/*.ts'
+   ```
+
+3. **Format the output:**
+
+   ```bash
+   bun run format
+   ```
+
+4. **Check for remaining issues:**
+
+   ```bash
+   bun run lint
+   bun run quality:no-anys
+   ```
+
+5. **Fix manual items** listed in [compatibility caveats](/migration/compat).
+
+6. **Run your tests:**
+
+   ```bash
+   bun test
+   ```
+
+## What is NOT automated
+
+The following require manual migration:
+
+- Constructor parameter decorators other than `@Inject` (e.g., `@Body()` in non-standard positions)
+- `Reflect.getMetadata` / `Reflect.defineMetadata` calls — port to `Symbol.metadata`
+- Custom Express middleware that uses `res.json()`, `res.cookie()`, etc.
+- `rxjs` `Observable` return types — convert to `Promise` or async generator
+- `@nestjs/cli` schematic output — regenerate with `@banhmi/cli` or write manually
 
 ## See also
 
-TBD
+- [Concept mapping](/migration/concepts)
+- [Compatibility caveats](/migration/compat)

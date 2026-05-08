@@ -1,23 +1,105 @@
-# Concept Mapping
+# NestJS → Banhmi Concept Mapping
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+This page maps every major NestJS concept to its Banhmi equivalent. The two frameworks share the same decorator-first mental model, so migration is mostly mechanical—the codemods script handles most of it automatically.
 
-## When to use
+## Overview
 
-TBD
+| NestJS | Banhmi | Notes |
+|---|---|---|
+| `@nestjs/common` | `@banhmi/common` | Same decorator names, same import path depth |
+| `@nestjs/core` | `@banhmi/core` | `NestFactory` → `BanhmiFactory` |
+| `@nestjs/platform-express` | `@banhmi/platform-bun` | Bun.serve replaces Express |
+| `@nestjs/cli` | `@banhmi/cli` | Schematics replaced by Bun-native generators |
+| `reflect-metadata` | built-in `Symbol.metadata` | No package import needed |
+| `emitDecoratorMetadata` | not used | TC39 Stage 3 decorators only |
+| `experimentalDecorators` | not used | TC39 Stage 3 decorators only |
 
-## Setup
+## Fundamentals
 
-TBD
+| NestJS | Banhmi | Notes |
+|---|---|---|
+| `@Module({ imports, controllers, providers, exports })` | `@Module({ imports, controllers, providers, exports })` | Identical API |
+| `@Controller(prefix)` | `@Controller(prefix)` | Identical |
+| `@Injectable()` | `@Injectable()` | Identical |
+| `@Inject(TOKEN) private svc: T` | `static inject = [TOKEN] as const` | Class property, not constructor decorator |
+| `constructor(@Inject(T) private svc: T)` | `static inject = [T] as const; constructor(private svc: T)` | See codemod: inject-to-static |
+| `ModuleRef` | `ModuleRef` | Same API |
+| `forwardRef(() => X)` | `forwardRef(() => X)` | Same circular-dep workaround |
+| `useValue` / `useFactory` / `useClass` provider forms | same | Identical |
+| `APP_GUARD`, `APP_PIPE`, `APP_FILTER`, `APP_INTERCEPTOR` tokens | same | Same global-scoping pattern |
 
-## Usage
+## Request Handling
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+| NestJS | Banhmi | Notes |
+|---|---|---|
+| `@Get()`, `@Post()`, `@Put()`, `@Delete()`, `@Patch()`, `@Options()`, `@Head()` | same | Identical |
+| `@Body()` | `@Body()` | Identical |
+| `@Param(key)` | `@Param(key)` | Identical |
+| `@Query(key)` | `@Query(key)` | Identical |
+| `@Headers(key)` | `@Headers(key)` | Identical |
+| `@Req()` / `@Request()` | `@Req()` | Resolves to `Request` (Web API) |
+| `@Res()` / `@Response()` | not recommended | Return values are used instead; `@Res()` available for escape hatches |
+| `@HttpCode(n)` | `@HttpCode(n)` | Identical |
+| `@Header(name, value)` | `@Header(name, value)` | Identical |
+| `@Redirect(url, status)` | `@Redirect(url, status)` | Identical |
 
-## API reference
+## Lifecycle & Hooks
 
-TBD
+| NestJS | Banhmi | Notes |
+|---|---|---|
+| `OnModuleInit` | `OnModuleInit` | Identical interface |
+| `OnModuleDestroy` | `OnModuleDestroy` | Identical interface |
+| `OnApplicationBootstrap` | `OnApplicationBootstrap` | Identical |
+| `OnApplicationShutdown` | `OnApplicationShutdown` | Identical; pair with `enableShutdownHooks()` |
+| `BeforeApplicationShutdown` | `BeforeApplicationShutdown` | Identical |
+
+## Middleware, Guards, Pipes, Interceptors, Filters
+
+| NestJS | Banhmi | Notes |
+|---|---|---|
+| `NestMiddleware` | `BanhmiMiddleware` | Same `use(req, res, next)` signature |
+| `@UseGuards(...)` | `@UseGuards(...)` | Identical |
+| `CanActivate` | `CanActivate` | Identical interface |
+| `@UsePipes(...)` | `@UsePipes(...)` | Identical |
+| `PipeTransform` | `PipeTransform` | Identical |
+| `@UseInterceptors(...)` | `@UseInterceptors(...)` | Identical |
+| `NestInterceptor` | `BanhmiInterceptor` | Same `intercept(ctx, next)` signature |
+| `@UseFilters(...)` | `@UseFilters(...)` | Identical |
+| `ExceptionFilter` | `ExceptionFilter` | Identical interface |
+
+## Techniques
+
+| NestJS | Banhmi | Notes |
+|---|---|---|
+| `@nestjs/config` → `ConfigModule` | `@banhmi/config` → `ConfigModule` | `Bun.env` backed; no `dotenv` dependency |
+| `@nestjs/jwt` → `JwtModule` | `@banhmi/jwt` → `JwtModule` | Uses `jose` under the hood |
+| `@nestjs/throttler` | `@banhmi/throttler` | Same decorator API |
+| `@nestjs/schedule` | `@banhmi/scheduling` | Same `@Cron`, `@Interval`, `@Timeout` |
+| `@nestjs/event-emitter` | `@banhmi/events` | Same `EventEmitter2`-style API |
+| `@nestjs/cache-manager` | `@banhmi/cache` | Same `CacheModule.register()` API |
+| `@nestjs/swagger` | `@banhmi/openapi` | Same `@ApiProperty`, `@ApiOperation`, etc. |
+| `@nestjs/passport` | `@banhmi/auth` | Better Auth integration |
+| `@nestjs/terminus` (health) | `@banhmi/health` | Same health-indicator interface |
+| `@nestjs/microservices` | `@banhmi/microservices` | Same transport abstraction |
+
+## WebSockets
+
+| NestJS | Banhmi | Notes |
+|---|---|---|
+| `@WebSocketGateway(port?)` | `@WebSocketGateway({ path? })` | Path-based routing on single Bun.serve port |
+| `@WebSocketServer()` | `@WebSocketServer()` | Identical field decorator |
+| `@SubscribeMessage(event)` | `@SubscribeMessage(event)` | Identical |
+| `Socket.io` / `ws` adapter | native Bun WebSocket | No adapter package needed |
+
+## Security
+
+| NestJS | Banhmi | Notes |
+|---|---|---|
+| `@nestjs/passport` strategies | `@banhmi/auth` Better Auth providers | Different extension model |
+| Helmet via `app.use(helmet())` | `@banhmi/security` `SecurityModule` | Same header defaults |
+| CSRF via express middleware | built-in `CsrfModule` | Token in cookie + header |
 
 ## See also
 
-TBD
+- [Compatibility caveats](/migration/compat) — things that do not map 1:1
+- [Codemods](/migration/codemods) — automated source rewrite script

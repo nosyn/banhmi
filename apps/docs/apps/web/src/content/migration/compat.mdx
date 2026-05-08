@@ -1,23 +1,96 @@
-# Compatibility caveats
+# Compatibility Caveats
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+This page documents the known incompatibilities between NestJS and Banhmi. Most are fundamental differences in the decorator system or the runtime. Each caveat includes a recommended workaround.
 
-## When to use
+## Decorator system
 
-TBD
+### Parameter decorators are not supported
 
-## Setup
+**NestJS** uses `experimentalDecorators` + `emitDecoratorMetadata`, which supports parameter decorators (`@Param()` on a constructor argument). Banhmi uses **TC39 Stage 3** decorators, which have no parameter decorator kind.
 
-TBD
+**Impact:** You cannot write:
 
-## Usage
+```ts
+// NestJS — does not work in Banhmi
+constructor(@Inject(MY_TOKEN) private svc: MyService) {}
+```
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+**Workaround:** Use the static `inject` tuple, which is the idiomatic Banhmi DI pattern:
 
-## API reference
+```ts
+// Banhmi
+static inject = [MY_TOKEN] as const
+constructor(private svc: MyService) {}
+```
 
-TBD
+The codemods script handles this rewrite automatically. See [codemods](/migration/codemods).
+
+### `reflect-metadata` is not used
+
+NestJS relies on `reflect-metadata` to store type information at runtime. Banhmi uses `Symbol.metadata` (TC39 Stage 3 / polyfilled) instead.
+
+**Impact:**
+- Do not `import 'reflect-metadata'` in Banhmi projects — it is not needed and adds a runtime dependency.
+- Do not call `Reflect.getMetadata(...)` or `Reflect.defineMetadata(...)` — these APIs are not populated.
+- Metadata is read as `MyClass[Symbol.metadata][SYMBOL_KEY]`.
+
+**Workaround:** If you have custom decorators that write to `Reflect`, port them to write `context.metadata[YOUR_SYMBOL] = value` in the decorator factory instead.
+
+### `@Inject()` constructor decorator replaced by `static inject`
+
+In NestJS, `@Inject(TOKEN)` is a **parameter decorator** applied to a constructor parameter. Because parameter decorators do not exist in TC39 Stage 3, Banhmi uses a class-level static property:
+
+```ts
+// NestJS
+@Injectable()
+export class CatsService {
+  constructor(@Inject(CAT_REPO) private repo: CatRepository) {}
+}
+
+// Banhmi
+@Injectable()
+export class CatsService {
+  static inject = [CAT_REPO] as const
+  constructor(private repo: CatRepository) {}
+}
+```
+
+The codemod `inject-to-static` rewrites these automatically for simple single-class cases.
+
+## CLI and schematics
+
+`@nestjs/cli` schematics (`nest generate module`, `nest generate service`, etc.) are not compatible with Banhmi.
+
+**Workaround:** Use `@banhmi/cli` (work in progress) or create files manually. The directory structure and naming conventions are identical.
+
+## HTTP adapter
+
+NestJS supports Express and Fastify adapters. Banhmi uses `@banhmi/platform-bun` which wraps raw `Bun.serve` — no Express or Fastify API is exposed.
+
+**Impact:** Middleware that directly calls Express/Fastify APIs (e.g., `res.json()`, `res.redirect()`) will not work.
+
+**Workaround:** Return values from controller methods instead of using `res`. For streaming or raw response control, inject the `BunResponse` helper.
+
+## Peer dependencies
+
+| NestJS dependency | Banhmi equivalent | Notes |
+|---|---|---|
+| `express` | none | Bun.serve is used directly |
+| `fastify` | none | Bun.serve is used directly |
+| `reflect-metadata` | none | Symbol.metadata polyfill auto-loaded |
+| `rxjs` | none (optional) | Some interceptors use async-generator patterns instead |
+| `class-transformer` | `@banhmi/transform` | Bun-native re-implementation |
+| `class-validator` | `@banhmi/validation` | Bun-native re-implementation |
+
+## Module metadata typing
+
+`imports` in Banhmi `ModuleMetadata` only accepts `AbstractConstructor` (i.e., classes), not `DynamicModule` plain objects directly in all positions. Dynamic modules created via `forRoot()` / `forRootAsync()` still work because those return a module class.
+
+## Execution context
+
+`ArgumentsHost.switchToHttp().getResponse()` in Banhmi returns a `BunResponse` helper, not an Express `Response`. The `.status()`, `.json()`, `.send()` methods are available, but Express-specific methods like `.cookie()`, `.clearCookie()`, `.render()` are not.
 
 ## See also
 
-TBD
+- [Concept mapping](/migration/concepts)
+- [Codemods](/migration/codemods)
