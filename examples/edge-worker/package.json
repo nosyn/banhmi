@@ -1,0 +1,15 @@
+{
+  "name": "edge-worker",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun run src/index.ts",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@banhmi/common": "workspace:*",
+    "@banhmi/core": "workspace:*",
+    "@banhmi/edge": "workspace:*"
+  }
+}
