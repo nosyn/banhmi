@@ -7,6 +7,7 @@ export class BunRouteCtx implements RouteCtx {
   constructor(
     readonly request: Request,
     readonly params: Readonly<Record<string, string>>,
+    readonly rawBody?: Uint8Array,
   ) {}
 
   get query(): URLSearchParams {

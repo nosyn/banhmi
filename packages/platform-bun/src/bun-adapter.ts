@@ -174,6 +174,42 @@ function moduleMiddlewareMatches(
   )
 }
 
+/**
+ * Options accepted by {@link BunAdapter} to control request handling.
+ *
+ * @example
+ * const adapter = new BunAdapter({ rawBody: true })
+ */
+export interface BunAdapterOptions {
+  /**
+   * When `true`, the raw request bytes are read once and stored as
+   * `ctx.rawBody: Uint8Array` on the route context before the pipeline runs.
+   *
+   * @default false
+   */
+  rawBody?: boolean
+
+  /**
+   * TLS configuration for HTTPS support.  When provided, `Bun.serve` is
+   * started with `tls` enabled using the supplied key and certificate.
+   *
+   * @example
+   * { https: { key: '...pem...', cert: '...pem...' } }
+   */
+  https?: {
+    /** PEM-encoded private key. */
+    key: string
+    /** PEM-encoded certificate. */
+    cert: string
+  }
+
+  /**
+   * Maximum number of seconds a keep-alive connection may stay open before
+   * the server closes it.  Maps to `Bun.serve`'s `idleTimeout`.
+   */
+  idleTimeout?: number
+}
+
 export class BunAdapter implements HttpAdapter {
   private router = new RadixRouter()
   private explorer = new RouteExplorer()
@@ -183,6 +219,11 @@ export class BunAdapter implements HttpAdapter {
   private server: Server | null = null
   private gateways: Array<ExploredGateway & { instance: object }> = []
   private versioningOpts: VersioningOpts | null = null
+  private readonly opts: BunAdapterOptions
+
+  constructor(opts: BunAdapterOptions = {}) {
+    this.opts = opts
+  }
 
   /**
    * Install versioning options. Called by `VersioningBootstrapper` on
@@ -259,8 +300,13 @@ export class BunAdapter implements HttpAdapter {
   }
 
   async listen(port: number): Promise<void> {
+    const tlsOpts = this.opts.https
     this.server = Bun.serve({
       port,
+      ...(tlsOpts ? { tls: { key: tlsOpts.key, cert: tlsOpts.cert } } : {}),
+      ...(this.opts.idleTimeout !== undefined
+        ? { idleTimeout: this.opts.idleTimeout }
+        : {}),
       fetch: (req, server) => this.handleFetch(req, server),
       websocket: {
         open: (ws) => this.handleWsOpen(ws),
@@ -285,6 +331,24 @@ export class BunAdapter implements HttpAdapter {
   getUrl(): string {
     if (!this.server) throw new Error('Server is not listening yet')
     return `http://localhost:${this.server.port}`
+  }
+
+  /**
+   * Dispatch an incoming `Request` through the full pipeline and return a
+   * `Response` — without requiring an active `Bun.serve` instance.
+   *
+   * This is the integration point for edge and serverless adapters that need
+   * to run the Banhmi pipeline inside a runtime that provides `Request /
+   * Response` natively (Cloudflare Workers, Vercel Edge, AWS Lambda, …).
+   *
+   * @param request - The inbound `Request` to process.
+   * @returns A `Promise<Response>` from the Banhmi pipeline.
+   *
+   * @example
+   * const response = await adapter.dispatchRequest(new Request('http://x/cats'))
+   */
+  dispatchRequest(request: Request): Promise<Response> {
+    return this.handleRequest(request)
   }
 
   private handleFetch(
@@ -417,7 +481,22 @@ export class BunAdapter implements HttpAdapter {
       )
     }
 
-    const routeCtx = new BunRouteCtx(request, match.params)
+    // When rawBody mode is enabled, read the body once as bytes and supply a
+    // pre-consumed clone to the route context so handlers can read rawBody.
+    let rawBody: Uint8Array | undefined
+    let requestForCtx = request
+    if (this.opts.rawBody) {
+      const buf = await request.arrayBuffer()
+      rawBody = new Uint8Array(buf)
+      // Reconstruct a new Request with the body so the pipeline can still read it
+      requestForCtx = new Request(request.url, {
+        method: request.method,
+        headers: request.headers,
+        body: buf.byteLength > 0 ? buf : null,
+      })
+    }
+
+    const routeCtx = new BunRouteCtx(requestForCtx, match.params, rawBody)
     const execCtx = new BunExecutionContext(
       routeCtx,
       match.handlerClass ?? class {},

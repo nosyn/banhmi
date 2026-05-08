@@ -2,7 +2,7 @@ import type { AbstractConstructor } from '@banhmi/common'
 import { Token } from '@banhmi/common'
 import type { HttpAdapter, ModuleNode } from '@banhmi/core'
 import { BanhmiApplication, Container, ModuleGraph } from '@banhmi/core'
-import { BunAdapter } from './bun-adapter'
+import { BunAdapter, type BunAdapterOptions } from './bun-adapter'
 
 /**
  * DI token for the active {@link HttpAdapter} instance.
@@ -62,14 +62,29 @@ export class BanhmiFactory {
    * interact with the adapter and walk the module graph.
    *
    * @param rootModule - The root `@Module`-decorated class.
+   * @param opts - Optional adapter-level options (rawBody, https, idleTimeout).
    * @returns A configured application ready to call `.listen()` on.
    *
    * @example
+   * // Basic
    * const app = await BanhmiFactory.create(AppModule)
    * await app.listen(3000)
+   *
+   * @example
+   * // With raw body capture
+   * const app = await BanhmiFactory.create(AppModule, { rawBody: true })
+   * await app.listen(3000)
+   *
+   * @example
+   * // With HTTPS
+   * const app = await BanhmiFactory.create(AppModule, {
+   *   https: { key: tlsKey, cert: tlsCert },
+   * })
+   * await app.listen(443)
    */
   static async create(
     rootModule: AbstractConstructor,
+    opts?: BunAdapterOptions,
   ): Promise<BanhmiApplication> {
     const graph = new ModuleGraph()
     const moduleTree = graph.buildTree(rootModule)
@@ -80,7 +95,7 @@ export class BanhmiFactory {
       container.register(provider)
     }
 
-    const adapter = new BunAdapter()
+    const adapter = new BunAdapter(opts)
     // Register infrastructure tokens so bootstrap services can inject them
     container.register({ provide: HTTP_ADAPTER_TOKEN, useValue: adapter })
     container.register({ provide: CONTAINER_TOKEN, useValue: container })

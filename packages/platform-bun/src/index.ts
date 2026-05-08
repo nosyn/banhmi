@@ -1,3 +1,4 @@
+export type { BunAdapterOptions } from './bun-adapter'
 export { BunAdapter } from './bun-adapter'
 export { BunExecutionContext } from './execution-context'
 export {
