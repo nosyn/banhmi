@@ -8,6 +8,8 @@ export type OhaResult = {
   p50: number
   p95: number
   p99: number
+  /** p99.9 latency in seconds. Falls back to p99 when not present in oha output. */
+  p99_9: number
   totalSeconds: number
 }
 
@@ -20,12 +22,19 @@ export type OhaResult = {
 export function parseOhaJson(json: string): OhaResult {
   const parsed = JSON.parse(json) as {
     summary: { requestsPerSec: number; total: number }
-    latencyPercentiles: { p50: number; p95: number; p99: number }
+    latencyPercentiles: {
+      p50: number
+      p95: number
+      p99: number
+      /** oha >= 1.4 emits p999; fall back to p99 when absent. */
+      p999?: number
+    }
   }
   return {
     p50: parsed.latencyPercentiles.p50,
     p95: parsed.latencyPercentiles.p95,
     p99: parsed.latencyPercentiles.p99,
+    p99_9: parsed.latencyPercentiles.p999 ?? parsed.latencyPercentiles.p99,
     rps: parsed.summary.requestsPerSec,
     totalSeconds: parsed.summary.total,
   }
