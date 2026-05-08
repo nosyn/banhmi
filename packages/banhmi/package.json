@@ -41,7 +41,7 @@
     "@banhmi/otel": "workspace:*",
     "@banhmi/session": "workspace:*",
     "@banhmi/static": "workspace:*",
-    "@banhmi/swagger": "workspace:*",
+    "@banhmi/openapi": "workspace:*",
     "@banhmi/testing": "workspace:*",
     "@banhmi/transform": "workspace:*",
     "@banhmi/validation": "workspace:*",

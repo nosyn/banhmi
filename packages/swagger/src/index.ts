@@ -1,10 +1,4 @@
-export { DocumentBuilder } from './document-builder'
-export { SwaggerExplorer } from './explorer'
-export { SwaggerModule } from './swagger.module'
-export type {
-  OpenApiComponents,
-  OpenApiDocument,
-  OpenApiInfo,
-  OpenApiSecurityScheme,
-  OpenApiServer,
-} from './types'
+/**
+ * @deprecated Use `@banhmi/openapi` instead. This package will be removed in v1.0.
+ */
+export * from '@banhmi/openapi'
