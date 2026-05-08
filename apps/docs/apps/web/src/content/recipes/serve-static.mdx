@@ -1,23 +1,81 @@
-# Serve static
+# Serve Static Files
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+> **Status:** Available since `v0.3.0-canary.wave1` via `@banhmi/static`.
 
 ## When to use
 
-TBD
+Use `@banhmi/static` when your Banhmi application needs to serve files directly from the filesystem — HTML, CSS, JavaScript bundles, images, fonts, or any other asset. It uses `Bun.file()` for zero-copy streaming so the kernel sends the file directly to the socket without an extra copy through user-space. Common use-cases include SPAs serving a `dist/` folder alongside an API, documentation sites, and download endpoints.
 
 ## Setup
 
-TBD
+Install the package (already bundled in `banhmi`):
+
+```ts
+import { StaticModule } from '@banhmi/static'
+// or
+import { StaticModule } from 'banhmi'
+```
+
+Import `StaticModule.forRoot()` in your root (or feature) module:
+
+```ts
+import { Module } from 'banhmi'
+import { StaticModule } from '@banhmi/static'
+
+@Module({
+  imports: [
+    StaticModule.forRoot({
+      root: './public',   // relative to process.cwd()
+      prefix: '/static',  // served at /static/*
+    }),
+  ],
+})
+class AppModule {}
+```
+
+No `app.use()` call is needed — the middleware is installed automatically on application bootstrap.
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+<CodeFromExample slug="serve-static" />
 
 ## API reference
 
-TBD
+### `StaticModule.forRoot(opts: StaticOptions)`
+
+Returns a dynamic `@Module` that registers the static file middleware.
+
+### `StaticOptions`
+
+| Field         | Type               | Default         | Description |
+|---------------|--------------------|-----------------|-------------|
+| `root`        | `string`           | **required**    | Filesystem path to serve from, resolved against `process.cwd()`. |
+| `prefix`      | `string`           | `'/'`           | URL prefix that triggers the middleware. |
+| `maxAge`      | `number`           | `86400`         | `Cache-Control` max-age in seconds. |
+| `immutable`   | `boolean`          | `false`         | Appends `immutable` to `Cache-Control` (use with content-hashed files). |
+| `fallthrough` | `boolean`          | `true`          | When `true`, missing files fall through to the next handler. When `false`, missing files return 404 immediately. |
+| `index`       | `string \| false`  | `'index.html'`  | Index file served for directory paths. Set `false` to disable. |
+
+### `STATIC_OPTIONS` token
+
+Inject this token in your own providers to read the resolved configuration:
+
+```ts
+import { STATIC_OPTIONS } from '@banhmi/static'
+```
+
+### `ServeStaticInterceptor`
+
+The underlying class that implements `OnApplicationBootstrap`. You can import it directly for advanced use-cases such as testing the middleware function in isolation via `interceptor.buildMiddleware()`.
+
+## Common pitfalls
+
+- **Path traversal**: The interceptor resolves all paths against the configured `root` and rejects any request whose resolved path escapes the root directory — a `403` is returned for `../` traversal attempts. You do not need to sanitise paths yourself.
+- **Prefix match**: Requests that do not start with `prefix` are passed through immediately, so the middleware has zero overhead for non-static requests.
+- **Multiple instances**: You can import `StaticModule.forRoot()` more than once with different `root` / `prefix` values to serve multiple directories.
+- **`immutable` flag**: Only use `immutable` when filenames include a content hash. Browsers will never re-fetch an immutable asset, so serving mutable filenames with this flag will cause stale content.
 
 ## See also
 
-TBD
+- [`Bun.file()` docs](https://bun.sh/docs/api/file-io) — zero-copy file serving
+- [`@banhmi/s3`](/bun-native/bun-s3) — serve assets from S3-compatible storage

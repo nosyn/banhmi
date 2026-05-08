@@ -19,6 +19,7 @@
     "@banhmi/redis": "workspace:*",
     "@banhmi/s3": "workspace:*",
     "@banhmi/sqlite": "workspace:*",
+    "@banhmi/static": "workspace:*",
     "@banhmi/swagger": "workspace:*",
     "@banhmi/testing": "workspace:*"
   }

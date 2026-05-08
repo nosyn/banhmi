@@ -89,6 +89,15 @@
         "banhmi": "workspace:*",
       },
     },
+    "examples/features/serve-static": {
+      "name": "banhmi-feature-serve-static",
+      "version": "0.0.0",
+      "dependencies": {
+        "@banhmi/static": "workspace:*",
+        "@banhmi/testing": "workspace:*",
+        "banhmi": "workspace:*",
+      },
+    },
     "packages/banhmi": {
       "name": "banhmi",
       "version": "0.1.0",
@@ -102,6 +111,7 @@
         "@banhmi/redis": "workspace:*",
         "@banhmi/s3": "workspace:*",
         "@banhmi/sqlite": "workspace:*",
+        "@banhmi/static": "workspace:*",
         "@banhmi/swagger": "workspace:*",
         "@banhmi/testing": "workspace:*",
       },
@@ -191,6 +201,15 @@
         "@banhmi/platform-bun": "workspace:*",
       },
     },
+    "packages/static": {
+      "name": "@banhmi/static",
+      "version": "0.1.0",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/core": "workspace:*",
+        "@banhmi/platform-bun": "workspace:*",
+      },
+    },
     "packages/swagger": {
       "name": "@banhmi/swagger",
       "version": "1.0.0",
@@ -234,6 +253,8 @@
     "@banhmi/s3": ["@banhmi/s3@workspace:packages/s3"],
 
     "@banhmi/sqlite": ["@banhmi/sqlite@workspace:packages/sqlite"],
+
+    "@banhmi/static": ["@banhmi/static@workspace:packages/static"],
 
     "@banhmi/swagger": ["@banhmi/swagger@workspace:packages/swagger"],
 
@@ -472,6 +493,8 @@
     "avvio": ["avvio@8.4.0", "", { "dependencies": { "@fastify/error": "^3.3.0", "fastq": "^1.17.1" } }, "sha512-CDSwaxINFy59iNwhYnkvALBwZiTydGkOecZyPkqBpABYR1KqGEsET0VOOYDwtleZSUIdeY36DC2bSZ24CO1igA=="],
 
     "banhmi": ["banhmi@workspace:packages/banhmi"],
+
+    "banhmi-feature-serve-static": ["banhmi-feature-serve-static@workspace:examples/features/serve-static"],
 
     "banhmi-feature-template": ["banhmi-feature-template@workspace:examples/features/.template"],
 
