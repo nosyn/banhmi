@@ -66,7 +66,15 @@
       "name": "cats-api-example",
       "version": "0.0.1",
       "dependencies": {
+        "@banhmi/compression": "workspace:*",
+        "@banhmi/cookies": "workspace:*",
+        "@banhmi/core": "workspace:*",
+        "@banhmi/middleware": "workspace:*",
+        "@banhmi/platform-bun": "workspace:*",
+        "@banhmi/validation": "workspace:*",
+        "@banhmi/versioning": "workspace:*",
         "banhmi": "workspace:*",
+        "zod": "^3",
       },
     },
     "examples/drizzle-api": {

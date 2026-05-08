@@ -6,6 +6,14 @@
     "dev": "bun run --watch src/main.ts"
   },
   "dependencies": {
-    "banhmi": "workspace:*"
+    "@banhmi/compression": "workspace:*",
+    "@banhmi/cookies": "workspace:*",
+    "@banhmi/core": "workspace:*",
+    "@banhmi/middleware": "workspace:*",
+    "@banhmi/platform-bun": "workspace:*",
+    "@banhmi/validation": "workspace:*",
+    "@banhmi/versioning": "workspace:*",
+    "banhmi": "workspace:*",
+    "zod": "^3"
   }
 }

@@ -140,12 +140,18 @@ export class CompressionMiddleware implements OnApplicationBootstrap {
         return this.addVaryHeader(response)
       }
 
-      // Read body
+      // Read body — must buffer before checking threshold so we can rebuild
+      // the response if we decide not to compress (body is consumed after this)
       const buf = new Uint8Array(await response.arrayBuffer())
 
-      // Skip if under threshold
+      // Skip if under threshold — rebuild from the buffer we already read
       if (buf.byteLength < this.threshold) {
-        return this.addVaryHeader(response)
+        const rebuilt = new Response(buf, {
+          status: response.status,
+          statusText: response.statusText,
+          headers: response.headers,
+        })
+        return this.addVaryHeader(rebuilt)
       }
 
       // Compress
@@ -169,7 +175,7 @@ export class CompressionMiddleware implements OnApplicationBootstrap {
 
   private addVaryHeader(response: Response): Response {
     // Always add Vary: accept-encoding so caches know the response varies by encoding
-    const cloned = new Response(response.body, response)
+    const cloned = response.clone()
     cloned.headers.set('vary', 'accept-encoding')
     return cloned
   }

@@ -1,7 +1,29 @@
+import { AdaptedValidationPipe } from '@banhmi/validation'
+import { zod } from '@banhmi/validation/zod'
 import type { RouteCtx } from 'banhmi'
 import { Controller, Delete, Get, HttpCode, Post } from 'banhmi'
+import { z } from 'zod'
 import { CatsService } from './cats.service'
 
+/**
+ * Zod schema used to validate the CreateCat request body.
+ */
+export const CreateCatSchema = z.object({
+  name: z.string().min(1),
+  age: z.number().int().nonnegative(),
+})
+
+/**
+ * Validated CreateCat DTO type.
+ */
+export type CreateCatDto = z.infer<typeof CreateCatSchema>
+
+/** Shared pipe instance reused across handlers. */
+const createCatPipe = new AdaptedValidationPipe(zod(CreateCatSchema))
+
+/**
+ * Handles CRUD operations for cats (v1 controller — returns `{ id, name }`).
+ */
 @Controller('/cats')
 export class CatsController {
   static inject = [CatsService] as const
@@ -21,8 +43,9 @@ export class CatsController {
   @Post()
   @HttpCode(201)
   async create(ctx: RouteCtx) {
-    const { name, age } = await ctx.json<{ name: string; age: number }>()
-    return this.cats.create(name, age)
+    const body = await ctx.json<unknown>()
+    const dto = createCatPipe.transform(body, { type: 'body' })
+    return this.cats.create(dto.name, dto.age)
   }
 
   @Delete('/:id')
