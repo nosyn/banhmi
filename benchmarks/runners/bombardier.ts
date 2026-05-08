@@ -69,15 +69,26 @@ export async function runBombardier(
   const { body, connections = 125, contentType, method = 'GET', seconds } = opts
 
   const args: string[] = [
-    '--print', 'r',
-    '--format', 'json',
-    '--duration', `${seconds}s`,
-    '--connections', String(connections),
+    '--print',
+    'r',
+    '--format',
+    'json',
+    '--duration',
+    `${seconds}s`,
+    '--connections',
+    String(connections),
   ]
 
   if (method === 'POST' && body !== undefined) {
     const ct = contentType ?? 'application/json'
-    args.push('--method', 'POST', '--body', body, '--header', `Content-Type: ${ct}`)
+    args.push(
+      '--method',
+      'POST',
+      '--body',
+      body,
+      '--header',
+      `Content-Type: ${ct}`,
+    )
   }
 
   args.push(url)

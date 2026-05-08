@@ -18,7 +18,7 @@ const TenFieldSchema = t.Object({
 
 const port = Number(Bun.env.PORT ?? 3005)
 
-const app = new Elysia()
+const _app = new Elysia()
   /** hello-world baseline endpoint. */
   .get('/', () => ({ hello: 'world' }))
 
@@ -36,7 +36,7 @@ const app = new Elysia()
   .post(
     '/upload',
     ({ body }) => {
-      const file = (body as Record<string, unknown>)['file']
+      const file = (body as Record<string, unknown>).file
       if (file instanceof File) {
         return { mimetype: file.type, size: file.size }
       }

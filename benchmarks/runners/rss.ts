@@ -28,7 +28,9 @@ async function readRssKb(pid: number): Promise<number> {
     child.on('exit', () => {
       const kb = Number.parseInt(stdout.trim(), 10)
       if (Number.isNaN(kb)) {
-        reject(new Error(`Could not parse RSS from ps output: "${stdout.trim()}"`))
+        reject(
+          new Error(`Could not parse RSS from ps output: "${stdout.trim()}"`),
+        )
       } else {
         resolve(kb)
       }

@@ -37,7 +37,7 @@ app.post('/validate', zValidator('json', TenFieldSchema), (c) => {
 /** Accept a multipart file upload and respond with its size and MIME type. */
 app.post('/upload', async (c) => {
   const body = await c.req.parseBody()
-  const file = body['file']
+  const file = body.file
   if (file instanceof File) {
     return c.json({ mimetype: file.type, size: file.size })
   }

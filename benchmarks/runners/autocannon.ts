@@ -61,13 +61,22 @@ export async function runAutocannon(
 
   const args: string[] = [
     '--json',
-    '--duration', String(seconds),
-    '--connections', String(connections),
+    '--duration',
+    String(seconds),
+    '--connections',
+    String(connections),
   ]
 
   if (method === 'POST' && body !== undefined) {
     const ct = contentType ?? 'application/json'
-    args.push('--method', 'POST', '--body', body, '--header', `Content-Type: ${ct}`)
+    args.push(
+      '--method',
+      'POST',
+      '--body',
+      body,
+      '--header',
+      `Content-Type: ${ct}`,
+    )
   }
 
   args.push(url)
