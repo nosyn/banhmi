@@ -19,7 +19,8 @@
   },
   "css": {
     "parser": {
-      "cssModules": false
+      "cssModules": false,
+      "allowWrongLineComments": true
     }
   },
   "javascript": {
@@ -44,15 +45,34 @@
           }
         }
       }
+    },
+    {
+      "includes": ["apps/docs/packages/ui/src/**"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noDocumentCookie": "off"
+          },
+          "a11y": {
+            "useFocusableInteractive": "off",
+            "useSemanticElements": "off"
+          },
+          "correctness": {
+            "useExhaustiveDependencies": "off"
+          }
+        }
+      }
     }
   ],
   "files": {
     "includes": [
       "**",
       "!**/dist",
+      "!**/.output",
       "!**/node_modules",
       "!**/bun.lock",
-      "!**/routeTree.gen.ts"
+      "!**/routeTree.gen.ts",
+      "!apps/docs/packages/ui/src/styles/globals.css"
     ]
   }
 }

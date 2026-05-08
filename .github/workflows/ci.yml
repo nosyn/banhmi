@@ -1,0 +1,51 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: test (${{ matrix.bun }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        bun: [latest, canary]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ matrix.bun }}
+      - run: bun install --frozen-lockfile
+      - run: bun run lint
+      - name: Quality scripts (informational)
+        run: bun run quality
+        continue-on-error: true
+      - run: bun test --recursive
+
+  docs:
+    name: docs build
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - run: bun run docs:build
+
+  benchmarks-smoke:
+    name: benchmarks smoke
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: install oha
+        run: |
+          curl -sSL https://github.com/hatoo/oha/releases/latest/download/oha-linux-amd64 -o /usr/local/bin/oha
+          chmod +x /usr/local/bin/oha
+      - run: bun install --frozen-lockfile
+      - run: bun run benchmarks:smoke
