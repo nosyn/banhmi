@@ -1,23 +1,96 @@
 # Validation
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Available since `v0.4.0-canary.wave1` via `@banhmi/validation`.
 
 ## When to use
 
-TBD
+Use `@banhmi/validation` to validate incoming request bodies, query parameters,
+or any unknown runtime value before your business logic runs. The package
+ships two adapters:
+
+- **`native`** — zero external deps; uses a small declarative spec object.
+- **`zod`** — wraps any Zod schema (optional peer dep, imported via subpath).
+
+Both produce a `Validator<T>` that you compose with `AdaptedValidationPipe` to
+get automatic HTTP 400 responses on validation failure.
+
+> **Note:** `@banhmi/common` also exports a `ValidationPipe` that implements
+> the [Standard Schema](https://standardschema.dev) spec (compatible with
+> Zod v3.24+, Valibot, etc.). Use that when you prefer the standardized
+> interface; use `AdaptedValidationPipe` from this package when you want the
+> explicit adapter API.
 
 ## Setup
 
-TBD
+```ts
+import { AdaptedValidationPipe, native } from '@banhmi/validation'
+// or via banhmi meta-package:
+import { AdaptedValidationPipe, native } from 'banhmi'
+```
 
-## Usage
+For the Zod adapter, import from the subpath to keep `zod` out of your bundle
+when you don't use it:
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import { zod } from '@banhmi/validation/zod'
+```
+
+## Usage — native adapter
+
+<CodeFromExample slug="validation-native" />
+
+## Usage — Zod adapter
+
+<CodeFromExample slug="validation-zod" />
 
 ## API reference
 
-TBD
+### `native(spec): Validator<T>`
+
+Builds a `Validator<T>` from a declarative spec. Supports:
+
+| Spec form | Description |
+|---|---|
+| `'string'` \| `'number'` \| `'boolean'` | Primitive type check. |
+| `{ type: 'object', shape, required? }` | Object with typed fields. |
+| `{ type: 'array', of: Spec }` | Homogeneous array. |
+| `{ type: 'optional', of: Spec }` | Allows `null` / `undefined`. |
+
+### `zod(schema): Validator<T>`
+
+Wraps a Zod schema (imported from `@banhmi/validation/zod`). Maps Zod issues
+to `ValidationError[]` so error shapes are consistent across adapters.
+
+### `interface Validator<T>`
+
+```ts
+interface Validator<T> {
+  parse(input: unknown): T  // throws ValidationFailedError
+  safeParse(input: unknown): { ok: true; value: T } | { ok: false; errors: ValidationError[] }
+}
+```
+
+### `class AdaptedValidationPipe<T>`
+
+Wraps a `Validator<T>` as a `PipeTransform`. On failure it throws
+`ValidationException` (a `BadRequestException` subclass) whose `errors` field
+holds the structured per-field errors array and whose `message` is a JSON
+string parseable by the default `GlobalExceptionFilter`.
+
+### `class ValidationException`
+
+A `BadRequestException` subclass that carries `errors: ValidationError[]`.
+Use `instanceof ValidationException` in custom filters to distinguish
+validation errors from other 400s.
+
+### `type ValidationError`
+
+```ts
+type ValidationError = { path: (string | number)[]; message: string }
+```
 
 ## See also
 
-TBD
+- [`@banhmi/transform`](/techniques/serialization) — serialize response DTOs
+- [Zod documentation](https://zod.dev)
+- [Standard Schema](https://standardschema.dev)
