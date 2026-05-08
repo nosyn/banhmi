@@ -1,23 +1,104 @@
 # Sentry
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+`@banhmi/sentry` bridges the `@sentry/node` SDK into Banhmi's DI system.
+Import `SentryModule.forRoot(opts)` to initialise the SDK at bootstrap,
+add `SentryExceptionFilter` to capture unhandled errors, and optionally
+add `SentryInterceptor` to record HTTP performance spans.
+
+Requires `@sentry/node` v7 or v8 as a peer dependency.
 
 ## When to use
 
-TBD
+- You want automatic error reporting for uncaught exceptions.
+- You want Sentry Performance Monitoring for HTTP requests.
+- You need a Sentry DSN injected via the DI container.
 
 ## Setup
 
-TBD
+```bash
+bun add @sentry/node @banhmi/sentry
+```
 
-## Usage
+```ts
+import { Module } from 'banhmi'
+import { SentryModule } from '@banhmi/sentry'
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+@Module({
+  imports: [
+    SentryModule.forRoot({
+      dsn: Bun.env.SENTRY_DSN!,
+      environment: Bun.env.NODE_ENV ?? 'development',
+      tracesSampleRate: 0.1,   // record 10% of transactions
+      release: Bun.env.GIT_SHA,
+    }),
+  ],
+})
+class AppModule {}
+```
+
+## Exception filter
+
+`SentryExceptionFilter` captures every unhandled exception (non-HTTP and
+HTTP >= 500) and then returns the standard JSON error response. HTTP 4xx
+errors are forwarded without being captured — client errors are not bugs.
+
+```ts
+import { SentryExceptionFilter, SENTRY_CLIENT } from '@banhmi/sentry'
+import type { SentryExceptionFilter as Filter } from '@banhmi/sentry'
+
+// Register globally on the adapter (example with BanhmiFactory):
+const app = await BanhmiFactory.create(AppModule)
+// Filters are registered per-module in Banhmi — inject SENTRY_CLIENT to
+// build an instance, or construct it directly:
+// app.useGlobalFilters(new SentryExceptionFilter(Sentry))
+await app.listen(3000)
+```
+
+## Request tracing interceptor
+
+`SentryInterceptor` wraps every handler in a `Sentry.startSpan` call.
+Tracing is only active when `tracesSampleRate > 0`.
+
+```ts
+import { SentryInterceptor } from '@banhmi/sentry'
+
+// Instantiate with the Sentry client and the options you passed to forRoot:
+const interceptor = new SentryInterceptor(Sentry, { tracesSampleRate: 0.1 })
+```
+
+## Disabling in tests
+
+Pass `enabled: false` to skip SDK initialisation entirely:
+
+```ts
+SentryModule.forRoot({ dsn: 'mock://', enabled: false })
+```
+
+This is the recommended approach for unit and integration tests — the module
+still provides `SENTRY_CLIENT` (a no-op shim) so dependent services compile
+and run without error.
 
 ## API reference
 
-TBD
+### `SentryModule.forRoot(opts)`
+
+| Option              | Type      | Default    | Description                          |
+|---------------------|-----------|------------|--------------------------------------|
+| `dsn`               | `string`  | —          | Sentry Data Source Name (required)   |
+| `environment`       | `string`  | `undefined`| Sentry environment tag               |
+| `tracesSampleRate`  | `number`  | `0`        | Fraction of transactions to record   |
+| `release`           | `string`  | `undefined`| Release identifier                   |
+| `enabled`           | `boolean` | `true`     | Set `false` to skip initialisation   |
+
+### Tokens
+
+| Token           | Type                              | Description            |
+|-----------------|-----------------------------------|------------------------|
+| `SENTRY_OPTIONS`| `SentryOptions`                   | Resolved module config |
+| `SENTRY_CLIENT` | `typeof import('@sentry/node')`   | Raw Sentry namespace   |
 
 ## See also
 
-TBD
+- [OpenTelemetry](/recipes/otel) — for vendor-agnostic distributed tracing.
+- [Logging](/techniques/logging) — for structured log output.
+- [Exception Filters](/overview/exception-filters) — for custom error handling.
