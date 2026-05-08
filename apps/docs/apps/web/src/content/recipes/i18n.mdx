@@ -1,0 +1,147 @@
+# Internationalization (i18n)
+
+`@banhmi/i18n` provides locale detection via configurable resolvers and string translation with dot-path keys and `{variable}` interpolation.
+
+## Setup
+
+```bash
+bun add @banhmi/i18n
+```
+
+```ts
+import { Module } from 'banhmi'
+import { I18nModule, HeaderResolver, QueryResolver, CookieResolver } from '@banhmi/i18n'
+
+@Module({
+  imports: [
+    I18nModule.forRoot({
+      fallbackLocale: 'en',
+      resolvers: [HeaderResolver, QueryResolver, CookieResolver],
+      translations: {
+        en: {
+          greeting: 'Hello, {name}!',
+          errors: { notFound: 'Not found' },
+        },
+        fr: {
+          greeting: 'Bonjour, {name}!',
+          errors: { notFound: 'Page introuvable' },
+        },
+      },
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+## Translating strings
+
+Inject `I18nService` and call `.t()`:
+
+```ts
+import { Injectable } from 'banhmi'
+import type { RouteCtx } from 'banhmi'
+import { I18nService } from '@banhmi/i18n'
+
+@Injectable()
+export class GreetingService {
+  static inject = [I18nService] as const
+  constructor(private i18n: I18nService) {}
+
+  greet(ctx: RouteCtx, name: string) {
+    // Locale auto-resolved from request via resolvers
+    return this.i18n.t('greeting', { name }, ctx)
+    // Or pass locale explicitly:
+    // return this.i18n.t('greeting', { name }, 'fr')
+  }
+}
+```
+
+## Locale resolution
+
+Resolvers are tried in order; the first non-null result wins:
+
+| Resolver | Source |
+|----------|--------|
+| `HeaderResolver` | `Accept-Language` HTTP header |
+| `QueryResolver` | `?lang=` query parameter |
+| `CookieResolver` | `locale` cookie |
+
+Custom resolver:
+
+```ts
+import type { LocaleResolver } from '@banhmi/i18n'
+
+const myResolver: LocaleResolver = {
+  resolve(ctx) {
+    // Return a locale string or null
+    return ctx.state.user?.preferredLocale ?? null
+  },
+}
+```
+
+### Custom query parameter name
+
+```ts
+import { queryResolver } from '@banhmi/i18n'
+
+I18nModule.forRoot({
+  resolvers: [queryResolver({ paramName: 'locale' })],
+  // ...
+})
+```
+
+### Custom cookie name
+
+```ts
+import { cookieResolver } from '@banhmi/i18n'
+
+I18nModule.forRoot({
+  resolvers: [cookieResolver({ cookieName: 'user_locale' })],
+  // ...
+})
+```
+
+## Interpolation
+
+Use `{varname}` placeholders in translation strings:
+
+```ts
+// Translation: 'Welcome, {firstName} {lastName}!'
+i18n.t('welcome', { firstName: 'John', lastName: 'Doe' }, 'en')
+// → 'Welcome, John Doe!'
+```
+
+Missing variables are left as-is: `{varname}`.
+
+## Nested keys
+
+Use dot notation for nested translation objects:
+
+```ts
+i18n.t('errors.notFound', {}, 'en')  // 'Not found'
+```
+
+Missing keys return the key itself: `'errors.notFound'`.
+
+## Fallback behaviour
+
+When the resolved locale has no translation for a key, `I18nService` tries the `fallbackLocale`. If that also fails, the key string is returned.
+
+## API reference
+
+### `I18nModule.forRoot(opts: I18nOptions)`
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `fallbackLocale` | `string` | Default locale when resolvers fail |
+| `resolvers` | `LocaleResolver[]` | Ordered resolver list |
+| `translations` | `Record<string, Translations>` | Inline translation maps |
+| `loaderPath` | `string` | Directory with `<locale>.json` files (lazy) |
+
+### `I18nService.t(key, args?, ctxOrLocale?)`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| `key` | `string` | Dot-path translation key |
+| `args` | `Record<string, unknown>` | Interpolation variables |
+| `ctxOrLocale` | `RouteCtx \| string` | Request context or explicit locale |

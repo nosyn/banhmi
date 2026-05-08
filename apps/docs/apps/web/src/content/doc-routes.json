@@ -217,6 +217,7 @@
         { "slug": "swagger", "title": "Swagger" },
         { "slug": "health-checks", "title": "Health checks" },
         { "slug": "mailer", "title": "Mailer" },
+        { "slug": "i18n", "title": "Internationalization (i18n)" },
         { "slug": "cqrs", "title": "CQRS" },
         { "slug": "compodoc", "title": "Compodoc" },
         { "slug": "prisma", "title": "Prisma" },
