@@ -1,0 +1,14 @@
+{
+  "name": "banhmi-microservices-demo",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "start:ms": "bun run ms-app/src/main.ts",
+    "start:client": "bun run client-app/src/main.ts",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@banhmi/common": "workspace:*",
+    "@banhmi/microservices": "workspace:*"
+  }
+}
