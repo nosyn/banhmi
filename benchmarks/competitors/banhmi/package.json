@@ -7,6 +7,9 @@
     "start": "bun run src/main.ts"
   },
   "dependencies": {
-    "banhmi": "workspace:*"
+    "@banhmi/multipart": "workspace:*",
+    "@banhmi/validation": "workspace:*",
+    "banhmi": "workspace:*",
+    "zod": "^3"
   }
 }
