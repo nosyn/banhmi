@@ -1,23 +1,119 @@
 # Request Lifecycle
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Every HTTP request processed by Banhmi passes through a fixed pipeline of
+enhancement stages before the handler is invoked and after the response is
+serialised.  Understanding the order lets you place your cross-cutting logic
+in the right stage.
 
-## When to use
+## Pipeline stages
 
-TBD
+```
+Incoming request
+      │
+      ▼
+┌─────────────────────────────────────────────┐
+│  Pre-request middleware  (app.use / global) │  ← runs before anything else
+└─────────────────────────────────────────────┘
+      │
+      ▼
+┌──────────────────────────────────────────────┐
+│  Module-level middleware  (configure())      │  ← route-scoped middleware
+└──────────────────────────────────────────────┘
+      │
+      ▼
+┌─────────────────────────────────────────────┐
+│  Guards  (@UseGuards)                       │  ← authentication / authz
+└─────────────────────────────────────────────┘
+      │  ForbiddenException on deny
+      ▼
+┌─────────────────────────────────────────────┐
+│  Interceptors — before  (intercept / next)  │  ← transform req, logging
+└─────────────────────────────────────────────┘
+      │
+      ▼
+┌─────────────────────────────────────────────┐
+│  Pipes  (@UsePipes / param-level)           │  ← validation, coercion
+└─────────────────────────────────────────────┘
+      │
+      ▼
+┌─────────────────────────────────────────────┐
+│  Route handler                              │  ← your controller method
+└─────────────────────────────────────────────┘
+      │
+      ▼
+┌─────────────────────────────────────────────┐
+│  Interceptors — after  (handle() return)    │  ← transform response
+└─────────────────────────────────────────────┘
+      │
+      ▼
+┌─────────────────────────────────────────────┐
+│  Response serialisation                     │  ← JSON / status code
+└─────────────────────────────────────────────┘
+      │
+      ▼
+┌─────────────────────────────────────────────┐
+│  Exception filters  (@UseFilters / global)  │  ← error → Response
+└─────────────────────────────────────────────┘
+      │
+      ▼
+  Outgoing response
+```
 
-## Setup
+## Stage descriptions
 
-TBD
+### Pre-request middleware
 
-## Usage
+Registered with `app.use(fn)`.  Receives the raw `Request` before routing.
+Cannot access route metadata.  Short-circuit by returning a `Response`
+without calling `next()`.
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+### Module-level middleware
 
-## API reference
+Registered via `configure(consumer)` on a `@Module` class.  Scoped to
+specific routes or prefixes.  Executes after pre-request middleware and
+before guards.
 
-TBD
+### Guards
+
+Implement `Guard.canActivate(context): boolean | Promise<boolean>`.  Throwing
+or returning `false` short-circuits with a `403 Forbidden`.  Registered with
+`@UseGuards(GuardClass)` at controller, handler, or global level.
+
+### Interceptors — before phase
+
+Wrap the execution with `intercept(context, next): Promise<unknown>`.  Code
+placed before `next.handle()` runs before the handler.  Useful for logging,
+timing, or request mutation.
+
+### Pipes
+
+Transform and validate handler arguments.  Applied to individual parameters
+(`@Body()`, `@Param()`, …) or to the whole handler via `@UsePipes`.
+
+### Route handler
+
+Your `@Get() / @Post() / …` method inside a `@Controller`.  Receives a
+`RouteCtx` (or decorated parameters) and returns the response data.
+
+### Interceptors — after phase
+
+Code placed after `await next.handle()` runs after the handler resolves.
+Useful for response transformation, metrics, and caching.
+
+### Response serialisation
+
+`undefined / null` → `204 No Content`.  `Response` instances are forwarded
+as-is.  Anything else is serialised with `Response.json()`.
+
+### Exception filters
+
+Implement `ExceptionFilter.catch(exception, context): Response`.  Applied to
+errors thrown anywhere in the pipeline.  Unhandled exceptions fall through to
+the built-in `GlobalExceptionFilter`.
 
 ## See also
 
-TBD
+- [Guards](/security/authentication)
+- [Interceptors](/interceptors)
+- [Pipes](/pipes)
+- [Exception Filters](/exception-filters)
