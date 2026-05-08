@@ -1,0 +1,38 @@
+name: bench
+
+on:
+  schedule:
+    - cron: '0 6 * * *'    # 06:00 UTC daily
+  workflow_dispatch:
+
+jobs:
+  bench:
+    name: benchmark suite
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: install oha
+        run: |
+          curl -sSL https://github.com/hatoo/oha/releases/latest/download/oha-linux-amd64 -o /usr/local/bin/oha
+          chmod +x /usr/local/bin/oha
+          oha --version
+
+      - name: install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: run benchmark suite
+        run: bun run bench:run
+        env:
+          BENCH_SECONDS: '15'
+
+      - name: upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: bench-results-${{ github.run_id }}
+          path: benchmarks/results/
+          retention-days: 90
