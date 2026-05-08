@@ -1,0 +1,14 @@
+{
+  "name": "competitor-hono",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "bun run src/main.ts"
+  },
+  "dependencies": {
+    "hono": "^4.6.20",
+    "zod": "^3.24.1",
+    "@hono/zod-validator": "^0.4.2"
+  }
+}
