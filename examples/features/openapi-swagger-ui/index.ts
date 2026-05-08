@@ -16,12 +16,15 @@ import {
   DocumentBuilder,
   SwaggerModule,
 } from '@banhmi/openapi'
-import { Controller, Get, Module } from 'banhmi'
-import { BanhmiFactory } from 'banhmi'
+import { BanhmiFactory, Controller, Get, Module } from 'banhmi'
 
 /** A simple item model. */
 export class ItemModel {
-  @ApiProperty({ type: 'number', format: 'int', description: 'Unique identifier' })
+  @ApiProperty({
+    type: 'number',
+    format: 'int',
+    description: 'Unique identifier',
+  })
   id: number = 0
 
   @ApiProperty({ type: 'string', example: 'Widget', description: 'Item name' })

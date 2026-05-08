@@ -32,7 +32,9 @@ test('openapi-scalar: GET /api/openapi.json returns spec with correct title', as
 test('openapi-scalar: GET /api/openapi.json contains /cats path', async () => {
   const res = await fetch(`${base}/api/openapi.json`)
   const body = await res.json()
-  expect((body as { paths: Record<string, unknown> }).paths['/cats']).toBeDefined()
+  expect(
+    (body as { paths: Record<string, unknown> }).paths['/cats'],
+  ).toBeDefined()
 })
 
 test('openapi-scalar: GET /api returns Scalar UI HTML', async () => {

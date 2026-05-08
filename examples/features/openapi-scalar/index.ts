@@ -17,12 +17,15 @@ import {
   DocumentBuilder,
   SwaggerModule,
 } from '@banhmi/openapi'
-import { Controller, Get, Module } from 'banhmi'
-import { BanhmiFactory } from 'banhmi'
+import { BanhmiFactory, Controller, Get, Module } from 'banhmi'
 
 /** A cat model with documented properties. */
 export class CatModel {
-  @ApiProperty({ type: 'number', format: 'int', description: 'Unique identifier' })
+  @ApiProperty({
+    type: 'number',
+    format: 'int',
+    description: 'Unique identifier',
+  })
   id: number = 0
 
   @ApiProperty({ type: 'string', example: 'Whiskers', description: 'Cat name' })

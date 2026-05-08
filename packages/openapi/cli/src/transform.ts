@@ -28,7 +28,8 @@ function isSkipDecorator(line: string): boolean {
 function isAnnotatableProp(line: string): boolean {
   const t = line.trimStart()
   // Skip access modifiers, static, readonly, abstract
-  if (/^(private|protected|public\s+static|static|readonly|abstract)\s/.test(t)) return false
+  if (/^(private|protected|public\s+static|static|readonly|abstract)\s/.test(t))
+    return false
   // Skip # private fields
   if (t.startsWith('#')) return false
   // Match `identifier: Type` or `identifier?: Type`

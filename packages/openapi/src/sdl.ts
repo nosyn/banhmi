@@ -1,4 +1,4 @@
-import type { ApiPropertyOptions } from './decorators'
+import type { ApiPropertyOptions, ModelClass } from './decorators'
 import { API_PROPERTY_METADATA } from './decorators'
 
 /**
@@ -6,11 +6,11 @@ import { API_PROPERTY_METADATA } from './decorators'
  * @internal
  */
 function toGraphQlScalar(
-  type: string | Function | undefined,
+  type: string | ModelClass | undefined,
   format?: string,
 ): string {
   if (typeof type === 'function') {
-    return type.name
+    return (type as { name: string }).name
   }
   switch (type) {
     case 'string':
@@ -61,17 +61,16 @@ function toGraphQlScalar(
  * generateSdl([Cat])
  * // → 'type Cat {\n  name: String!\n  age: Int!\n}'
  */
-export function generateSdl(models: Array<Function>): string {
+export function generateSdl(models: Array<ModelClass>): string {
   if (models.length === 0) return ''
 
   const blocks: string[] = []
 
   for (const model of models) {
-    const meta = (model[Symbol.metadata] as Record<symbol, unknown> | null) ?? {}
-    const props = (meta[API_PROPERTY_METADATA] as Record<
-      string,
-      ApiPropertyOptions
-    >) ?? {}
+    const meta =
+      (model[Symbol.metadata] as Record<symbol, unknown> | null) ?? {}
+    const props =
+      (meta[API_PROPERTY_METADATA] as Record<string, ApiPropertyOptions>) ?? {}
 
     const fields: string[] = []
 
@@ -82,10 +81,7 @@ export function generateSdl(models: Array<Function>): string {
       // Handle array types
       if (Array.isArray(opts.type)) {
         const elementType = opts.type[0]
-        const gqlElement =
-          typeof elementType === 'function'
-            ? elementType.name
-            : toGraphQlScalar(elementType as string, opts.format)
+        const gqlElement = toGraphQlScalar(elementType, opts.format)
         fields.push(`  ${propName}: [${gqlElement}!]${bang}`)
       } else {
         const gqlType = toGraphQlScalar(opts.type, opts.format)
@@ -95,7 +91,9 @@ export function generateSdl(models: Array<Function>): string {
 
     if (fields.length === 0) continue
 
-    blocks.push(`type ${model.name} {\n${fields.join('\n')}\n}`)
+    blocks.push(
+      `type ${(model as { name: string }).name} {\n${fields.join('\n')}\n}`,
+    )
   }
 
   return blocks.join('\n\n')

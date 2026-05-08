@@ -56,11 +56,13 @@ import { Route as DocsRecipesRouterModuleRouteImport } from './routes/docs/recip
 import { Route as DocsRecipesReplRouteImport } from './routes/docs/recipes.repl'
 import { Route as DocsRecipesPrismaRouteImport } from './routes/docs/recipes.prisma'
 import { Route as DocsRecipesPassportRouteImport } from './routes/docs/recipes.passport'
+import { Route as DocsRecipesOtelRouteImport } from './routes/docs/recipes.otel'
 import { Route as DocsRecipesNecordRouteImport } from './routes/docs/recipes.necord'
 import { Route as DocsRecipesMongooseRouteImport } from './routes/docs/recipes.mongoose'
 import { Route as DocsRecipesMikroormRouteImport } from './routes/docs/recipes.mikroorm'
 import { Route as DocsRecipesHotReloadRouteImport } from './routes/docs/recipes.hot-reload'
 import { Route as DocsRecipesHealthChecksRouteImport } from './routes/docs/recipes.health-checks'
+import { Route as DocsRecipesDrizzleRouteImport } from './routes/docs/recipes.drizzle'
 import { Route as DocsRecipesCrudGeneratorRouteImport } from './routes/docs/recipes.crud-generator'
 import { Route as DocsRecipesCqrsRouteImport } from './routes/docs/recipes.cqrs'
 import { Route as DocsRecipesCompodocRouteImport } from './routes/docs/recipes.compodoc'
@@ -424,6 +426,11 @@ const DocsRecipesPassportRoute = DocsRecipesPassportRouteImport.update({
   path: '/docs/recipes/passport',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DocsRecipesOtelRoute = DocsRecipesOtelRouteImport.update({
+  id: '/docs/recipes/otel',
+  path: '/docs/recipes/otel',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DocsRecipesNecordRoute = DocsRecipesNecordRouteImport.update({
   id: '/docs/recipes/necord',
   path: '/docs/recipes/necord',
@@ -447,6 +454,11 @@ const DocsRecipesHotReloadRoute = DocsRecipesHotReloadRouteImport.update({
 const DocsRecipesHealthChecksRoute = DocsRecipesHealthChecksRouteImport.update({
   id: '/docs/recipes/health-checks',
   path: '/docs/recipes/health-checks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRecipesDrizzleRoute = DocsRecipesDrizzleRouteImport.update({
+  id: '/docs/recipes/drizzle',
+  path: '/docs/recipes/drizzle',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DocsRecipesCrudGeneratorRoute =
@@ -1162,11 +1174,13 @@ export interface FileRoutesByFullPath {
   '/docs/recipes/compodoc': typeof DocsRecipesCompodocRoute
   '/docs/recipes/cqrs': typeof DocsRecipesCqrsRoute
   '/docs/recipes/crud-generator': typeof DocsRecipesCrudGeneratorRoute
+  '/docs/recipes/drizzle': typeof DocsRecipesDrizzleRoute
   '/docs/recipes/health-checks': typeof DocsRecipesHealthChecksRoute
   '/docs/recipes/hot-reload': typeof DocsRecipesHotReloadRoute
   '/docs/recipes/mikroorm': typeof DocsRecipesMikroormRoute
   '/docs/recipes/mongoose': typeof DocsRecipesMongooseRoute
   '/docs/recipes/necord': typeof DocsRecipesNecordRoute
+  '/docs/recipes/otel': typeof DocsRecipesOtelRoute
   '/docs/recipes/passport': typeof DocsRecipesPassportRoute
   '/docs/recipes/prisma': typeof DocsRecipesPrismaRoute
   '/docs/recipes/repl': typeof DocsRecipesReplRoute
@@ -1327,11 +1341,13 @@ export interface FileRoutesByTo {
   '/docs/recipes/compodoc': typeof DocsRecipesCompodocRoute
   '/docs/recipes/cqrs': typeof DocsRecipesCqrsRoute
   '/docs/recipes/crud-generator': typeof DocsRecipesCrudGeneratorRoute
+  '/docs/recipes/drizzle': typeof DocsRecipesDrizzleRoute
   '/docs/recipes/health-checks': typeof DocsRecipesHealthChecksRoute
   '/docs/recipes/hot-reload': typeof DocsRecipesHotReloadRoute
   '/docs/recipes/mikroorm': typeof DocsRecipesMikroormRoute
   '/docs/recipes/mongoose': typeof DocsRecipesMongooseRoute
   '/docs/recipes/necord': typeof DocsRecipesNecordRoute
+  '/docs/recipes/otel': typeof DocsRecipesOtelRoute
   '/docs/recipes/passport': typeof DocsRecipesPassportRoute
   '/docs/recipes/prisma': typeof DocsRecipesPrismaRoute
   '/docs/recipes/repl': typeof DocsRecipesReplRoute
@@ -1493,11 +1509,13 @@ export interface FileRoutesById {
   '/docs/recipes/compodoc': typeof DocsRecipesCompodocRoute
   '/docs/recipes/cqrs': typeof DocsRecipesCqrsRoute
   '/docs/recipes/crud-generator': typeof DocsRecipesCrudGeneratorRoute
+  '/docs/recipes/drizzle': typeof DocsRecipesDrizzleRoute
   '/docs/recipes/health-checks': typeof DocsRecipesHealthChecksRoute
   '/docs/recipes/hot-reload': typeof DocsRecipesHotReloadRoute
   '/docs/recipes/mikroorm': typeof DocsRecipesMikroormRoute
   '/docs/recipes/mongoose': typeof DocsRecipesMongooseRoute
   '/docs/recipes/necord': typeof DocsRecipesNecordRoute
+  '/docs/recipes/otel': typeof DocsRecipesOtelRoute
   '/docs/recipes/passport': typeof DocsRecipesPassportRoute
   '/docs/recipes/prisma': typeof DocsRecipesPrismaRoute
   '/docs/recipes/repl': typeof DocsRecipesReplRoute
@@ -1660,11 +1678,13 @@ export interface FileRouteTypes {
     | '/docs/recipes/compodoc'
     | '/docs/recipes/cqrs'
     | '/docs/recipes/crud-generator'
+    | '/docs/recipes/drizzle'
     | '/docs/recipes/health-checks'
     | '/docs/recipes/hot-reload'
     | '/docs/recipes/mikroorm'
     | '/docs/recipes/mongoose'
     | '/docs/recipes/necord'
+    | '/docs/recipes/otel'
     | '/docs/recipes/passport'
     | '/docs/recipes/prisma'
     | '/docs/recipes/repl'
@@ -1825,11 +1845,13 @@ export interface FileRouteTypes {
     | '/docs/recipes/compodoc'
     | '/docs/recipes/cqrs'
     | '/docs/recipes/crud-generator'
+    | '/docs/recipes/drizzle'
     | '/docs/recipes/health-checks'
     | '/docs/recipes/hot-reload'
     | '/docs/recipes/mikroorm'
     | '/docs/recipes/mongoose'
     | '/docs/recipes/necord'
+    | '/docs/recipes/otel'
     | '/docs/recipes/passport'
     | '/docs/recipes/prisma'
     | '/docs/recipes/repl'
@@ -1990,11 +2012,13 @@ export interface FileRouteTypes {
     | '/docs/recipes/compodoc'
     | '/docs/recipes/cqrs'
     | '/docs/recipes/crud-generator'
+    | '/docs/recipes/drizzle'
     | '/docs/recipes/health-checks'
     | '/docs/recipes/hot-reload'
     | '/docs/recipes/mikroorm'
     | '/docs/recipes/mongoose'
     | '/docs/recipes/necord'
+    | '/docs/recipes/otel'
     | '/docs/recipes/passport'
     | '/docs/recipes/prisma'
     | '/docs/recipes/repl'
@@ -2156,11 +2180,13 @@ export interface RootRouteChildren {
   DocsRecipesCompodocRoute: typeof DocsRecipesCompodocRoute
   DocsRecipesCqrsRoute: typeof DocsRecipesCqrsRoute
   DocsRecipesCrudGeneratorRoute: typeof DocsRecipesCrudGeneratorRoute
+  DocsRecipesDrizzleRoute: typeof DocsRecipesDrizzleRoute
   DocsRecipesHealthChecksRoute: typeof DocsRecipesHealthChecksRoute
   DocsRecipesHotReloadRoute: typeof DocsRecipesHotReloadRoute
   DocsRecipesMikroormRoute: typeof DocsRecipesMikroormRoute
   DocsRecipesMongooseRoute: typeof DocsRecipesMongooseRoute
   DocsRecipesNecordRoute: typeof DocsRecipesNecordRoute
+  DocsRecipesOtelRoute: typeof DocsRecipesOtelRoute
   DocsRecipesPassportRoute: typeof DocsRecipesPassportRoute
   DocsRecipesPrismaRoute: typeof DocsRecipesPrismaRoute
   DocsRecipesReplRoute: typeof DocsRecipesReplRoute
@@ -2540,6 +2566,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocsRecipesPassportRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/docs/recipes/otel': {
+      id: '/docs/recipes/otel'
+      path: '/docs/recipes/otel'
+      fullPath: '/docs/recipes/otel'
+      preLoaderRoute: typeof DocsRecipesOtelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/docs/recipes/necord': {
       id: '/docs/recipes/necord'
       path: '/docs/recipes/necord'
@@ -2573,6 +2606,13 @@ declare module '@tanstack/react-router' {
       path: '/docs/recipes/health-checks'
       fullPath: '/docs/recipes/health-checks'
       preLoaderRoute: typeof DocsRecipesHealthChecksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/recipes/drizzle': {
+      id: '/docs/recipes/drizzle'
+      path: '/docs/recipes/drizzle'
+      fullPath: '/docs/recipes/drizzle'
+      preLoaderRoute: typeof DocsRecipesDrizzleRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/docs/recipes/crud-generator': {
@@ -3475,11 +3515,13 @@ const rootRouteChildren: RootRouteChildren = {
   DocsRecipesCompodocRoute: DocsRecipesCompodocRoute,
   DocsRecipesCqrsRoute: DocsRecipesCqrsRoute,
   DocsRecipesCrudGeneratorRoute: DocsRecipesCrudGeneratorRoute,
+  DocsRecipesDrizzleRoute: DocsRecipesDrizzleRoute,
   DocsRecipesHealthChecksRoute: DocsRecipesHealthChecksRoute,
   DocsRecipesHotReloadRoute: DocsRecipesHotReloadRoute,
   DocsRecipesMikroormRoute: DocsRecipesMikroormRoute,
   DocsRecipesMongooseRoute: DocsRecipesMongooseRoute,
   DocsRecipesNecordRoute: DocsRecipesNecordRoute,
+  DocsRecipesOtelRoute: DocsRecipesOtelRoute,
   DocsRecipesPassportRoute: DocsRecipesPassportRoute,
   DocsRecipesPrismaRoute: DocsRecipesPrismaRoute,
   DocsRecipesReplRoute: DocsRecipesReplRoute,

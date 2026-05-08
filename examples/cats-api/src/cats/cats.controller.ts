@@ -39,7 +39,12 @@ export class Cat {
   @ApiProperty({ type: 'string', example: 'Whiskers', description: 'Cat name' })
   name: string = ''
 
-  @ApiProperty({ type: 'number', format: 'int', description: 'Age in years', required: false })
+  @ApiProperty({
+    type: 'number',
+    format: 'int',
+    description: 'Age in years',
+    required: false,
+  })
   age?: number
 }
 
@@ -55,15 +60,27 @@ export class CatsController {
 
   constructor(private cats: CatsService) {}
 
-  @ApiOperation({ summary: 'List cats', description: 'Returns all cats in the store.' })
-  @ApiResponse({ status: 200, description: 'Array of cat objects', type: [Cat] })
+  @ApiOperation({
+    summary: 'List cats',
+    description: 'Returns all cats in the store.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Array of cat objects',
+    type: [Cat],
+  })
   @Get()
   findAll() {
     return this.cats.findAll()
   }
 
   @ApiOperation({ summary: 'Get a cat by ID' })
-  @ApiParam({ name: 'id', type: 'string', description: 'Cat ID', required: true })
+  @ApiParam({
+    name: 'id',
+    type: 'string',
+    description: 'Cat ID',
+    required: true,
+  })
   @ApiResponse({ status: 200, description: 'The requested cat', type: Cat })
   @ApiResponse({ status: 404, description: 'Cat not found' })
   @Get('/:id')
@@ -72,8 +89,16 @@ export class CatsController {
   }
 
   @ApiOperation({ summary: 'Create a cat' })
-  @ApiBody({ type: 'object', description: 'Cat creation payload', required: true })
-  @ApiResponse({ status: 201, description: 'Cat created successfully', type: Cat })
+  @ApiBody({
+    type: 'object',
+    description: 'Cat creation payload',
+    required: true,
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Cat created successfully',
+    type: Cat,
+  })
   @Post()
   @HttpCode(201)
   async create(ctx: RouteCtx) {
@@ -83,7 +108,12 @@ export class CatsController {
   }
 
   @ApiOperation({ summary: 'Delete a cat' })
-  @ApiParam({ name: 'id', type: 'string', description: 'Cat ID', required: true })
+  @ApiParam({
+    name: 'id',
+    type: 'string',
+    description: 'Cat ID',
+    required: true,
+  })
   @ApiResponse({ status: 204, description: 'Cat deleted' })
   @Delete('/:id')
   @HttpCode(204)

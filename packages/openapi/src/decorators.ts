@@ -15,6 +15,13 @@ export const API_EXTRA_MODELS_METADATA = Symbol('openapi:extra-models')
 export const API_HIDE_PROPERTY_METADATA = Symbol('openapi:hide-property')
 export const API_PROPERTY_METADATA = Symbol('openapi:property')
 
+/**
+ * A class constructor type compatible with Biome's noBannedTypes rule.
+ * Used in place of the banned `Function` type for class references.
+ * @internal
+ */
+export type ModelClass = new (...args: unknown[]) => unknown
+
 // ---------------------------------------------------------------------------
 // Interfaces
 // ---------------------------------------------------------------------------
@@ -64,7 +71,7 @@ export interface ApiQueryOptions {
  */
 export interface ApiBodyOptions {
   /** Class or schema describing the request body. */
-  type?: Function | string
+  type?: ModelClass | string
   /** Human-readable description. */
   description?: string
   /** Whether the request body is required. */
@@ -80,7 +87,7 @@ export interface ApiResponseOptions {
   /** Human-readable description of the response. */
   description?: string
   /** Class or primitive type for the response body. */
-  type?: Function | string | Array<Function | string>
+  type?: ModelClass | string | Array<ModelClass | string>
   /** Raw OpenAPI schema for the response. */
   schema?: Record<string, unknown>
 }
@@ -90,7 +97,7 @@ export interface ApiResponseOptions {
  */
 export interface ApiPropertyOptions {
   /** TypeScript / OpenAPI type. */
-  type?: string | Function
+  type?: string | ModelClass | string[]
   /** Human-readable description. */
   description?: string
   /** Example value shown in the UI. */
@@ -215,10 +222,8 @@ export function ApiBody(
 ): (target: unknown, context: ClassMethodDecoratorContext) => void {
   return (_target, context) => {
     const existing =
-      (context.metadata[API_BODY_METADATA] as Record<
-        string,
-        ApiBodyOptions
-      >) ?? {}
+      (context.metadata[API_BODY_METADATA] as Record<string, ApiBodyOptions>) ??
+      {}
     existing[context.name as string] = opts
     context.metadata[API_BODY_METADATA] = existing
   }
@@ -368,11 +373,11 @@ export function ApiExcludeEndpoint(): (
  * export class CatsController {}
  */
 export function ApiExtraModels(
-  ...classes: Function[]
+  ...classes: ModelClass[]
 ): (target: unknown, context: ClassDecoratorContext) => void {
   return (_target, context) => {
     const existing =
-      (context.metadata[API_EXTRA_MODELS_METADATA] as Function[]) ?? []
+      (context.metadata[API_EXTRA_MODELS_METADATA] as ModelClass[]) ?? []
     context.metadata[API_EXTRA_MODELS_METADATA] = [...existing, ...classes]
   }
 }

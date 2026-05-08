@@ -55,34 +55,32 @@ export class SwaggerExplorer {
 
       // Collect controller-level tags
       const controllerTags = (classMeta[API_TAGS_METADATA] as string[]) ?? []
-      const controllerSecurity = (classMeta[API_SECURITY_METADATA] as Array<
-        Record<string, string[]>
-      >) ?? []
+      const controllerSecurity =
+        (classMeta[API_SECURITY_METADATA] as Array<Record<string, string[]>>) ??
+        []
 
       // Per-method metadata maps
-      const operationMeta = (classMeta[API_OPERATION_METADATA] as Record<
-        string,
-        ApiOperationOptions
-      >) ?? {}
-      const paramsMeta = (classMeta[API_PARAMS_METADATA] as Record<
-        string,
-        ApiParamOptions[]
-      >) ?? {}
-      const queryMeta = (classMeta[API_QUERY_METADATA] as Record<
-        string,
-        ApiQueryOptions[]
-      >) ?? {}
-      const bodyMeta = (classMeta[API_BODY_METADATA] as Record<
-        string,
-        ApiBodyOptions
-      >) ?? {}
-      const responsesMeta = (classMeta[API_RESPONSES_METADATA] as Record<
-        string,
-        ApiResponseOptions[]
-      >) ?? {}
-      const methodSecurityMeta = (classMeta[API_SECURITY_METADATA] as Array<
-        Record<string, string[]>
-      >) ?? []
+      const operationMeta =
+        (classMeta[API_OPERATION_METADATA] as Record<
+          string,
+          ApiOperationOptions
+        >) ?? {}
+      const paramsMeta =
+        (classMeta[API_PARAMS_METADATA] as Record<string, ApiParamOptions[]>) ??
+        {}
+      const queryMeta =
+        (classMeta[API_QUERY_METADATA] as Record<string, ApiQueryOptions[]>) ??
+        {}
+      const bodyMeta =
+        (classMeta[API_BODY_METADATA] as Record<string, ApiBodyOptions>) ?? {}
+      const responsesMeta =
+        (classMeta[API_RESPONSES_METADATA] as Record<
+          string,
+          ApiResponseOptions[]
+        >) ?? {}
+      const methodSecurityMeta =
+        (classMeta[API_SECURITY_METADATA] as Array<Record<string, string[]>>) ??
+        []
       const excludeSet =
         (classMeta[API_EXCLUDE_ENDPOINT_METADATA] as Set<string>) ??
         new Set<string>()
@@ -171,7 +169,9 @@ export class SwaggerExplorer {
           for (const r of methodResponses) {
             responses[String(r.status)] = {
               description: r.description ?? 'Response',
-              ...(r.schema ? { content: { 'application/json': { schema: r.schema } } } : {}),
+              ...(r.schema
+                ? { content: { 'application/json': { schema: r.schema } } }
+                : {}),
             }
           }
           operation.responses = responses

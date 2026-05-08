@@ -1,6 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import { Controller, Get, Module, Post } from '@banhmi/common'
-import { BanhmiFactory } from '@banhmi/platform-bun'
+import { Controller, Get, Post } from '@banhmi/common'
 import {
   API_BODY_METADATA,
   API_EXCLUDE_ENDPOINT_METADATA,
@@ -26,8 +25,8 @@ import {
   ApiResponse,
   ApiSecurity,
   ApiTags,
+  type ModelClass,
 } from '../src/decorators'
-import { DocumentBuilder } from '../src/document-builder'
 import { SwaggerExplorer } from '../src/explorer'
 import type { OpenApiDocument } from '../src/types'
 
@@ -58,7 +57,10 @@ describe('@ApiOperation', () => {
 
     const meta = OpsController[Symbol.metadata] as Record<symbol, unknown>
     const ops = meta[API_OPERATION_METADATA] as Record<string, unknown>
-    expect(ops['findAll']).toMatchObject({ summary: 'List cats', deprecated: false })
+    expect(ops.findAll).toMatchObject({
+      summary: 'List cats',
+      deprecated: false,
+    })
   })
 })
 
@@ -75,8 +77,8 @@ describe('@ApiParam', () => {
 
     const meta = ParamController[Symbol.metadata] as Record<symbol, unknown>
     const params = meta[API_PARAMS_METADATA] as Record<string, unknown[]>
-    expect(params['findOne']).toHaveLength(1)
-    expect(params['findOne'][0]).toMatchObject({ name: 'id', type: 'string' })
+    expect(params.findOne).toHaveLength(1)
+    expect(params.findOne[0]).toMatchObject({ name: 'id', type: 'string' })
   })
 })
 
@@ -93,8 +95,11 @@ describe('@ApiQuery', () => {
 
     const meta = QueryController[Symbol.metadata] as Record<symbol, unknown>
     const queries = meta[API_QUERY_METADATA] as Record<string, unknown[]>
-    expect(queries['findAll']).toHaveLength(1)
-    expect(queries['findAll'][0]).toMatchObject({ name: 'limit', type: 'number' })
+    expect(queries.findAll).toHaveLength(1)
+    expect(queries.findAll[0]).toMatchObject({
+      name: 'limit',
+      type: 'number',
+    })
   })
 })
 
@@ -111,7 +116,10 @@ describe('@ApiBody', () => {
 
     const meta = BodyController[Symbol.metadata] as Record<symbol, unknown>
     const body = meta[API_BODY_METADATA] as Record<string, unknown>
-    expect(body['create']).toMatchObject({ type: 'object', description: 'Cat data' })
+    expect(body.create).toMatchObject({
+      type: 'object',
+      description: 'Cat data',
+    })
   })
 })
 
@@ -129,9 +137,11 @@ describe('@ApiResponse', () => {
 
     const meta = ResController[Symbol.metadata] as Record<symbol, unknown>
     const responses = meta[API_RESPONSES_METADATA] as Record<string, unknown[]>
-    expect(responses['findOne']).toHaveLength(2)
+    expect(responses.findOne).toHaveLength(2)
     // Decorators execute bottom-up, so 404 is first
-    const statuses = responses['findOne'].map((r) => (r as { status: number }).status)
+    const statuses = responses.findOne.map(
+      (r) => (r as { status: number }).status,
+    )
     expect(statuses).toContain(200)
     expect(statuses).toContain(404)
   })
@@ -201,7 +211,7 @@ describe('@ApiExtraModels', () => {
     class CatsController {}
 
     const meta = CatsController[Symbol.metadata] as Record<symbol, unknown>
-    const models = meta[API_EXTRA_MODELS_METADATA] as Function[]
+    const models = meta[API_EXTRA_MODELS_METADATA] as ModelClass[]
     expect(models).toContain(PaginationDto)
   })
 })
@@ -228,7 +238,11 @@ describe('@ApiHideProperty', () => {
 describe('@ApiProperty', () => {
   test('writes property options indexed by field name', () => {
     class Cat {
-      @ApiProperty({ type: 'string', example: 'Whiskers', description: 'Cat name' })
+      @ApiProperty({
+        type: 'string',
+        example: 'Whiskers',
+        description: 'Cat name',
+      })
       name: string = ''
 
       @ApiProperty({ type: 'number', required: false })
@@ -237,8 +251,8 @@ describe('@ApiProperty', () => {
 
     const meta = Cat[Symbol.metadata] as Record<symbol, unknown>
     const props = meta[API_PROPERTY_METADATA] as Record<string, unknown>
-    expect(props['name']).toMatchObject({ type: 'string', example: 'Whiskers' })
-    expect(props['age']).toMatchObject({ type: 'number', required: false })
+    expect(props.name).toMatchObject({ type: 'string', example: 'Whiskers' })
+    expect(props.age).toMatchObject({ type: 'number', required: false })
   })
 })
 
@@ -261,7 +275,10 @@ describe('SwaggerExplorer with decorators', () => {
     }
     new SwaggerExplorer().explore([CatsController], doc)
 
-    const op = (doc.paths['/cats'] as Record<string, unknown>)['get'] as Record<string, unknown>
+    const op = (doc.paths['/cats'] as Record<string, unknown>).get as Record<
+      string,
+      unknown
+    >
     expect(op.tags).toEqual(['pets'])
   })
 
@@ -280,7 +297,10 @@ describe('SwaggerExplorer with decorators', () => {
     }
     new SwaggerExplorer().explore([CatsController], doc)
 
-    const op = (doc.paths['/cats'] as Record<string, unknown>)['get'] as Record<string, unknown>
+    const op = (doc.paths['/cats'] as Record<string, unknown>).get as Record<
+      string,
+      unknown
+    >
     expect(op.summary).toBe('List all cats')
   })
 
@@ -300,10 +320,11 @@ describe('SwaggerExplorer with decorators', () => {
     }
     new SwaggerExplorer().explore([CatsController], doc)
 
-    const op = (doc.paths['/cats/{id}'] as Record<string, unknown>)['get'] as Record<string, unknown>
+    const op = (doc.paths['/cats/{id}'] as Record<string, unknown>)
+      .get as Record<string, unknown>
     const params = op.parameters as Array<Record<string, unknown>>
-    expect(params.find((p) => p['name'] === 'id')).toBeDefined()
-    expect(params.find((p) => p['name'] === 'format')).toBeDefined()
+    expect(params.find((p) => p.name === 'id')).toBeDefined()
+    expect(params.find((p) => p.name === 'format')).toBeDefined()
   })
 
   test('excludes endpoint marked with @ApiExcludeEndpoint', () => {
@@ -344,7 +365,10 @@ describe('SwaggerExplorer with decorators', () => {
     }
     new SwaggerExplorer().explore([CatsController], doc)
 
-    const op = (doc.paths['/cats'] as Record<string, unknown>)['get'] as Record<string, unknown>
+    const op = (doc.paths['/cats'] as Record<string, unknown>).get as Record<
+      string,
+      unknown
+    >
     const responses = op.responses as Record<string, unknown>
     expect(responses['200']).toBeDefined()
     expect(responses['401']).toBeDefined()

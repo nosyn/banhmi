@@ -20,7 +20,6 @@ export interface SwaggerModuleOptions {
   ui?: 'scalar' | 'swagger'
 }
 
-// biome-ignore lint/complexity/noStaticOnlyClass: intentional NestJS-style dynamic module
 /**
  * Mounts an OpenAPI spec and interactive UI onto a running BanhmiApplication.
  *
@@ -32,6 +31,7 @@ export interface SwaggerModuleOptions {
  * const doc = new DocumentBuilder().setTitle('My API').setVersion('1').build()
  * SwaggerModule.setup('/api', app, doc, { ui: 'scalar' })
  */
+// biome-ignore lint/complexity/noStaticOnlyClass: intentional NestJS-style dynamic module
 export class SwaggerModule {
   /**
    * Wire up the OpenAPI spec and UI middleware.

@@ -1,5 +1,11 @@
-export { DocumentBuilder } from './document-builder'
-export { generateSdl } from './sdl'
+export type {
+  ApiBodyOptions,
+  ApiOperationOptions,
+  ApiParamOptions,
+  ApiPropertyOptions,
+  ApiQueryOptions,
+  ApiResponseOptions,
+} from './decorators'
 export {
   ApiBearerAuth,
   ApiBody,
@@ -15,19 +21,11 @@ export {
   ApiSecurity,
   ApiTags,
 } from './decorators'
-export type {
-  ApiBodyOptions,
-  ApiOperationOptions,
-  ApiParamOptions,
-  ApiPropertyOptions,
-  ApiQueryOptions,
-  ApiResponseOptions,
-} from './decorators'
+export { DocumentBuilder } from './document-builder'
 export { SwaggerExplorer } from './explorer'
-export { SwaggerModule } from './swagger.module'
+export { generateSdl } from './sdl'
 export type { SwaggerModuleOptions } from './swagger.module'
-export { renderScalarHtml } from './ui/scalar'
-export { renderSwaggerHtml } from './ui/swagger'
+export { SwaggerModule } from './swagger.module'
 export type {
   OpenApiComponents,
   OpenApiDocument,
@@ -35,3 +33,5 @@ export type {
   OpenApiSecurityScheme,
   OpenApiServer,
 } from './types'
+export { renderScalarHtml } from './ui/scalar'
+export { renderSwaggerHtml } from './ui/swagger'

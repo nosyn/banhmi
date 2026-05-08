@@ -32,7 +32,9 @@ test('openapi-swagger-ui: GET /api/openapi.json returns spec with correct title'
 test('openapi-swagger-ui: GET /api/openapi.json contains /items path', async () => {
   const res = await fetch(`${base}/api/openapi.json`)
   const body = await res.json()
-  expect((body as { paths: Record<string, unknown> }).paths['/items']).toBeDefined()
+  expect(
+    (body as { paths: Record<string, unknown> }).paths['/items'],
+  ).toBeDefined()
 })
 
 test('openapi-swagger-ui: GET /api returns Swagger UI HTML', async () => {
