@@ -1,0 +1,10 @@
+{
+  "name": "banhmi-feature-cookies",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "dependencies": {
+    "@banhmi/cookies": "workspace:*",
+    "banhmi": "workspace:*"
+  }
+}

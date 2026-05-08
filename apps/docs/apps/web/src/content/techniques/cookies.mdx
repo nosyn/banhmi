@@ -1,23 +1,97 @@
 # Cookies
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+> **Status:** Available since `v0.4.0-canary.wave1` via `@banhmi/cookies`.
 
 ## When to use
 
-TBD
+Use `@banhmi/cookies` when you need to read, write, or sign HTTP cookies in your Banhmi handlers. The package provides:
+
+- `parseCookies` — pure function to parse the `Cookie` request header.
+- `serializeCookie` — pure function to build a `Set-Cookie` header value.
+- `signValue` / `verifyValue` — HMAC-SHA256 signing via the WebCrypto subtle API.
+- `@Cookies()`, `@Cookie('name')`, `@SignedCookie('name')` — method decorators that pre-extract cookie values into `ctx.state` before your handler runs.
 
 ## Setup
 
-TBD
+The package is bundled in `banhmi`:
+
+```ts
+import { Cookie, SignedCookie, parseCookies } from '@banhmi/cookies'
+// or
+import { Cookie, SignedCookie, parseCookies } from 'banhmi'
+```
+
+For signed cookies, register `CookiesModule.forRoot()` with a secret:
+
+```ts
+import { Module } from 'banhmi'
+import { CookiesModule } from '@banhmi/cookies'
+
+@Module({
+  imports: [CookiesModule.forRoot({ secret: Bun.env.COOKIE_SECRET })],
+})
+class AppModule {}
+```
+
+The secret falls back to `Bun.env.BANHMI_COOKIE_SECRET` when not provided.
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+<CodeFromExample slug="cookies" />
 
 ## API reference
 
-TBD
+### `parseCookies(header: string): ParsedCookies`
+
+Parses a raw `Cookie` request header value into a `Record<string, string>`. Handles URL-encoded values and RFC 6265 double-quoted strings.
+
+### `serializeCookie(name, value, opts?): string`
+
+Builds a `Set-Cookie` header value string. Accepts `CookieOptions`:
+
+| Field       | Type                          | Description |
+|-------------|-------------------------------|-------------|
+| `maxAge`    | `number`                      | `Max-Age` in seconds. |
+| `expires`   | `Date`                        | `Expires` attribute. |
+| `domain`    | `string`                      | `Domain` attribute. |
+| `path`      | `string`                      | `Path` attribute. |
+| `secure`    | `boolean`                     | Adds `Secure` flag. |
+| `httpOnly`  | `boolean`                     | Adds `HttpOnly` flag. |
+| `sameSite`  | `'lax' \| 'strict' \| 'none'` | `SameSite` attribute. |
+
+### `signValue(value, secret): Promise<string>`
+
+Signs a string value with HMAC-SHA256 and returns `<value>.<base64url-sig>`.
+
+### `verifyValue(signed, secret): Promise<string | null>`
+
+Verifies a signed string. Returns the original value or `null` on failure. Uses constant-time comparison.
+
+### `@Cookies()` decorator
+
+Method decorator that parses all request cookies into `ctx.state`. Use `getCookies(ctx)` inside the handler to read them.
+
+### `@Cookie('name')` decorator
+
+Method decorator that extracts a single named cookie into `ctx.state`. Use `getCookie(ctx, 'name')` to read it.
+
+### `@SignedCookie('name', secret?)` decorator
+
+Method decorator that verifies a signed cookie before the handler runs. Use `getSignedCookie(ctx, 'name')` to read the verified value (`null` on bad signature or missing cookie).
+
+### `COOKIE_SECRET` token
+
+DI token for the signing secret registered by `CookiesModule.forRoot()`.
+
+## Common pitfalls
+
+- **Decorator method wrapping**: `@Cookie` and `@Cookies` wrap the handler method at class-definition time. They must be applied before the route decorator (`@Get`, `@Post`, etc.) — which means they appear after it in source due to bottom-up decorator execution order.
+- **`@SignedCookie` without a secret**: If no secret is set (neither via `forRoot()` nor the `BANHMI_COOKIE_SECRET` env var), verification will always fail. The decorator does not throw — it returns `null`.
+- **URL encoding**: `serializeCookie` URL-encodes the value. `parseCookies` URL-decodes it. For signed values sent via `Set-Cookie`, the `.` separator is URL-safe and round-trips correctly.
+- **`HttpOnly` and `Secure`**: Always set these for session or auth cookies in production to prevent XSS and network interception.
 
 ## See also
 
-TBD
+- [`@banhmi/session`](/techniques/session) — full server-side sessions built on top of cookies
+- [MDN: HTTP cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies)
+- [WebCrypto subtle.sign](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/sign)

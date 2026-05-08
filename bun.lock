@@ -97,6 +97,14 @@
         "banhmi": "workspace:*",
       },
     },
+    "examples/features/cookies": {
+      "name": "banhmi-feature-cookies",
+      "version": "0.0.0",
+      "dependencies": {
+        "@banhmi/cookies": "workspace:*",
+        "banhmi": "workspace:*",
+      },
+    },
     "examples/features/serve-static": {
       "name": "banhmi-feature-serve-static",
       "version": "0.0.0",
@@ -122,6 +130,7 @@
         "@banhmi/common": "workspace:*",
         "@banhmi/compression": "workspace:*",
         "@banhmi/config": "workspace:*",
+        "@banhmi/cookies": "workspace:*",
         "@banhmi/core": "workspace:*",
         "@banhmi/jwt": "workspace:*",
         "@banhmi/platform-bun": "workspace:*",
@@ -168,6 +177,16 @@
       },
       "devDependencies": {
         "@banhmi/platform-bun": "workspace:*",
+      },
+    },
+    "packages/cookies": {
+      "name": "@banhmi/cookies",
+      "version": "0.1.0",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/core": "workspace:*",
+        "@banhmi/platform-bun": "workspace:*",
+        "banhmi": "workspace:*",
       },
     },
     "packages/core": {
@@ -281,6 +300,8 @@
     "@banhmi/compression": ["@banhmi/compression@workspace:packages/compression"],
 
     "@banhmi/config": ["@banhmi/config@workspace:packages/config"],
+
+    "@banhmi/cookies": ["@banhmi/cookies@workspace:packages/cookies"],
 
     "@banhmi/core": ["@banhmi/core@workspace:packages/core"],
 
@@ -537,6 +558,8 @@
     "banhmi": ["banhmi@workspace:packages/banhmi"],
 
     "banhmi-feature-compression": ["banhmi-feature-compression@workspace:examples/features/compression"],
+
+    "banhmi-feature-cookies": ["banhmi-feature-cookies@workspace:examples/features/cookies"],
 
     "banhmi-feature-serve-static": ["banhmi-feature-serve-static@workspace:examples/features/serve-static"],
 

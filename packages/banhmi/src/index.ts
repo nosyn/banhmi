@@ -1,6 +1,7 @@
 export * from '@banhmi/cache'
 export * from '@banhmi/common'
 export * from '@banhmi/compression'
+export * from '@banhmi/cookies'
 export * from '@banhmi/config'
 export * from '@banhmi/core'
 export * from '@banhmi/jwt'
