@@ -1,23 +1,21 @@
-# Common errors
+# Common Errors
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+For a full catalogue of errors and fixes, see
+[Common Errors (deployment guide)](/deployment/common-errors).
 
-## When to use
+**Quick reference:**
 
-TBD
-
-## Setup
-
-TBD
-
-## Usage
-
-{/* <CodeFromExample slug="<feature-slug>" /> */}
-
-## API reference
-
-TBD
+| Error | Likely cause | Fix |
+|-------|-------------|-----|
+| `Cannot find module '@banhmi/...'` | Missing `bun install` | `bun install` |
+| `Symbol.metadata is undefined` | Missing polyfill preload | Add `preload` to `bunfig.toml` |
+| `Server is not listening yet` | `getUrl()` before `listen()` | Await `listen()` first |
+| `EADDRINUSE` | Port already bound | Kill the process or use port `0` in tests |
+| `rawBody is undefined` | `rawBody: true` not set | `BanhmiFactory.create(M, { rawBody: true })` |
+| `404 Not Found` (own route) | Controller not in `controllers` array | Check `@Module({ controllers: [...] })` |
+| `ForbiddenException` | Guard denied access | Check guard `canActivate` logic |
 
 ## See also
 
-TBD
+- [Common Errors (full guide)](/deployment/common-errors)
+- [Request Lifecycle](/faq/request-lifecycle)

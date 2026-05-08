@@ -1,23 +1,33 @@
-# Hybrid application
+# Hybrid Application
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+**Can I run HTTP and a microservice transport in the same process?**
 
-## When to use
+Yes — use `connectMicroservice` and `startAllMicroservices`:
 
-TBD
+```ts
+import { BanhmiFactory } from '@banhmi/platform-bun'
+import { tcpTransport } from '@banhmi/microservices'
+import { AppModule } from './app.module'
 
-## Setup
+const app = await BanhmiFactory.create(AppModule)
+app.connectMicroservice({ transport: tcpTransport({ port: 3001 }) })
+await app.startAllMicroservices()
+await app.listen(3000)
+```
 
-TBD
+**In what order should I call the APIs?**
 
-## Usage
+1. `BanhmiFactory.create(AppModule)` — build the DI graph.
+2. `app.connectMicroservice(opts)` — register transports (repeatable).
+3. `app.startAllMicroservices()` — start all transports concurrently.
+4. `app.listen(port)` — open the HTTP server.
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+**Can I register multiple transports?**
 
-## API reference
-
-TBD
+Yes — call `connectMicroservice` once per transport.  All registered
+transports are started concurrently by `startAllMicroservices`.
 
 ## See also
 
-TBD
+- [Hybrid Application (guide)](/deployment/hybrid)
+- [Microservices Overview](/microservices/overview)

@@ -1,23 +1,59 @@
-# HTTP adapter
+# HTTP Adapter
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+**Which HTTP adapter does Banhmi use?**
 
-## When to use
+`@banhmi/platform-bun` ships `BunAdapter`, which wraps raw `Bun.serve`.
+There are no Express, Fastify, or other framework dependencies.
 
-TBD
+**Can I use a different HTTP adapter?**
 
-## Setup
+Yes — implement the `HttpAdapter` interface from `@banhmi/core` and pass an
+instance directly:
 
-TBD
+```ts
+import type { HttpAdapter } from '@banhmi/core'
+import { BanhmiApplication, Container, ModuleGraph } from '@banhmi/core'
 
-## Usage
+class MyAdapter implements HttpAdapter {
+  registerController(instance, klass) { /* … */ }
+  async listen(port) { /* … */ }
+  async close() { /* … */ }
+  use(mw) { /* … */ }
+}
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+const graph = new ModuleGraph()
+const moduleTree = graph.buildTree(AppModule)
+const container = new Container()
+// ... register providers ...
+const adapter = new MyAdapter()
+const app = new BanhmiApplication(container, moduleTree, adapter)
+await app.listen(3000)
+```
 
-## API reference
+**Can I access the underlying `Bun.Server` instance?**
 
-TBD
+Yes — inject the adapter via `HTTP_ADAPTER_TOKEN` in an
+`OnApplicationBootstrap` provider:
+
+```ts
+import { Injectable } from '@banhmi/common'
+import { OnApplicationBootstrap } from '@banhmi/common'
+import { HTTP_ADAPTER_TOKEN } from '@banhmi/platform-bun'
+import type { BunAdapter } from '@banhmi/platform-bun'
+
+@Injectable()
+class SetupService implements OnApplicationBootstrap {
+  static inject = [HTTP_ADAPTER_TOKEN] as const
+
+  constructor(private adapter: BunAdapter) {}
+
+  onApplicationBootstrap() {
+    // adapter.dispatchRequest is available here
+  }
+}
+```
 
 ## See also
 
-TBD
+- [Standalone Apps](/deployment/standalone-apps)
+- [Request Lifecycle](/deployment/request-lifecycle)

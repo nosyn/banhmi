@@ -1,23 +1,36 @@
-# Raw body
+# Raw Body
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+**How do I access the raw request bytes for webhook verification?**
 
-## When to use
+Enable `rawBody` when creating the application:
 
-TBD
+```ts
+const app = await BanhmiFactory.create(AppModule, { rawBody: true })
+```
 
-## Setup
+Then read `ctx.rawBody` in any handler:
 
-TBD
+```ts
+@Post('/webhook')
+async receive(ctx: BunRouteCtx) {
+  const bytes = ctx.rawBody  // Uint8Array | undefined
+  // compute HMAC, verify signature, etc.
+}
+```
 
-## Usage
+**Why is `ctx.rawBody` undefined?**
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+The `rawBody: true` option was not passed to `BanhmiFactory.create`, or the
+handler is calling `ctx.json()` / `ctx.text()` before checking `rawBody`.
+Enable the option at the factory level.
 
-## API reference
+**Does enabling `rawBody` affect performance?**
 
-TBD
+Yes — the request body is read once into a `Uint8Array` on every request.
+For routes that don't need the raw bytes, consider splitting the app into a
+separate instance without `rawBody: true`.
 
 ## See also
 
-TBD
+- [Raw Body (guide)](/deployment/raw-body)
+- [Request Lifecycle](/deployment/request-lifecycle)

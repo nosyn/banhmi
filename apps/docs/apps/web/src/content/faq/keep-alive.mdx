@@ -1,23 +1,26 @@
-# Keep-Alive connections
+# Keep-Alive Connections
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+**Does Banhmi support keep-alive connections?**
 
-## When to use
+Yes. `Bun.serve` enables keep-alive by default.  Banhmi exposes the
+`idleTimeout` factory option to control how long idle connections stay open:
 
-TBD
+```ts
+const app = await BanhmiFactory.create(AppModule, { idleTimeout: 30 })
+await app.listen(3000)
+```
 
-## Setup
+**What is the default idle timeout?**
 
-TBD
+The default is whatever `Bun.serve` uses internally.  If you need explicit
+control, set `idleTimeout` (in seconds).  Setting `0` disables the timeout.
 
-## Usage
+**Can clients reuse connections across requests?**
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
-
-## API reference
-
-TBD
+Yes. HTTP/1.1 keep-alive is handled transparently by Bun.  No Banhmi
+configuration is needed beyond the default.
 
 ## See also
 
-TBD
+- [Keep-Alive Connections (guide)](/deployment/keep-alive)
+- [HTTPS & Multiple Servers](/deployment/https-and-multiple-servers)

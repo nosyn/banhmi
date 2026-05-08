@@ -1,23 +1,40 @@
-# HTTPS & multiple servers
+# HTTPS & Multiple Servers
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+**How do I enable HTTPS?**
 
-## When to use
+Pass TLS config to `BanhmiFactory.create`:
 
-TBD
+```ts
+const app = await BanhmiFactory.create(AppModule, {
+  https: { key: pemKey, cert: pemCert },
+})
+await app.listen(443)
+```
 
-## Setup
+**Can I run HTTP and HTTPS simultaneously?**
 
-TBD
+Create two separate application instances from the same module:
 
-## Usage
+```ts
+const http  = await BanhmiFactory.create(AppModule)
+const https = await BanhmiFactory.create(AppModule, {
+  https: { key, cert },
+})
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+await http.listen(80)
+await https.listen(443)
+```
 
-## API reference
+Each instance has its own `BunAdapter` and `Bun.serve` process.
 
-TBD
+**Where do I get a TLS certificate for local dev?**
+
+```bash
+openssl req -x509 -newkey rsa:2048 -keyout server.key -out server.cert \
+  -days 365 -nodes -subj '/CN=localhost'
+```
 
 ## See also
 
-TBD
+- [HTTPS & Multiple Servers (guide)](/deployment/https-and-multiple-servers)
+- [Keep-Alive Connections](/faq/keep-alive)

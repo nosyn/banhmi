@@ -1,23 +1,44 @@
 # Examples
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+The `examples/` directory in the repository contains runnable sample
+applications:
 
-## When to use
+| Directory | Description |
+|-----------|-------------|
+| `examples/cats-api` | Classic CRUD REST API |
+| `examples/better-auth-api` | Better Auth integration |
+| `examples/graphql-demo` | GraphQL with subscriptions |
+| `examples/microservices-demo` | Microservices with TCP transport |
+| `examples/drizzle-api` | Drizzle ORM + SQLite |
+| `examples/edge-worker` | Cloudflare Workers / Vercel Edge via `@banhmi/edge` |
+| `examples/lambda-app` | AWS Lambda via `@banhmi/serverless` |
 
-TBD
+## Running an example
 
-## Setup
+```bash
+# From the repo root
+cd examples/cats-api
+bun install
+bun run dev   # or: bun src/main.ts
+```
 
-TBD
+## Edge worker example
 
-## Usage
+```bash
+cd examples/edge-worker
+bun run dev          # starts Bun.serve wrapping the edge handler
+bun test             # runs integration tests
+```
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+## Lambda app example
 
-## API reference
-
-TBD
+```bash
+cd examples/lambda-app
+bun test             # invokes handler with synthetic API Gateway events
+```
 
 ## See also
 
-TBD
+- [Standalone Apps](/deployment/standalone-apps)
+- [Edge & Serverless](/deployment/edge)
+- [Hybrid Application](/deployment/hybrid)

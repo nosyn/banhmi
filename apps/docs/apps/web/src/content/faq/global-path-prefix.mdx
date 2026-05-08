@@ -1,23 +1,36 @@
-# Global path prefix
+# Global Path Prefix
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+**How do I add a prefix like `/api/v1` to all routes?**
 
-## When to use
+There is no `app.setGlobalPrefix()` method yet.  The current approaches are:
 
-TBD
+**Option 1 — Prefix controllers individually**
 
-## Setup
+```ts
+@Controller('/api/v1/cats')
+class CatsController { /* … */ }
+```
 
-TBD
+**Option 2 — Nest controllers under a module with a shared prefix**
 
-## Usage
+Use `@Controller` on every controller that belongs to the same prefix group.
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+**Option 3 — Edge adapter `globalPrefix` option**
 
-## API reference
+When deploying to an edge runtime via `@banhmi/edge`, you can strip an
+incoming prefix before routing:
 
-TBD
+```ts
+const handler = await createEdgeHandler(AppModule, { globalPrefix: 'api' })
+```
+
+Requests arriving at `/api/cats` are routed to the `/cats` controller.
+
+**Is `app.setGlobalPrefix()` planned?**
+
+Yes — it is on the roadmap.  Track progress in the framework's issue tracker.
 
 ## See also
 
-TBD
+- [Edge & Serverless](/deployment/edge)
+- [Standalone Apps](/deployment/standalone-apps)

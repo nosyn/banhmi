@@ -1,23 +1,45 @@
 # Serverless
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+**Can I run Banhmi on AWS Lambda or Vercel?**
 
-## When to use
+Yes. Install `@banhmi/serverless`:
 
-TBD
+```bash
+bun add @banhmi/serverless
+```
 
-## Setup
+Then create a handler:
 
-TBD
+```ts
+// src/index.ts
+import { createLambdaHandler } from '@banhmi/serverless'
+import { AppModule } from './app.module'
 
-## Usage
+export const handler = await createLambdaHandler(AppModule)
+```
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+The handler works with API Gateway v1 (REST API) and v2 (HTTP API) event
+formats — the adapter detects the format automatically.
 
-## API reference
+**What about Cloudflare Workers / Vercel Edge?**
 
-TBD
+Use `@banhmi/edge` instead:
+
+```ts
+import { createEdgeHandler } from '@banhmi/edge'
+import { AppModule } from './app.module'
+
+export default { fetch: await createEdgeHandler(AppModule) }
+```
+
+**Does cold-start time matter?**
+
+Both adapters bootstrap the full Banhmi lifecycle once (module init, DI,
+controller registration) at handler creation time — not per invocation.
+Warm Lambda invocations share the same bootstrapped instance, keeping
+per-request overhead minimal.
 
 ## See also
 
-TBD
+- [Edge & Serverless Deployment](/deployment/edge)
+- [Request Lifecycle](/deployment/request-lifecycle)

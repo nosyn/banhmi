@@ -1,23 +1,40 @@
-# Request lifecycle
+# Request Lifecycle
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+**What is the order of execution for a request?**
 
-## When to use
+```
+pre-request middleware → module middleware → guards → interceptors (before)
+→ pipes → handler → interceptors (after) → serialise → exception filters
+```
 
-TBD
+See [Request Lifecycle](/deployment/request-lifecycle) for a full diagram and
+stage descriptions.
 
-## Setup
+**Where should I put authentication logic?**
 
-TBD
+In a **Guard**.  Guards run after all middleware but before interceptors and
+the handler.  They have access to the full `ExecutionContext` including the
+handler class and method metadata.
 
-## Usage
+**Where should I put logging / timing?**
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+In an **Interceptor**.  The before-phase runs before the handler; the
+after-phase (after `next.handle()`) runs after.
 
-## API reference
+**Where should I put error formatting?**
 
-TBD
+In an **Exception Filter**.  Filters are the last stage; they convert any
+thrown exception into a `Response`.
+
+**Does middleware run before guards?**
+
+Yes.  The order is: middleware → guards → interceptors → handler.  Middleware
+can short-circuit the entire pipeline by returning a `Response` without calling
+`next()`.
 
 ## See also
 
-TBD
+- [Request Lifecycle (guide)](/deployment/request-lifecycle)
+- [Guards](/security/authentication)
+- [Interceptors](/interceptors)
+- [Exception Filters](/exception-filters)
