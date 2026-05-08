@@ -41,14 +41,8 @@ export function rewriteImports(source: string): string {
   let out = source
   for (const [from, to] of Object.entries(PACKAGE_MAP)) {
     // Match both single and double quoted import specifiers
-    const singleQuoted = new RegExp(
-      `from\\s+'${escapeRegExp(from)}'`,
-      'g',
-    )
-    const doubleQuoted = new RegExp(
-      `from\\s+"${escapeRegExp(from)}"`,
-      'g',
-    )
+    const singleQuoted = new RegExp(`from\\s+'${escapeRegExp(from)}'`, 'g')
+    const doubleQuoted = new RegExp(`from\\s+"${escapeRegExp(from)}"`, 'g')
     out = out
       .replace(singleQuoted, `from '${to}'`)
       .replace(doubleQuoted, `from "${to}"`)

@@ -18,10 +18,7 @@
  * Returns [tokenExpr, endIndex] where endIndex is the position after the
  * closing `)`, or null if src[pos..] does not start with `@Inject(`.
  */
-function extractInjectToken(
-  src: string,
-  pos: number,
-): [string, number] | null {
+function extractInjectToken(src: string, pos: number): [string, number] | null {
   if (src.slice(pos, pos + 8) !== '@Inject(') return null
   let depth = 0
   let i = pos + 7 // points at '('
@@ -72,8 +69,11 @@ export function rewriteInjectToStatic(source: string): string {
   const CTOR_RE = /\bconstructor\s*\(/g
   let out = source
 
-  let match: RegExpExecArray | null
-  while ((match = CTOR_RE.exec(out)) !== null) {
+  for (
+    let match = CTOR_RE.exec(out);
+    match !== null;
+    match = CTOR_RE.exec(out)
+  ) {
     const parenStart = match.index + match[0].length - 1 // index of '('
     const parenEnd = findClosingParen(out, parenStart)
     const paramBlock = out.slice(parenStart + 1, parenEnd)
@@ -112,7 +112,7 @@ export function rewriteInjectToStatic(source: string): string {
 
     const staticLine = `${indent}static inject = [${tokens.join(', ')}] as const`
     const ctorStart = match.index
-    const ctorKeyword = `constructor(`
+    const ctorKeyword = 'constructor('
     const newCtor = `${staticLine}\n${indent}${ctorKeyword}${cleanBlock})`
 
     out = out.slice(0, ctorStart) + newCtor + out.slice(parenEnd + 1)

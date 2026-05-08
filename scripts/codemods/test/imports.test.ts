@@ -4,27 +4,37 @@ import { rewriteImports } from '../rewrites/imports'
 describe('rewriteImports', () => {
   it('rewrites @nestjs/common to @banhmi/common', () => {
     const input = `import { Module } from '@nestjs/common'`
-    expect(rewriteImports(input)).toBe(`import { Module } from '@banhmi/common'`)
+    expect(rewriteImports(input)).toBe(
+      `import { Module } from '@banhmi/common'`,
+    )
   })
 
   it('rewrites @nestjs/core to @banhmi/core', () => {
     const input = `import { NestFactory } from '@nestjs/core'`
-    expect(rewriteImports(input)).toBe(`import { NestFactory } from '@banhmi/core'`)
+    expect(rewriteImports(input)).toBe(
+      `import { NestFactory } from '@banhmi/core'`,
+    )
   })
 
   it('rewrites @nestjs/swagger to @banhmi/openapi', () => {
     const input = `import { ApiProperty } from '@nestjs/swagger'`
-    expect(rewriteImports(input)).toBe(`import { ApiProperty } from '@banhmi/openapi'`)
+    expect(rewriteImports(input)).toBe(
+      `import { ApiProperty } from '@banhmi/openapi'`,
+    )
   })
 
   it('rewrites @nestjs/config to @banhmi/config', () => {
     const input = `import { ConfigModule } from '@nestjs/config'`
-    expect(rewriteImports(input)).toBe(`import { ConfigModule } from '@banhmi/config'`)
+    expect(rewriteImports(input)).toBe(
+      `import { ConfigModule } from '@banhmi/config'`,
+    )
   })
 
   it('rewrites @nestjs/jwt to @banhmi/jwt', () => {
     const input = `import { JwtModule } from '@nestjs/jwt'`
-    expect(rewriteImports(input)).toBe(`import { JwtModule } from '@banhmi/jwt'`)
+    expect(rewriteImports(input)).toBe(
+      `import { JwtModule } from '@banhmi/jwt'`,
+    )
   })
 
   it('rewrites @nestjs/throttler to @banhmi/throttler', () => {
@@ -43,12 +53,16 @@ describe('rewriteImports', () => {
 
   it('rewrites @nestjs/passport to @banhmi/auth', () => {
     const input = `import { AuthGuard } from '@nestjs/passport'`
-    expect(rewriteImports(input)).toBe(`import { AuthGuard } from '@banhmi/auth'`)
+    expect(rewriteImports(input)).toBe(
+      `import { AuthGuard } from '@banhmi/auth'`,
+    )
   })
 
   it('handles double-quoted imports', () => {
     const input = `import { Injectable } from "@nestjs/common"`
-    expect(rewriteImports(input)).toBe(`import { Injectable } from "@banhmi/common"`)
+    expect(rewriteImports(input)).toBe(
+      `import { Injectable } from "@banhmi/common"`,
+    )
   })
 
   it('rewrites multiple imports in the same file', () => {

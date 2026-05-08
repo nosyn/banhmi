@@ -1,9 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from 'bun:test'
 import { join } from 'node:path'
 import { applyAll } from '../nestjs-to-banhmi'
-import { rewriteImports } from '../rewrites/imports'
-import { rewriteInjectToStatic } from '../rewrites/inject-to-static'
-import { rewriteSwaggerToOpenapi } from '../rewrites/swagger-to-openapi'
 
 const FIXTURE_PATH = join(import.meta.dir, 'fixtures', 'cats.service.ts')
 

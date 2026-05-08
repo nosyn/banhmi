@@ -47,7 +47,8 @@ export function applyAll(source: string): string {
 }
 
 function printHelp(): void {
-  console.log(`
+  console.log(
+    `
 nestjs-to-banhmi — rewrite NestJS source files to Banhmi conventions
 
 Usage:
@@ -60,7 +61,8 @@ Options:
 Examples:
   bun nestjs-to-banhmi.ts 'src/**/*.ts' --dry
   bun nestjs-to-banhmi.ts 'src/**/*.ts'
-`.trim())
+`.trim(),
+  )
 }
 
 async function main(): Promise<number> {
@@ -112,7 +114,9 @@ async function main(): Promise<number> {
   if (changed === 0) {
     console.log('no files needed changes')
   } else if (dry) {
-    console.log(`\n${changed} file(s) would be rewritten (--dry, no changes written)`)
+    console.log(
+      `\n${changed} file(s) would be rewritten (--dry, no changes written)`,
+    )
   } else {
     console.log(`\n${changed} file(s) rewritten`)
   }
