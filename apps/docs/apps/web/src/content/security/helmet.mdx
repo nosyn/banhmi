@@ -1,23 +1,47 @@
-# Helmet
+# Helmet (Security Headers)
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+`HelmetModule` appends OWASP-recommended HTTP security headers to every
+response. Use it to protect against common attacks like clickjacking,
+cross-site scripting, and MIME-type sniffing.
 
 ## When to use
 
-TBD
+Add `HelmetModule.forRoot()` to your root `AppModule` so all responses
+receive the security headers.
 
 ## Setup
 
-TBD
+```bash
+bun add @banhmi/security
+```
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+<CodeFromExample slug="helmet" />
+
+## Default headers
+
+| Header | Default value |
+|---|---|
+| `Content-Security-Policy` | `default-src 'self'` |
+| `Strict-Transport-Security` | `max-age=15552000; includeSubDomains` |
+| `X-Content-Type-Options` | `nosniff` |
+| `X-Frame-Options` | `SAMEORIGIN` |
+| `Referrer-Policy` | `no-referrer` |
+| `Permissions-Policy` | `` (empty) |
+| `X-Download-Options` | `noopen` |
+| `X-DNS-Prefetch-Control` | `off` |
+
+Pass a string to override a header, or `false` to omit it entirely.
 
 ## API reference
 
-TBD
+### `HelmetModule.forRoot(opts?)`
+
+`opts` is a `HelmetOptions` object where each key is a header name and the
+value is either a string override or `false` to disable.
 
 ## See also
 
-TBD
+- [CORS](./cors)
+- [CSRF](./csrf)

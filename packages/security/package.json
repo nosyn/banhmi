@@ -1,0 +1,17 @@
+{
+  "name": "@banhmi/security",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@banhmi/common": "workspace:*",
+    "@banhmi/cookies": "workspace:*",
+    "@banhmi/core": "workspace:*",
+    "@banhmi/crypto": "workspace:*",
+    "@banhmi/platform-bun": "workspace:*",
+    "banhmi": "workspace:*"
+  }
+}

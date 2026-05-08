@@ -1,23 +1,45 @@
 # CORS
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+`CorsModule` handles Cross-Origin Resource Sharing (CORS). It responds to
+preflight `OPTIONS` requests and sets the appropriate `Access-Control-*`
+headers on all responses.
 
 ## When to use
 
-TBD
+When your API is served from a different origin than your front-end, or when
+you need to control which domains are allowed to make requests.
 
 ## Setup
 
-TBD
+```bash
+bun add @banhmi/security
+```
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+<CodeFromExample slug="cors" />
+
+## Configuration
+
+```ts
+CorsModule.forRoot({
+  origin: 'https://app.example.com',   // string | string[] | RegExp | fn
+  credentials: true,
+  methods: ['GET', 'POST'],            // defaults to all standard methods
+  allowedHeaders: ['authorization'],   // mirrors request headers when unset
+  exposedHeaders: ['x-custom'],
+  maxAge: 600,                         // preflight cache, seconds
+})
+```
 
 ## API reference
 
-TBD
+### `CorsModule.forRoot(opts?)`
+
+`opts` is a `CorsOptions` object. When `origin` is omitted all origins are
+allowed (`'*'`).
 
 ## See also
 
-TBD
+- [Helmet](./helmet)
+- [CSRF](./csrf)
