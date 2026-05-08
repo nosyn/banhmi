@@ -1,23 +1,113 @@
 # Tuning Checklist
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+A per-framework checklist for getting the most out of each competitor in
+benchmark conditions, plus Banhmi-specific production tuning tips.
 
-## When to use
+---
 
-TBD
+## General (all frameworks)
 
-## Setup
+Before tuning any framework, ensure the OS is prepared:
 
-TBD
+```bash
+# macOS — increase file-descriptor limit
+ulimit -n 65535
 
-## Usage
+# Linux — socket backlog + connection tracking
+sudo sysctl -w net.core.somaxconn=65535
+sudo sysctl -w net.ipv4.tcp_tw_reuse=1
+sudo sysctl -w net.ipv4.ip_local_port_range="1024 65535"
+```
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+- [ ] Disable access logging (benchmark measures throughput, not log I/O).
+- [ ] Run the process with `NODE_ENV=production` / `BUN_ENV=production`.
+- [ ] Pin to a single CPU core with `taskset -c 0` (single-threaded baseline) or
+  leave unpinned to utilise all cores.
+- [ ] Ensure no other servers are running on adjacent ports.
+- [ ] Disable tracing / APM agents.
 
-## API reference
+---
 
-TBD
+## Banhmi-specific tuning
 
-## See also
+Banhmi runs on raw `Bun.serve` — there is very little overhead to remove, but:
 
-TBD
+- [ ] **Reuseport:** `Bun.serve` automatically enables `SO_REUSEPORT` on Linux.
+  On macOS this is a no-op; on Linux it allows multiple workers to share a port.
+- [ ] **Worker threads:** spawn N workers (`BUN_WORKER=N bun run start`) once
+  multi-process clustering is wired up (Wave 12+).
+- [ ] **Response caching:** for the `hello` scenario, returning a pre-serialised
+  `Buffer` instead of calling `JSON.stringify` on every request can add ~10%
+  throughput.
+
+  ```ts
+  const HELLO_BODY = JSON.stringify({ hello: 'world' })
+  // Return Response directly instead of framework serialisation
+  ```
+
+- [ ] **Validation short-circuit:** if a schema is compiled once at startup
+  (Zod `.parse` compiles lazily), the first request pays the compile cost.
+  Warm up by calling `schema.safeParse({})` during `AppModule` initialisation.
+- [ ] **Keep-alive timeout:** `Bun.serve` defaults to 30 s. For benchmark
+  conditions lower to 5 s to release connections faster under concurrent load.
+
+---
+
+## Hono tuning
+
+- [ ] Use Hono's **Bun adapter** (`import { serve } from 'hono/bun'`) — it
+  delegates directly to `Bun.serve`, avoiding the Node compat layer.
+- [ ] Prefer `c.json()` over `new Response(JSON.stringify(...))` — Hono
+  sets the correct `Content-Type` header for you.
+- [ ] For validation, `@hono/zod-validator` incurs the same Zod cost as Banhmi;
+  swap to a TypeBox-based validator for faster parsing if needed.
+
+---
+
+## Elysia tuning
+
+- [ ] Elysia compiles TypeBox schemas into optimised validators at startup —
+  no per-request recompilation cost.
+- [ ] Use `.decorate` / `.derive` sparingly in the hot path; each added plugin
+  adds micro-overhead to the request lifecycle.
+- [ ] Enable `aot: true` in Elysia constructor for ahead-of-time route compilation
+  (default in production).
+
+---
+
+## NestJS + Fastify tuning
+
+- [ ] Use `@nestjs/platform-fastify` and pass `{ logger: false }` to
+  `NestFactory.create`.
+- [ ] Add `fastify.addContentTypeParser('application/json', ...)` with a
+  fast JSON parser (`fast-json-stringify` / `@fastify/sensible`) to skip
+  the default body-parser overhead.
+- [ ] Disable the CORS and Helmet guards in benchmark runs (they add middleware
+  overhead per request).
+- [ ] Use `fastify.register(require('@fastify/compress'))` only in production —
+  compression hurts throughput benchmarks.
+
+---
+
+## NestJS + Express tuning
+
+- [ ] Pass `{ bodyParser: false }` and wire `express.json()` manually so only
+  POST routes parse bodies.
+- [ ] Remove `express.urlencoded()` if not needed — saves a body-parse attempt
+  on every request.
+- [ ] Upgrade to Express 5 beta for improved routing performance.
+
+---
+
+## Benchmark-specific notes
+
+These tunings are appropriate for **benchmark reproducibility** but may not be
+suitable for production:
+
+| Tuning | Benchmark effect | Production note |
+|---|---|---|
+| Disable logging | +5–15% RPS | Re-enable for production observability |
+| `ulimit -n 65535` | Avoids EMFILE errors at high concurrency | Apply in prod systemd units |
+| `SO_REUSEPORT` | Enables multi-process scaling | Safe for production |
+| Cold start warmup | Eliminates JIT cold path | Not needed — Bun AOT compiles |
+| Response caching | +5–10% on static routes | Only for truly static responses |

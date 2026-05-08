@@ -1,23 +1,103 @@
-# Methodology
+# Benchmark Methodology
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+This document describes how Banhmi's comparative benchmarks are run, what fairness rules are applied, and how to reproduce the numbers on your own hardware.
 
-## When to use
+## Hardware and environment
 
-TBD
+| Property | Value |
+|---|---|
+| Machine | Developer laptop (Apple Silicon / x86-64) |
+| OS | macOS 15 / Ubuntu 24.04 (CI) |
+| Bun | Latest stable (see `.tool-versions`) |
+| Node | 20 LTS (NestJS competitors) |
+| Kernel tuning | None applied — developer defaults |
+| CI runner | `ubuntu-24.04` (GitHub Actions) |
+| Isolation | One competitor at a time; all others stopped |
 
-## Setup
+Kernel-level tuning (`ulimit -n`, `sysctl net.core.somaxconn`, etc.) is intentionally
+**not** applied in the baseline run so numbers are reproducible on stock hardware.
+A tuned-kernel run is documented in [Tuning Checklist](/performance/tuning).
 
-TBD
+## Warmup and sample size
 
-## Usage
+- **Warmup:** 3 seconds of unreported load before the measurement window starts
+  (oha does not have a separate warmup flag — use `-z 3s` for warmup then rerun).
+- **Sample window:** 10 seconds per scenario per competitor (configurable via `BENCH_SECONDS`).
+- **Connections:** 50 concurrent (oha default) for HTTP load scenarios.
+- **Runs per cell:** 1 run saved to disk; median of 3 runs recommended for publication.
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+## Load tool
 
-## API reference
+Primary runner: **[oha](https://github.com/hatoo/oha)** (`oha --json -z 10s --no-tui`).
 
-TBD
+Alternative runners (used for cross-validation when oha numbers look anomalous):
+- `bombardier --print r --format json --duration 10s`
+- `autocannon --json --duration 10 --connections 50`
 
-## See also
+If none of the tools is available, `benchmarks/run.ts` writes a placeholder JSON with
+`note: "harness only — runner unavailable"` and exits 0.
 
-TBD
+## Scenarios
+
+| Scenario | Description | Status |
+|---|---|---|
+| `hello` | `GET /` — routing + JSON serialisation only | HTTP load (oha) |
+| `json-roundtrip` | `POST /json` echo 1 KB body | HTTP load (oha) |
+| `validation` | `POST /validate` ten-field DTO | HTTP load (oha) |
+| `cold-start` | Spawn → first 200 OK latency | Process spawn |
+| `rss-idle` | Spawn → idle 10 s → RSS snapshot | Process memory |
+| `file-upload` | `POST /upload` 5 MB multipart | Scaffolded — Wave 12 |
+| `ws-throughput` | 1 000 WS clients × 100 msg/s | Scaffolded — Wave 12 |
+| `db-cats` | CRUD over in-memory SQLite | Scaffolded — Wave 12 |
+
+## Competitors
+
+All five competitors expose identical endpoints (`/`, `/json`, `/validate`, `/upload`)
+and are started with no logging (`logger: false` for NestJS, stdout suppressed via pipe
+in the orchestrator).
+
+| Competitor | Adapter | Port |
+|---|---|---|
+| banhmi | Raw `Bun.serve` | 3001 |
+| nestjs-express | NestJS + Express | 3002 |
+| nestjs-fastify | NestJS + Fastify | 3003 |
+| hono | Hono 4 + Bun adapter | 3004 |
+| elysia | Elysia 1 | 3005 |
+
+## Fairness rules
+
+1. Every competitor is tested **in isolation** — no other competitor is running.
+2. **No JIT pre-warming** advantage: cold-start scenario measures a truly cold spawn.
+3. **Validation is real**: Banhmi uses Zod, NestJS uses class-validator, Hono uses
+   `@hono/zod-validator`, Elysia uses its built-in TypeBox validator.
+   All must actually parse and validate the body.
+4. **File upload parsing is real**: each framework must parse the multipart stream.
+5. Source is pinned in `package.json`; minor version bumps require a new dated run.
+
+## Reproducing results
+
+```bash
+# 1. Install oha
+brew install oha                  # macOS
+# or download from https://github.com/hatoo/oha/releases
+
+# 2. Install dependencies
+bun install
+
+# 3. Run the full suite
+bun run bench:run
+
+# Results land in benchmarks/results/<today>/
+```
+
+To run a specific scenario or competitor subset:
+
+```bash
+BENCH_SCENARIOS=hello,json-roundtrip BENCH_TARGETS=banhmi,hono bun run bench:run
+```
+
+Control duration:
+
+```bash
+BENCH_SECONDS=30 bun run bench:run
+```

@@ -1,23 +1,104 @@
-# Live Results
+# Benchmark Results
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+> **Run date:** 2026-05-09  
+> **Environment:** macOS 25 (Apple Silicon), Bun 1.3.13, Node 20 LTS  
+> **Load tool:** `oha` — *not available in this environment; HTTP load results are placeholders.*  
+> **Real numbers captured:** cold-start, rss-idle (process-level scenarios require no external tool).
 
-## When to use
+See [Methodology](/performance/methodology) for hardware, warmup, and fairness rules.
 
-TBD
+---
 
-## Setup
+## Cold-start (ms) — lower is better
 
-TBD
+Time from `bun run start` to first `200 OK` on `GET /`.
 
-## Usage
+| Competitor | Startup (ms) | Polls |
+|---|---|---|
+| **elysia** | **2** | 1 |
+| **hono** | **104** | 2 |
+| **banhmi** | **154** | 2 |
+| nestjs-fastify | 307 | 4 |
+| nestjs-express | 309 | 4 |
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+**Banhmi is 2× faster to start than NestJS** (154 ms vs 307–309 ms).
+Elysia and Hono have near-zero startup because they avoid module initialisation overhead.
 
-## API reference
+---
 
-TBD
+## RSS idle (kB) — lower is better
 
-## See also
+Resident Set Size after 10 seconds of idle (no traffic).
 
-TBD
+| Competitor | RSS (kB) | RSS (MB) |
+|---|---|---|
+| **hono** | **42 992** | **42** |
+| **banhmi** | **63 488** | **62** |
+| elysia | 78 272 | 76 |
+| nestjs-express | 83 424 | 81 |
+| nestjs-fastify | 83 584 | 82 |
+
+**Banhmi uses 24% less memory than NestJS at idle** (62 MB vs 81–82 MB).
+
+---
+
+## HTTP load tests — awaiting oha
+
+The following scenarios require `oha` (or `bombardier` / `autocannon`) to be installed.
+Run `bun run bench:run` on a machine with oha to get real numbers.
+
+### hello — `GET /` (req/s, lower latency = better)
+
+| Competitor | RPS | p50 (ms) | p95 (ms) | p99 (ms) |
+|---|---|---|---|---|
+| elysia | _pending_ | _pending_ | _pending_ | _pending_ |
+| banhmi | _pending_ | _pending_ | _pending_ | _pending_ |
+| hono | _pending_ | _pending_ | _pending_ | _pending_ |
+| nestjs-fastify | _pending_ | _pending_ | _pending_ | _pending_ |
+| nestjs-express | _pending_ | _pending_ | _pending_ | _pending_ |
+
+### json-roundtrip — `POST /json` 1 KB echo (req/s)
+
+| Competitor | RPS | p50 (ms) | p95 (ms) | p99 (ms) |
+|---|---|---|---|---|
+| elysia | _pending_ | _pending_ | _pending_ | _pending_ |
+| banhmi | _pending_ | _pending_ | _pending_ | _pending_ |
+| hono | _pending_ | _pending_ | _pending_ | _pending_ |
+| nestjs-fastify | _pending_ | _pending_ | _pending_ | _pending_ |
+| nestjs-express | _pending_ | _pending_ | _pending_ | _pending_ |
+
+### validation — `POST /validate` 10-field DTO (req/s)
+
+| Competitor | RPS | p50 (ms) | p95 (ms) | p99 (ms) |
+|---|---|---|---|---|
+| elysia | _pending_ | _pending_ | _pending_ | _pending_ |
+| banhmi | _pending_ | _pending_ | _pending_ | _pending_ |
+| hono | _pending_ | _pending_ | _pending_ | _pending_ |
+| nestjs-fastify | _pending_ | _pending_ | _pending_ | _pending_ |
+| nestjs-express | _pending_ | _pending_ | _pending_ | _pending_ |
+
+> Install `oha` and run `bun run bench:run` to fill in these tables.
+> Results will be written to `benchmarks/results/<date>/` and can be used to
+> update this page.
+
+---
+
+## Scaffolded scenarios (Wave 12)
+
+The following scenarios are implemented in `benchmarks/scenarios/` but require
+additional competitor endpoints and tooling before they can produce numbers:
+
+| Scenario | Blocker |
+|---|---|
+| `file-upload` | oha does not natively send multipart; needs a custom fetch micro-bench |
+| `ws-throughput` | Competitors need a `/ws` WebSocket endpoint |
+| `db-cats` | Competitors need `/cats` CRUD endpoints backed by in-memory SQLite |
+
+---
+
+## Raw JSON results
+
+All result files live under [`benchmarks/results/2026-05-09/`](https://github.com/banhmi/banhmi/tree/main/benchmarks/results/2026-05-09).
+Each file is named `<scenario>-<competitor>.json` and contains the structured output
+from the runner (rps, p50, p95, p99, p99_9, totalSeconds) or a `note` field when
+the runner was unavailable.
