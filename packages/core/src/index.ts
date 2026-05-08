@@ -1,4 +1,4 @@
-export type { HttpAdapter } from './application'
+export type { HttpAdapter, MicroserviceOptions } from './application'
 export { BanhmiApplication } from './application'
 export { Container } from './container'
 export { LifecycleRunner } from './lifecycle-runner'

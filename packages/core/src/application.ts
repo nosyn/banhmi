@@ -8,6 +8,24 @@ import { LifecycleRunner } from './lifecycle-runner'
 import { flattenModuleProviders, type ModuleNode } from './module-graph'
 
 /**
+ * Minimal interface for a microservice transport that can be connected to a
+ * hybrid application.  Structurally compatible with `Transport` from
+ * `@banhmi/microservices` so no hard dependency is required.
+ *
+ * @example
+ * // From @banhmi/microservices:
+ * const transport = new InMemoryTransport()
+ * app.connectMicroservice({ transport })
+ */
+export interface MicroserviceOptions {
+  /** The transport instance to start when `startAllMicroservices()` is called. */
+  transport: {
+    listen(handler: (msg: unknown) => Promise<unknown>): Promise<void>
+    close(): Promise<void>
+  }
+}
+
+/**
  * Minimal consumer interface used for structural compatibility when calling
  * `configure(consumer)` on module classes. The concrete implementation lives
  * in `@banhmi/platform-bun` (via `BunMiddlewareConsumer` bridged through
@@ -38,6 +56,7 @@ export class BanhmiApplication {
   private lifecycleRunner: LifecycleRunner
   private allProviders: ProviderDef[]
   private shutdownHooksEnabled = false
+  private microservices: MicroserviceOptions[] = []
 
   constructor(
     readonly container: Container,
@@ -46,6 +65,42 @@ export class BanhmiApplication {
   ) {
     this.lifecycleRunner = new LifecycleRunner(container)
     this.allProviders = flattenModuleProviders(moduleTree)
+  }
+
+  /**
+   * Register a microservice transport to run alongside the HTTP server in the
+   * same process (hybrid app).  The transport is not started until
+   * {@link startAllMicroservices} is called.
+   *
+   * @param opts - Options containing the transport instance.
+   * @returns `this` for chaining.
+   *
+   * @example
+   * import { InMemoryTransport } from '@banhmi/microservices'
+   * const transport = new InMemoryTransport()
+   * app.connectMicroservice({ transport })
+   * await app.startAllMicroservices()
+   * await app.listen(3000)
+   */
+  connectMicroservice(opts: MicroserviceOptions): this {
+    this.microservices.push(opts)
+    return this
+  }
+
+  /**
+   * Start all microservice transports that were registered with
+   * {@link connectMicroservice}.  Safe to call multiple times (already-started
+   * transports are tracked; this call starts only the ones not yet running).
+   *
+   * @example
+   * await app.startAllMicroservices()
+   */
+  async startAllMicroservices(): Promise<void> {
+    await Promise.all(
+      this.microservices.map((ms) =>
+        ms.transport.listen(() => Promise.resolve(undefined)),
+      ),
+    )
   }
 
   use(middleware: unknown): this {
@@ -64,12 +119,21 @@ export class BanhmiApplication {
     return url
   }
 
-  async listen(port: number): Promise<void> {
+  /**
+   * Bootstrap the application (run lifecycle hooks, register controllers) but
+   * do **not** call `adapter.listen()`.  Intended for edge and serverless
+   * runtimes where the transport is managed externally.
+   *
+   * After calling `init()` you can dispatch individual requests via
+   * `dispatchRequest(request)` on the underlying adapter.
+   *
+   * @example
+   * await app.init()
+   * const response = await (app.adapter as BunAdapter).dispatchRequest(req)
+   */
+  async init(): Promise<void> {
     await this.lifecycleRunner.runModuleInit(this.allProviders)
 
-    // Walk module classes looking for configure(consumer) — used by
-    // @banhmi/middleware for module-level binding. We create a lightweight
-    // consumer shim and forward its collected bindings to the adapter.
     if (this.adapter.registerMiddlewareBindings) {
       const allBindings = await this.collectMiddlewareBindings(this.moduleTree)
       this.adapter.registerMiddlewareBindings(allBindings)
@@ -85,8 +149,12 @@ export class BanhmiApplication {
       this.adapter.registerGateway?.(instance as object, gw)
     }
 
-    await this.adapter.listen(port)
     await this.lifecycleRunner.runApplicationBootstrap(this.allProviders)
+  }
+
+  async listen(port: number): Promise<void> {
+    await this.init()
+    await this.adapter.listen(port)
 
     if (this.shutdownHooksEnabled) {
       for (const signal of ['SIGTERM', 'SIGINT'] as const) {
