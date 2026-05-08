@@ -1,23 +1,263 @@
-# Production Checklist
+# Production Deployment Checklist
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+This checklist covers everything you should verify before deploying a Banhmi application to production. Each item links to the relevant documentation section.
 
-## When to use
+---
 
-TBD
+## Environment variables
 
-## Setup
+- Set `NODE_ENV=production` (or `BANHMI_ENV=production`).
+- Never commit `.env` files. Use a secrets manager (Vault, AWS Secrets Manager, Doppler, etc.) and inject at deploy time.
+- Validate all required env vars at startup using `ConfigModule` with a validation schema — fail fast if a required secret is missing.
+- Rotate secrets (JWT keys, database passwords, API keys) on a schedule and on suspected exposure.
 
-TBD
+```ts
+ConfigModule.forRoot({
+  validate: (config) => {
+    if (!config['DATABASE_URL']) throw new Error('DATABASE_URL is required')
+    return config
+  },
+})
+```
 
-## Usage
+---
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+## Logging
 
-## API reference
+- Set log level to `warn` or `error` in production — avoid `debug` or `verbose` in hot paths.
+- Use structured JSON logging so logs are machine-parseable by your log aggregator.
+- Never log sensitive values (passwords, tokens, PII). Redact at the logger level.
 
-TBD
+```ts
+BanhmiFactory.create(AppModule, {
+  logger: new StructuredJsonLogger({ level: 'warn' }),
+})
+```
 
-## See also
+---
 
-TBD
+## Security headers
+
+- Enable `SecurityModule` (or a `helmet`-equivalent middleware) on every request.
+- Default headers to configure:
+  - `X-Content-Type-Options: nosniff`
+  - `X-Frame-Options: DENY`
+  - `Strict-Transport-Security: max-age=31536000; includeSubDomains`
+  - `Content-Security-Policy` — start restrictive and loosen per page.
+  - `Referrer-Policy: strict-origin-when-cross-origin`
+
+```ts
+app.use(SecurityModule.defaults())
+```
+
+---
+
+## CORS
+
+- Do **not** use `origin: '*'` in production.
+- Specify an explicit allowlist of trusted origins.
+- Set `credentials: true` only when needed and only for specific trusted origins.
+
+```ts
+app.enableCors({
+  origin: ['https://app.example.com', 'https://admin.example.com'],
+  credentials: true,
+})
+```
+
+---
+
+## Rate limiting
+
+- Enable `ThrottlerModule` globally — protects all routes.
+- Tune `ttl` and `limit` per route for sensitive endpoints (login, password reset, OTP).
+- Use a Redis-backed store in multi-instance deployments so limits are shared.
+
+```ts
+ThrottlerModule.forRoot([{ ttl: 60_000, limit: 100 }])
+// More aggressive for auth endpoints:
+@Throttle({ default: { ttl: 60_000, limit: 5 } })
+@Post('auth/login')
+login() { ... }
+```
+
+---
+
+## JWT secret rotation
+
+- Generate JWT secrets with at least 256 bits of entropy (`openssl rand -base64 32`).
+- Rotate signing keys on a schedule (e.g., every 90 days).
+- Support multiple valid keys simultaneously during rotation (publish new key, wait for old tokens to expire, then retire old key).
+- Store the secret in your secrets manager — never in source code or config files.
+
+---
+
+## Database migrations
+
+- Use `drizzle-kit` (`bunx drizzle-kit migrate`) to apply migrations at deploy time, before the application starts.
+- Never run `push` (schema push) in production — only use generated migration files tracked in version control.
+- Back up the database before each migration.
+- Test migrations in a staging environment that mirrors production data shape.
+
+```bash
+# Deploy script
+bunx drizzle-kit migrate
+bun run start:prod
+```
+
+---
+
+## Health checks
+
+- Expose a health endpoint (e.g., `GET /health`) using `@banhmi/health`.
+- Kubernetes/ECS liveness and readiness probes should point to this endpoint.
+- Include checks for: database connectivity, Redis connectivity, external service reachability.
+
+```ts
+@Controller('health')
+export class HealthController {
+  @Get()
+  check() {
+    return this.health.check([
+      () => this.db.pingCheck('database'),
+      () => this.redis.pingCheck('redis'),
+    ])
+  }
+}
+```
+
+---
+
+## OpenTelemetry tracing
+
+- Enable `@banhmi/otel` in production for distributed tracing.
+- Export to your collector (Jaeger, Honeycomb, Datadog) via OTLP.
+- Set `OTEL_SERVICE_NAME`, `OTEL_EXPORTER_OTLP_ENDPOINT` env vars.
+- Instrument DB queries and outbound HTTP calls as spans.
+
+```ts
+OtelModule.forRoot({
+  serviceName: Bun.env['OTEL_SERVICE_NAME'] ?? 'my-service',
+})
+```
+
+---
+
+## Error reporting
+
+- Integrate `@banhmi/sentry` or a comparable error-tracking service.
+- Set `SENTRY_DSN` from your secrets manager.
+- Use a global exception filter to capture unhandled exceptions.
+- Scrub PII from error reports before sending.
+
+```ts
+SentryModule.forRoot({ dsn: Bun.env['SENTRY_DSN'] })
+```
+
+---
+
+## Graceful shutdown
+
+- Implement `OnApplicationShutdown` on long-running services (DB connection pools, message consumers).
+- Call `app.enableShutdownHooks()` so Banhmi forwards SIGTERM/SIGINT.
+- Allow in-flight requests to drain before closing (configure a drain timeout, e.g., 10 s).
+
+```ts
+@Injectable()
+export class DatabaseService implements OnApplicationShutdown {
+  async onApplicationShutdown(_signal: string) {
+    await this.pool.end()
+  }
+}
+
+// In main.ts
+app.enableShutdownHooks()
+```
+
+---
+
+## Container image best practices
+
+- Use a minimal base image (`oven/bun:1-alpine` or distroless).
+- Run as a non-root user (`USER bun`).
+- Copy only production artifacts — exclude `node_modules` dev deps, test files, `.git`.
+- Pin the base image to a specific digest in CI; update on a schedule.
+- Scan the image for CVEs before pushing (Trivy, Snyk, Docker Scout).
+
+```dockerfile
+FROM oven/bun:1-alpine AS base
+WORKDIR /app
+COPY package.json bun.lockb ./
+RUN bun install --frozen-lockfile --production
+COPY . .
+USER bun
+CMD ["bun", "run", "start:prod"]
+```
+
+---
+
+## Port and host binding
+
+- Bind to `0.0.0.0` (all interfaces) inside a container so the reverse proxy or host network can reach the process.
+- Do **not** hardcode `localhost` or `127.0.0.1` as the bind address in containerised deployments.
+- Use `PORT` env var (default `3000`) so orchestrators can assign ports.
+
+```ts
+await app.listen(Number(Bun.env['PORT'] ?? 3000), '0.0.0.0')
+```
+
+---
+
+## Reverse-proxy gotchas
+
+- Set `app.set('trust proxy', 1)` equivalent — in Banhmi, pass `trustProxy: true` to `BanhmiFactory` so `req.ip` resolves correctly behind a load balancer.
+- Ensure your reverse proxy (nginx, Caddy, ALB) forwards `X-Forwarded-For` and `X-Forwarded-Proto`.
+- Validate `X-Forwarded-For` against a list of trusted proxy IPs to prevent spoofing.
+- Strip or ignore `X-Forwarded-*` headers that originate from untrusted clients.
+
+```ts
+BanhmiFactory.create(AppModule, {
+  trustProxy: true, // reads X-Forwarded-For for req.ip
+})
+```
+
+---
+
+## TLS termination
+
+- Prefer TLS termination at the load balancer / reverse proxy (ALB, nginx, Caddy) rather than in-app.
+- If terminating TLS in-app (e.g., bare metal, no LB), pass the key and cert to `Bun.serve`:
+
+```ts
+Bun.serve({
+  tls: {
+    key: Bun.file('/run/secrets/tls.key'),
+    cert: Bun.file('/run/secrets/tls.cert'),
+  },
+  fetch: app.fetch,
+})
+```
+
+- Ensure all external traffic uses HTTPS. Redirect HTTP → HTTPS at the load balancer.
+- Disable TLS 1.0 and 1.1 — require TLS 1.2 minimum, prefer TLS 1.3.
+
+---
+
+## Pre-flight summary
+
+Run all checks before going live:
+
+```bash
+# Lint and type-check
+bun run lint
+bun run quality
+
+# Full test suite
+bun test --recursive
+
+# Security scan of the container image
+trivy image my-app:latest
+
+# Smoke test against staging
+curl -f https://staging.example.com/health
+```
