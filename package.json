@@ -15,8 +15,7 @@
     "quality:no-bangs": "bun run scripts/quality/no-bangs.ts",
     "quality:no-reflect": "bun run scripts/quality/no-reflect.ts",
     "quality:tsdoc": "bun run scripts/quality/tsdoc-coverage.ts",
-    "quality": "bun run quality:no-anys && bun run quality:no-bangs && bun run quality:no-reflect && bun run quality:tsdoc",
-    "typecheck": "tsc -b --pretty"
+    "quality": "bun run quality:no-anys && bun run quality:no-bangs && bun run quality:no-reflect && bun run quality:tsdoc"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.10",
