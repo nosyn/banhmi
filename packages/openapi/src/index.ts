@@ -1,4 +1,27 @@
 export { DocumentBuilder } from './document-builder'
+export {
+  ApiBearerAuth,
+  ApiBody,
+  ApiCookieAuth,
+  ApiExcludeEndpoint,
+  ApiExtraModels,
+  ApiHideProperty,
+  ApiOperation,
+  ApiParam,
+  ApiProperty,
+  ApiQuery,
+  ApiResponse,
+  ApiSecurity,
+  ApiTags,
+} from './decorators'
+export type {
+  ApiBodyOptions,
+  ApiOperationOptions,
+  ApiParamOptions,
+  ApiPropertyOptions,
+  ApiQueryOptions,
+  ApiResponseOptions,
+} from './decorators'
 export { SwaggerExplorer } from './explorer'
 export { SwaggerModule } from './swagger.module'
 export type { SwaggerModuleOptions } from './swagger.module'
