@@ -1,0 +1,10 @@
+{
+  "name": "banhmi-feature-scheduling",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "dependencies": {
+    "@banhmi/scheduling": "workspace:*",
+    "banhmi": "workspace:*"
+  }
+}

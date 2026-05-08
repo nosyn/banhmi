@@ -1,23 +1,137 @@
 # Task Scheduling
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+`@banhmi/scheduling` provides cron-based, interval, and one-shot scheduling
+via method decorators and an injectable `Scheduler` class.
 
 ## When to use
 
-TBD
+- Run background tasks on a schedule (cron, polling, cleanup jobs).
+- Fire a handler periodically with `@Interval`.
+- Delay execution once with `@Timeout`.
+- Dynamic scheduling from a service via the `Scheduler` API.
 
 ## Setup
 
-TBD
+```ts
+import { Module } from 'banhmi'
+import { ScheduleModule } from '@banhmi/scheduling'
 
-## Usage
+@Module({ imports: [ScheduleModule.forRoot()] })
+class AppModule {}
+```
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+All scheduled jobs are automatically cancelled when the application shuts down.
+
+## Declarative scheduling
+
+### `@Cron(expression)`
+
+Runs the method on the next matching cron minute, then reschedules:
+
+```ts
+import { Injectable } from 'banhmi'
+import { Cron } from '@banhmi/scheduling'
+
+@Injectable()
+class ReportService {
+  @Cron('0 6 * * *')   // 06:00 every day
+  generateReport() {
+    console.log('generating daily report')
+  }
+}
+```
+
+### `@Interval(ms)`
+
+Runs the method every `ms` milliseconds:
+
+```ts
+import { Injectable } from 'banhmi'
+import { Interval } from '@banhmi/scheduling'
+
+@Injectable()
+class HealthService {
+  @Interval(30_000)   // every 30 s
+  checkHealth() {
+    console.log('health check')
+  }
+}
+```
+
+### `@Timeout(ms)`
+
+Runs the method once after `ms` milliseconds:
+
+```ts
+import { Injectable } from 'banhmi'
+import { Timeout } from '@banhmi/scheduling'
+
+@Injectable()
+class WarmupService {
+  @Timeout(5000)
+  warmup() {
+    console.log('cache warmed up')
+  }
+}
+```
+
+## Programmatic scheduling
+
+Inject `SCHEDULER_TOKEN` to schedule jobs dynamically:
+
+```ts
+import { Injectable } from 'banhmi'
+import { Scheduler, SCHEDULER_TOKEN } from '@banhmi/scheduling'
+
+@Injectable()
+class JobService {
+  static inject = [SCHEDULER_TOKEN] as const
+  constructor(private readonly scheduler: Scheduler) {}
+
+  scheduleAlert(ms: number) {
+    const handle = this.scheduler.timeout(ms, () => sendAlert())
+    // cancel early if needed:
+    handle.cancel()
+  }
+}
+```
+
+## Cron expression syntax
+
+Standard 5-field cron: `minute hour day-of-month month day-of-week`.
+
+| Field | Range | Example |
+|---|---|---|
+| minute | 0–59 | `*/15` = every 15 min |
+| hour | 0–23 | `0,12` = midnight + noon |
+| day-of-month | 1–31 | `1` = 1st of month |
+| month | 1–12 | `*/3` = every quarter |
+| day-of-week | 0–6 (Sun=0) | `1-5` = weekdays |
+
+Supported syntax: `*`, `n`, `a-b`, `*/n`, `a-b/n`, comma lists.
+
+**Note:** when both `dom` and `dow` are explicit, this implementation uses
+intersection semantics (both must match). Standard OR semantics are planned
+for a future release.
 
 ## API reference
 
-TBD
+### `parseCron(expression)`
+
+Parses a cron string into `ParsedCron` — an object with five `Set<number>`
+fields.
+
+### `nextCronTime(parsed, after)`
+
+Returns the first `Date` after `after` that matches the parsed expression.
+
+### `ScheduleHandle`
+
+```ts
+interface ScheduleHandle { cancel(): void }
+```
 
 ## See also
 
-TBD
+- `@banhmi/events` — in-process event bus.
+- `@banhmi/logger` — structured logging.

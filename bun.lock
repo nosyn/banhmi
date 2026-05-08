@@ -216,6 +216,14 @@
         "banhmi": "workspace:*",
       },
     },
+    "examples/features/scheduling": {
+      "name": "banhmi-feature-scheduling",
+      "version": "0.0.0",
+      "dependencies": {
+        "@banhmi/scheduling": "workspace:*",
+        "banhmi": "workspace:*",
+      },
+    },
     "examples/features/serialization": {
       "name": "banhmi-feature-serialization",
       "version": "0.0.0",
@@ -310,6 +318,7 @@
         "@banhmi/platform-bun": "workspace:*",
         "@banhmi/redis": "workspace:*",
         "@banhmi/s3": "workspace:*",
+        "@banhmi/scheduling": "workspace:*",
         "@banhmi/security": "workspace:*",
         "@banhmi/session": "workspace:*",
         "@banhmi/sqlite": "workspace:*",
@@ -460,6 +469,15 @@
         "@banhmi/core": "workspace:*",
       },
       "devDependencies": {
+        "@banhmi/platform-bun": "workspace:*",
+      },
+    },
+    "packages/scheduling": {
+      "name": "@banhmi/scheduling",
+      "version": "0.1.0",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/core": "workspace:*",
         "@banhmi/platform-bun": "workspace:*",
       },
     },
@@ -638,6 +656,8 @@
     "@banhmi/redis": ["@banhmi/redis@workspace:packages/redis"],
 
     "@banhmi/s3": ["@banhmi/s3@workspace:packages/s3"],
+
+    "@banhmi/scheduling": ["@banhmi/scheduling@workspace:packages/scheduling"],
 
     "@banhmi/security": ["@banhmi/security@workspace:packages/security"],
 
@@ -922,6 +942,8 @@
     "banhmi-feature-logger": ["banhmi-feature-logger@workspace:examples/features/logger"],
 
     "banhmi-feature-rate-limiting": ["banhmi-feature-rate-limiting@workspace:examples/features/rate-limiting"],
+
+    "banhmi-feature-scheduling": ["banhmi-feature-scheduling@workspace:examples/features/scheduling"],
 
     "banhmi-feature-serialization": ["banhmi-feature-serialization@workspace:examples/features/serialization"],
 
