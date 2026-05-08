@@ -1,23 +1,188 @@
+---
+title: CQRS
+description: Command/Query/Event buses and Sagas for Banhmi applications.
+---
+
 # CQRS
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+`@banhmi/cqrs` implements the Command Query Responsibility Segregation pattern with
+full event sourcing support through `CommandBus`, `QueryBus`, `EventBus`, and
+async Sagas.
 
-## When to use
+## Installation
 
-TBD
+```bash
+bun add @banhmi/cqrs
+```
 
 ## Setup
 
-TBD
+Import `CqrsModule` in your root module. All command, query, and event handlers
+declared as providers in the same (or imported) module are automatically wired up
+at bootstrap via `CqrsExplorer`.
 
-## Usage
+```ts
+import { Module } from 'banhmi'
+import { CqrsModule } from '@banhmi/cqrs'
+import { CreateUserHandler } from './create-user.handler'
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+@Module({
+  imports: [CqrsModule],
+  providers: [CreateUserHandler],
+})
+export class AppModule {}
+```
 
-## API reference
+## Commands
 
-TBD
+Define a command class and a handler decorated with `@CommandHandler`:
 
-## See also
+```ts
+import { CommandHandler } from '@banhmi/cqrs'
 
-TBD
+// Command — plain class, no base class required
+export class CreateUserCommand {
+  constructor(
+    readonly name: string,
+    readonly email: string,
+  ) {}
+}
+
+// Handler
+@CommandHandler(CreateUserCommand)
+export class CreateUserHandler {
+  async execute(cmd: CreateUserCommand): Promise<string> {
+    // persist and return new user id
+    return `user:${cmd.name}`
+  }
+}
+```
+
+Dispatch from any service by injecting `CommandBus`:
+
+```ts
+import { CommandBus, COMMAND_BUS_TOKEN } from '@banhmi/cqrs'
+
+export class UserController {
+  static inject = [COMMAND_BUS_TOKEN] as const
+  constructor(private readonly commandBus: CommandBus) {}
+
+  async create(ctx: RouteCtx) {
+    const { name, email } = await ctx.request.json()
+    const id = await this.commandBus.execute(new CreateUserCommand(name, email))
+    return Response.json({ id })
+  }
+}
+```
+
+## Queries
+
+```ts
+import { QueryHandler } from '@banhmi/cqrs'
+
+export class GetUserQuery {
+  constructor(readonly id: string) {}
+}
+
+@QueryHandler(GetUserQuery)
+export class GetUserHandler {
+  async execute(query: GetUserQuery) {
+    return db.findUser(query.id)
+  }
+}
+```
+
+Dispatch via `QueryBus` (inject with `QUERY_BUS_TOKEN`):
+
+```ts
+const user = await this.queryBus.execute(new GetUserQuery('user-42'))
+```
+
+## Events
+
+```ts
+import { EventsHandler } from '@banhmi/cqrs'
+
+export class UserCreatedEvent {
+  constructor(readonly userId: string) {}
+}
+
+@EventsHandler(UserCreatedEvent)
+export class UserCreatedHandler {
+  async handle(event: UserCreatedEvent): Promise<void> {
+    console.log('User created:', event.userId)
+  }
+}
+```
+
+Publish via `EventBus` (inject with `EVENT_BUS_TOKEN`):
+
+```ts
+await this.eventBus.publish(new UserCreatedEvent(id))
+```
+
+## Sagas
+
+A saga reacts to events and yields commands to dispatch. Combine `@EventsHandler`
+to declare subscriptions and `@Saga` to mark the generator method:
+
+```ts
+import { EventsHandler, Saga } from '@banhmi/cqrs'
+import type { ICommand } from '@banhmi/cqrs'
+
+@EventsHandler(UserCreatedEvent)
+export class UserSagas {
+  @Saga()
+  async *onUserCreated(
+    events: AsyncIterable<UserCreatedEvent>,
+  ): AsyncGenerator<ICommand> {
+    for await (const event of events) {
+      yield new SendWelcomeEmailCommand(event.userId)
+    }
+  }
+}
+```
+
+Register `UserSagas` as a provider inside a module that imports `CqrsModule`.
+`CqrsExplorer` automatically starts the saga at bootstrap.
+
+## API Reference
+
+### `CommandBus`
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `register` | `(commandClass, handler)` | Register a handler for a command class |
+| `execute` | `<T>(command) => Promise<T>` | Dispatch a command and return its result |
+
+### `QueryBus`
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `register` | `(queryClass, handler)` | Register a handler for a query class |
+| `execute` | `<T>(query) => Promise<T>` | Execute a query and return its result |
+
+### `EventBus`
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `register` | `(eventClass, handler)` | Register an event handler |
+| `publish` | `(event) => Promise<void>` | Publish an event to all registered handlers |
+| `subscribe` | `(eventClass) => AsyncIterable` | Return an async iterable of events (used by sagas) |
+
+### Decorators
+
+| Decorator | Target | Description |
+|-----------|--------|-------------|
+| `@CommandHandler(cmd)` | class | Marks a class as the handler for `cmd` |
+| `@QueryHandler(qry)` | class | Marks a class as the handler for `qry` |
+| `@EventsHandler(...evts)` | class | Marks a class as a handler for one or more event classes |
+| `@Saga()` | method | Marks an async generator method as a saga |
+
+### Tokens
+
+| Token | Type | Description |
+|-------|------|-------------|
+| `COMMAND_BUS_TOKEN` | `Token<CommandBus>` | DI token for `CommandBus` |
+| `QUERY_BUS_TOKEN` | `Token<QueryBus>` | DI token for `QueryBus` |
+| `EVENT_BUS_TOKEN` | `Token<EventBus>` | DI token for `EventBus` |

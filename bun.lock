@@ -424,6 +424,7 @@
         "@banhmi/config": "workspace:*",
         "@banhmi/cookies": "workspace:*",
         "@banhmi/core": "workspace:*",
+        "@banhmi/cqrs": "workspace:*",
         "@banhmi/crypto": "workspace:*",
         "@banhmi/devtools": "workspace:*",
         "@banhmi/drizzle": "workspace:*",
@@ -510,6 +511,16 @@
       "version": "0.1.0",
       "dependencies": {
         "@banhmi/common": "workspace:*",
+      },
+    },
+    "packages/cqrs": {
+      "name": "@banhmi/cqrs",
+      "version": "0.1.0",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/core": "workspace:*",
+        "@banhmi/platform-bun": "workspace:*",
+        "banhmi": "workspace:*",
       },
     },
     "packages/crypto": {
@@ -938,6 +949,8 @@
     "@banhmi/cookies": ["@banhmi/cookies@workspace:packages/cookies"],
 
     "@banhmi/core": ["@banhmi/core@workspace:packages/core"],
+
+    "@banhmi/cqrs": ["@banhmi/cqrs@workspace:packages/cqrs"],
 
     "@banhmi/crypto": ["@banhmi/crypto@workspace:packages/crypto"],
 
