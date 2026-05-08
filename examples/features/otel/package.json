@@ -1,0 +1,10 @@
+{
+  "name": "banhmi-feature-otel",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "dependencies": {
+    "@banhmi/otel": "workspace:*",
+    "banhmi": "workspace:*"
+  }
+}

@@ -220,6 +220,7 @@
         { "slug": "compodoc", "title": "Compodoc" },
         { "slug": "prisma", "title": "Prisma" },
         { "slug": "sentry", "title": "Sentry" },
+        { "slug": "otel", "title": "OpenTelemetry" },
         { "slug": "serve-static", "title": "Serve static" },
         { "slug": "commander", "title": "Commander" },
         { "slug": "async-local-storage", "title": "Async local storage" },

@@ -1,0 +1,101 @@
+# OpenTelemetry
+
+`@banhmi/otel` bridges the OpenTelemetry SDK into Banhmi's DI system.
+`OtelModule.forRoot(opts)` initialises `@opentelemetry/sdk-node` at
+application bootstrap. `OtelInterceptor` wraps every request handler in
+a span carrying standard HTTP semantic-convention attributes.
+
+Requires `@opentelemetry/sdk-node` and `@opentelemetry/api` v1 as peer
+dependencies.
+
+## When to use
+
+- Distributed tracing across services using a vendor-agnostic standard.
+- Exporting traces to Jaeger, Zipkin, Grafana Tempo, or any OTLP backend.
+- Attaching HTTP attributes (`http.method`, `http.target`, `http.status_code`)
+  to every request automatically.
+
+## Setup
+
+```bash
+bun add @opentelemetry/sdk-node @opentelemetry/api @banhmi/otel
+```
+
+```ts
+import { Module } from 'banhmi'
+import { OtelModule } from '@banhmi/otel'
+
+@Module({
+  imports: [
+    OtelModule.forRoot({
+      serviceName: 'my-api',
+      exporters: ['otlp'],           // export to localhost:4318 by default
+      resource: {
+        'deployment.environment': Bun.env.NODE_ENV ?? 'development',
+      },
+    }),
+  ],
+})
+class AppModule {}
+```
+
+## Interceptor
+
+`OtelInterceptor` is instantiated with the `OTEL_TRACER` token and the
+module options. Add it to a controller or register it globally using the
+adapter's enhancer pipeline.
+
+Each span carries:
+- `http.method` — e.g. `GET`
+- `http.target` — URL pathname
+- `http.status_code` — set after the handler returns
+
+On unhandled error the span status is set to `ERROR` and the exception is
+re-thrown.
+
+```ts
+import { OtelInterceptor, OTEL_TRACER, OTEL_OPTIONS } from '@banhmi/otel'
+import type { Tracer } from '@opentelemetry/api'
+
+// Build an interceptor manually (typically injected via DI):
+const interceptor = new OtelInterceptor(tracer, { enabled: true })
+```
+
+## Exporters
+
+| Value       | Description                                           |
+|-------------|-------------------------------------------------------|
+| `'console'` | Logs spans to stdout — good for development/debugging |
+| `'otlp'`    | OTLP HTTP to `OTEL_EXPORTER_OTLP_ENDPOINT` (default `http://localhost:4318`) |
+
+## Disabling in tests
+
+Pass `enabled: false` to skip SDK initialisation:
+
+```ts
+OtelModule.forRoot({ serviceName: 'test-svc', exporters: ['console'], enabled: false })
+```
+
+## API reference
+
+### `OtelModule.forRoot(opts)`
+
+| Option         | Type                            | Default         | Description                           |
+|----------------|---------------------------------|-----------------|---------------------------------------|
+| `serviceName`  | `string`                        | —               | OTEL `service.name` attribute (required) |
+| `exporters`    | `Array<'otlp' \| 'console'>`    | `['console']`   | Which span exporters to enable        |
+| `resource`     | `Record<string, unknown>`       | `{}`            | Additional resource attributes        |
+| `enabled`      | `boolean`                       | `true`          | Set `false` to skip SDK start         |
+
+### Tokens
+
+| Token          | Type                          | Description                                      |
+|----------------|-------------------------------|--------------------------------------------------|
+| `OTEL_OPTIONS` | `OtelOptions`                 | Resolved module config                           |
+| `OTEL_TRACER`  | `Tracer` (or no-op shim)      | Tracer from the global OTel `TraceProvider`      |
+
+## See also
+
+- [Sentry](/recipes/sentry) — for error tracking + Sentry-native tracing.
+- [Logging](/techniques/logging) — for structured log output.
+- [Interceptors](/overview/interceptors) — for custom handler wrappers.
