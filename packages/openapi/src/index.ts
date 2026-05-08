@@ -1,4 +1,5 @@
 export { DocumentBuilder } from './document-builder'
+export { generateSdl } from './sdl'
 export {
   ApiBearerAuth,
   ApiBody,
