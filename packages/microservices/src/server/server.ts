@@ -1,6 +1,10 @@
 import type { ClassConstructor } from '@banhmi/common'
 import { MicroserviceExplorer } from '../explorer'
-import type { MicroserviceMessage, MicroserviceResponse, Transport } from '../types'
+import type {
+  MicroserviceMessage,
+  MicroserviceResponse,
+  Transport,
+} from '../types'
 
 /**
  * The microservice server wires together the transport layer and the handler

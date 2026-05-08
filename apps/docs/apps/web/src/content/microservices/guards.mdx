@@ -1,23 +1,51 @@
 # Guards
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Microservice guards run before the handler and can reject a message.
+When a guard returns `false` (or a rejected promise), `ForbiddenException` is thrown
+and the pipeline returns `{ error: { message: 'Forbidden', status: 403 } }`.
 
 ## When to use
 
-TBD
+- You need authentication/authorisation on inbound microservice messages.
+- You want to gate access to patterns based on metadata in the message.
 
-## Setup
+## Defining a guard
 
-TBD
+```ts
+import type { MsGuard, MsExecutionContext } from '@banhmi/microservices'
 
-## Usage
+class AuthGuard implements MsGuard {
+  canActivate(ctx: MsExecutionContext): boolean {
+    const msg = ctx.getMessage()
+    // Check for an auth token in the message data
+    const data = msg.data as { token?: string }
+    return data.token === 'secret'
+  }
+}
+```
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+## Using the enhancer pipeline
+
+```ts
+import { runMsEnhancerPipeline } from '@banhmi/microservices'
+
+const result = await runMsEnhancerPipeline(
+  ctx,
+  () => handler(msg),
+  [new AuthGuard()],  // guards
+  [],                  // interceptors
+  [],                  // filters
+)
+```
 
 ## API reference
 
-TBD
+- `MsGuard` — `canActivate(ctx: MsExecutionContext): boolean | Promise<boolean>`.
+- `MsExecutionContext` — `getMessage()`, `getClass()`, `getHandler()`.
+- `runMsEnhancerPipeline()` — runs guards → interceptors → handler → filters.
 
 ## See also
 
-TBD
+- [Exception Filters](/microservices/exception-filters)
+- [Interceptors](/microservices/interceptors)
+- [Overview](/microservices/overview)

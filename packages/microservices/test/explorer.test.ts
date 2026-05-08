@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'bun:test'
+import { Ctx } from '../src/decorators/ctx'
 import { EventPattern } from '../src/decorators/event-pattern'
 import { MessagePattern } from '../src/decorators/message-pattern'
 import { Payload } from '../src/decorators/payload'
-import { Ctx } from '../src/decorators/ctx'
 import { MicroserviceExplorer } from '../src/explorer'
 import type { MicroserviceMessage } from '../src/types'
 
@@ -68,7 +68,10 @@ describe('MicroserviceExplorer', () => {
     const instance = new Handler()
     const [reg] = explorer.explore([[instance, Handler]])
 
-    const result = await reg?.invoke({ pattern: 'user.created', data: { id: '1' } })
+    const result = await reg?.invoke({
+      pattern: 'user.created',
+      data: { id: '1' },
+    })
     expect(result).toBeUndefined()
     expect(calls).toEqual([{ id: '1' }])
   })
@@ -105,7 +108,11 @@ describe('MicroserviceExplorer', () => {
     const instance = new Handler()
     const [reg] = explorer.explore([[instance, Handler]])
 
-    const msg: MicroserviceMessage = { pattern: 'echo', data: 'hello', correlationId: 'abc' }
+    const msg: MicroserviceMessage = {
+      pattern: 'echo',
+      data: 'hello',
+      correlationId: 'abc',
+    }
     await reg?.invoke(msg)
     expect(received[0]).toMatchObject({
       payload: 'hello',

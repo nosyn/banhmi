@@ -23,11 +23,23 @@
     "@grpc/grpc-js": ">=1"
   },
   "peerDependenciesMeta": {
-    "ioredis": { "optional": true },
-    "nats": { "optional": true },
-    "mqtt": { "optional": true },
-    "amqplib": { "optional": true },
-    "kafkajs": { "optional": true },
-    "@grpc/grpc-js": { "optional": true }
+    "ioredis": {
+      "optional": true
+    },
+    "nats": {
+      "optional": true
+    },
+    "mqtt": {
+      "optional": true
+    },
+    "amqplib": {
+      "optional": true
+    },
+    "kafkajs": {
+      "optional": true
+    },
+    "@grpc/grpc-js": {
+      "optional": true
+    }
   }
 }

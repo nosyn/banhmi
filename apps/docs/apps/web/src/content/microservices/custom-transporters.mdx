@@ -1,23 +1,88 @@
 # Custom Transporters
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Implement any transport by providing a `CustomTransportStrategy` to
+`customTransport()`, or extend the `Transport` interface directly.
 
 ## When to use
 
-TBD
+- You need a transport not built into `@banhmi/microservices`.
+- You want to wrap a Bun-native protocol (WebSockets, Unix sockets, etc.).
+- You want a deterministic in-process transport for testing.
 
-## Setup
+## Using InMemoryTransport
 
-TBD
+The built-in `InMemoryTransport` acts as both server and client in the same
+process — ideal for unit and integration tests:
 
-## Usage
+```ts
+import { InMemoryTransport, MicroserviceServer, ClientProxy } from '@banhmi/microservices'
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+const transport = new InMemoryTransport()
+const server = new MicroserviceServer(transport, [[new MyHandler(), MyHandler]])
+await server.start()
+
+const proxy = new ClientProxy(transport)
+const result = await proxy.send('ping', 'hello')
+await server.stop()
+```
+
+## Implementing a custom transport
+
+```ts
+import { customTransport } from '@banhmi/microservices'
+import type { CustomTransportStrategy, MicroserviceMessage, MicroserviceResponse } from '@banhmi/microservices'
+
+const myStrategy: CustomTransportStrategy = {
+  async listen(handler) {
+    // Start receiving messages; call handler() for each inbound message
+    myBroker.on('message', async (raw) => {
+      const msg: MicroserviceMessage = JSON.parse(raw)
+      const response = await handler(msg)
+      if (response && msg.correlationId) {
+        myBroker.reply(msg.correlationId, JSON.stringify(response))
+      }
+    })
+  },
+  async close() {
+    await myBroker.disconnect()
+  },
+  async send<T>(pattern: string, data: unknown): Promise<MicroserviceResponse<T>> {
+    return myBroker.request(pattern, data)
+  },
+  async emit(pattern: string, data: unknown) {
+    await myBroker.publish(pattern, data)
+  },
+}
+
+const transport = customTransport(myStrategy)
+```
+
+## Implementing the Transport interface directly
+
+```ts
+import type { Transport, MicroserviceMessage, MicroserviceResponse } from '@banhmi/microservices'
+
+class MyTransport implements Transport {
+  async listen(handler: (msg: MicroserviceMessage) => Promise<MicroserviceResponse | undefined>) {
+    // ...
+  }
+  async close() { /* ... */ }
+  async send<T>(pattern: string, data: unknown): Promise<MicroserviceResponse<T>> {
+    // ...
+    return { data: null as T }
+  }
+  async emit(pattern: string, data: unknown) { /* ... */ }
+}
+```
 
 ## API reference
 
-TBD
+- `customTransport(strategy)` — wraps a `CustomTransportStrategy` into `Transport`.
+- `InMemoryTransport` — in-process transport for testing.
+- `Transport` — the core interface.
+- `CustomTransportStrategy` — the strategy interface.
 
 ## See also
 
-TBD
+- [Overview](/microservices/overview)
+- [Exception Filters](/microservices/exception-filters)

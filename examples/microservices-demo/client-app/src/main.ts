@@ -11,7 +11,7 @@
 import '../../../../packages/common/src/polyfill-symbol-metadata'
 import { ClientProxy, tcpTransport } from '@banhmi/microservices'
 
-const port = Number(Bun.env['MS_PORT'] ?? 3001)
+const port = Number(Bun.env.MS_PORT ?? 3001)
 const transport = tcpTransport({ port })
 const client = new ClientProxy(transport)
 

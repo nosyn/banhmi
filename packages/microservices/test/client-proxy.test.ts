@@ -1,15 +1,17 @@
 import { describe, expect, test } from 'bun:test'
 import { ClientProxy } from '../src/client/client-proxy'
-import { InMemoryTransport } from '../src/transports/custom'
-import { MessagePattern } from '../src/decorators/message-pattern'
 import { EventPattern } from '../src/decorators/event-pattern'
+import { MessagePattern } from '../src/decorators/message-pattern'
 import { MicroserviceServer } from '../src/server/server'
+import { InMemoryTransport } from '../src/transports/custom'
 
 describe('ClientProxy', () => {
   test('send returns resolved data', async () => {
     const transport = new InMemoryTransport()
     const proxy = new ClientProxy(transport)
-    await transport.listen(async (msg) => ({ data: `pong:${String(msg.data)}` }))
+    await transport.listen(async (msg) => ({
+      data: `pong:${String(msg.data)}`,
+    }))
 
     const result = await proxy.send<string>('ping', 'hello')
     expect(result).toBe('pong:hello')
@@ -72,7 +74,10 @@ describe('ClientProxy', () => {
     ])
     await server.start()
 
-    const cat = await proxy.send<{ id: string; name: string }>('cats.find', '99')
+    const cat = await proxy.send<{ id: string; name: string }>(
+      'cats.find',
+      '99',
+    )
     expect(cat).toEqual({ id: '99', name: 'Tom' })
 
     await proxy.close()

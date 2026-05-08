@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'bun:test'
-import { MessagePattern } from '../src/decorators/message-pattern'
-import { EventPattern } from '../src/decorators/event-pattern'
-import { MicroserviceServer } from '../src/server/server'
 import { ClientProxy } from '../src/client/client-proxy'
+import { EventPattern } from '../src/decorators/event-pattern'
+import { MessagePattern } from '../src/decorators/message-pattern'
+import { MicroserviceServer } from '../src/server/server'
 import { tcpTransport } from '../src/transports/tcp'
 
 /** Resolve a free TCP port by binding to :0 and reading the assigned port. */

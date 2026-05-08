@@ -1,23 +1,71 @@
-# Redis
+# Redis Transport
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+The Redis transport uses `ioredis` pub/sub to route messages between services.
 
 ## When to use
 
-TBD
+- You already run Redis in your infrastructure.
+- You need fan-out (multiple subscribers to the same pattern).
+- You prefer a broker-based approach over direct TCP connections.
 
 ## Setup
 
-TBD
+Install `ioredis`:
+
+```bash
+bun add ioredis
+```
+
+```ts
+import { MicroserviceModule, redisTransport } from '@banhmi/microservices'
+import { Module } from '@banhmi/common'
+
+@Module({
+  imports: [
+    MicroserviceModule.forRoot({
+      transport: redisTransport({ url: 'redis://localhost:6379' }),
+    }),
+  ],
+  providers: [CatsHandler],
+})
+class AppModule {}
+```
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `url` | `string` | `'redis://localhost:6379'` | Redis connection URL |
+| `prefix` | `string` | `'banhmi_ms'` | Channel prefix for all patterns |
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+// Server side
+@Injectable()
+class CatsHandler {
+  @MessagePattern('cats.findOne')
+  findOne(id: string) { return { id, name: 'Tom' } }
+}
+
+// Client side
+const client = new ClientProxy(redisTransport({ url: 'redis://localhost:6379' }))
+const cat = await client.send<Cat>('cats.findOne', '1')
+await client.close()
+```
+
+## Channel naming
+
+- Inbound pattern `cats.findOne` → channel `banhmi_ms:cats.findOne`
+- Reply channel `banhmi_ms:reply:{correlationId}`
 
 ## API reference
 
-TBD
+- `redisTransport(opts?)` — creates a `RedisTransport`.
+- `RedisTransportOptions.url` — Redis URL.
+- `RedisTransportOptions.prefix` — channel prefix.
 
 ## See also
 
-TBD
+- [Overview](/microservices/overview)
+- [Custom Transporters](/microservices/custom-transporters)

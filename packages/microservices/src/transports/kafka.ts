@@ -1,4 +1,8 @@
-import type { MicroserviceMessage, MicroserviceResponse, Transport } from '../types'
+import type {
+  MicroserviceMessage,
+  MicroserviceResponse,
+  Transport,
+} from '../types'
 
 /** Options accepted by {@link kafkaTransport}. */
 export interface KafkaTransportOptions {
@@ -41,9 +45,8 @@ export interface KafkaTransportOptions {
  * const transport = kafkaTransport({ brokers: ['localhost:9092'] })
  */
 export class KafkaTransport implements Transport {
-  constructor(_opts: KafkaTransportOptions = {}) {
-    // Intentionally empty — this is a stub.
-  }
+  // biome-ignore lint/complexity/noUselessConstructor: intentional stub constructor that accepts options
+  constructor(_opts: KafkaTransportOptions = {}) {}
 
   async listen(
     _handler: (

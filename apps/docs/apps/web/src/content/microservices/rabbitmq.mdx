@@ -1,23 +1,64 @@
-# RabbitMQ
+# RabbitMQ Transport
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+**Tier B** — ships with `@banhmi/microservices`. Requires `amqplib` as a peer dependency.
 
 ## When to use
 
-TBD
+- You need reliable message delivery with acknowledgements.
+- You already operate a RabbitMQ broker.
+- You want persistent queues and exchange routing.
 
 ## Setup
 
-TBD
+```bash
+bun add amqplib
+```
+
+```ts
+import { MicroserviceModule, rabbitMqTransport } from '@banhmi/microservices'
+import { Module } from '@banhmi/common'
+
+@Module({
+  imports: [
+    MicroserviceModule.forRoot({
+      transport: rabbitMqTransport({ url: 'amqp://localhost', queue: 'cats' }),
+    }),
+  ],
+  providers: [CatsHandler],
+})
+class AppModule {}
+```
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `url` | `string` | `'amqp://localhost'` | AMQP broker URL |
+| `queue` | `string` | `'banhmi_ms'` | Queue name to consume from / publish to |
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+const client = new ClientProxy(
+  rabbitMqTransport({ url: 'amqp://localhost', queue: 'cats' })
+)
+const cat = await client.send<Cat>('cats.findOne', '1')
+await client.close()
+```
+
+## Reply queues
+
+`send()` creates a per-request exclusive auto-delete reply queue.
+The queue name is passed as `replyTo` in the AMQP message properties,
+correlated via `correlationId`.
 
 ## API reference
 
-TBD
+- `rabbitMqTransport(opts?)` — creates a `RabbitMqTransport`.
+- `RabbitMqTransportOptions.url` — AMQP broker URL.
+- `RabbitMqTransportOptions.queue` — target queue name.
 
 ## See also
 
-TBD
+- [Overview](/microservices/overview)
+- [Custom Transporters](/microservices/custom-transporters)

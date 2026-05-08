@@ -171,4 +171,4 @@ export class DefaultMsExceptionFilter implements MsExceptionFilter {
 }
 
 // Re-export standard Guard/Interceptor/ExceptionFilter types for convenience
-export type { Guard, Interceptor, ExceptionFilter }
+export type { ExceptionFilter, Guard, Interceptor }

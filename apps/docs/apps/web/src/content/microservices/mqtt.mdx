@@ -1,23 +1,60 @@
-# MQTT
+# MQTT Transport
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+**Tier B** — ships with `@banhmi/microservices`. Requires `mqtt` as a peer dependency.
 
 ## When to use
 
-TBD
+- You need to integrate with IoT devices or MQTT brokers (Mosquitto, HiveMQ, AWS IoT).
+- You want pub/sub semantics with QoS levels.
 
 ## Setup
 
-TBD
+```bash
+bun add mqtt
+```
+
+```ts
+import { MicroserviceModule, mqttTransport } from '@banhmi/microservices'
+import { Module } from '@banhmi/common'
+
+@Module({
+  imports: [
+    MicroserviceModule.forRoot({
+      transport: mqttTransport({ url: 'mqtt://localhost:1883' }),
+    }),
+  ],
+  providers: [DeviceHandler],
+})
+class AppModule {}
+```
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `url` | `string` | `'mqtt://localhost:1883'` | MQTT broker URL |
+| `prefix` | `string` | `'banhmi_ms'` | Topic prefix |
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+const client = new ClientProxy(mqttTransport({ url: 'mqtt://localhost:1883' }))
+const result = await client.send('device.status', { id: '1' })
+await client.close()
+```
+
+## Topic naming
+
+- Pattern `device.status` → topic `banhmi_ms/device.status`
+- Reply topic `banhmi_ms/reply/{correlationId}`
 
 ## API reference
 
-TBD
+- `mqttTransport(opts?)` — creates an `MqttTransport`.
+- `MqttTransportOptions.url` — MQTT broker URL.
+- `MqttTransportOptions.prefix` — topic prefix.
 
 ## See also
 
-TBD
+- [Overview](/microservices/overview)
+- [Custom Transporters](/microservices/custom-transporters)

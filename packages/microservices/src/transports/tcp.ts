@@ -65,7 +65,6 @@ export class TcpTransport implements Transport {
   private readonly host: string
   private readonly port: number
   private server: TCPSocketListener | null = null
-  // biome-ignore lint/complexity/useLiteralKeys: required for Map API
   private readonly pendingReplies = new Map<string, PendingReply>()
 
   constructor(opts: TcpTransportOptions) {
@@ -74,7 +73,6 @@ export class TcpTransport implements Transport {
   }
 
   async listen(handler: InboundHandler): Promise<void> {
-    const transport = this
     this.server = Bun.listen<{ buf: Buffer }>({
       hostname: this.host,
       port: this.port,
@@ -116,7 +114,6 @@ export class TcpTransport implements Transport {
         close() {},
       },
     })
-    void transport // suppress lint: transport captured in closure above
   }
 
   async close(): Promise<void> {

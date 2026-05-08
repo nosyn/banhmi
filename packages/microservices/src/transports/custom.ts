@@ -1,4 +1,8 @@
-import type { MicroserviceMessage, MicroserviceResponse, Transport } from '../types'
+import type {
+  MicroserviceMessage,
+  MicroserviceResponse,
+  Transport,
+} from '../types'
 
 /** The strategy object provided to {@link customTransport}. */
 export interface CustomTransportStrategy {

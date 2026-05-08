@@ -2,10 +2,10 @@ import { describe, expect, test } from 'bun:test'
 import { ForbiddenException } from '@banhmi/common'
 import {
   DefaultMsExceptionFilter,
-  runMsEnhancerPipeline,
+  type MsExceptionFilter,
   type MsExecutionContext,
   type MsGuard,
-  type MsExceptionFilter,
+  runMsEnhancerPipeline,
 } from '../src/enhancers/integration'
 import type { MicroserviceMessage } from '../src/types'
 

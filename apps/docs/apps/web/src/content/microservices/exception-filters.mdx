@@ -1,23 +1,54 @@
 # Exception Filters
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Microservice exception filters catch errors thrown by `@MessagePattern` handlers
+and return a serialised `MicroserviceResponse` with an `error` field.
 
 ## When to use
 
-TBD
+- You want structured error responses instead of unhandled transport errors.
+- You need to catch domain-specific exceptions and transform them.
 
-## Setup
+## Default behaviour
 
-TBD
+If no filter is registered, `DefaultMsExceptionFilter` is used automatically.
+It serialises the thrown error as `{ error: { message, status } }` where:
+- `status` is taken from `HttpException.statusCode` or `err.status`, defaulting to `500`.
 
-## Usage
+## Defining a custom filter
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import type { MsExceptionFilter, MsExecutionContext, MicroserviceResponse } from '@banhmi/microservices'
+
+class DomainErrorFilter implements MsExceptionFilter<DomainError> {
+  catch(err: DomainError, _ctx: MsExecutionContext): MicroserviceResponse {
+    return { error: { message: err.message, status: 422, code: err.code } }
+  }
+}
+```
+
+## Using the enhancer pipeline
+
+```ts
+import { runMsEnhancerPipeline } from '@banhmi/microservices'
+
+const result = await runMsEnhancerPipeline(
+  ctx,
+  () => handler(msg),   // the bound handler
+  [],                    // guards
+  [],                    // interceptors
+  [{ filterInstance: new DomainErrorFilter(), type: DomainError }],
+)
+```
 
 ## API reference
 
-TBD
+- `runMsEnhancerPipeline(ctx, handler, guards, interceptors, filters)` — runs the pipeline.
+- `MsExceptionFilter<T>` — `catch(exception: T, ctx: MsExecutionContext): MicroserviceResponse`.
+- `DefaultMsExceptionFilter` — built-in filter that serialises all errors.
+- `MsExecutionContext` — `getMessage()`, `getClass()`, `getHandler()`.
 
 ## See also
 
-TBD
+- [Guards](/microservices/guards)
+- [Interceptors](/microservices/interceptors)
+- [Overview](/microservices/overview)

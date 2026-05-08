@@ -1,23 +1,61 @@
-# NATS
+# NATS Transport
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+**Tier B** — ships with `@banhmi/microservices`. Requires `nats` as a peer dependency.
 
 ## When to use
 
-TBD
+- You need high-throughput, low-latency messaging with a cloud-native broker.
+- You want subject-based routing and request/reply via NATS core.
 
 ## Setup
 
-TBD
+```bash
+bun add nats
+```
+
+```ts
+import { MicroserviceModule, natsTransport } from '@banhmi/microservices'
+import { Module } from '@banhmi/common'
+
+@Module({
+  imports: [
+    MicroserviceModule.forRoot({
+      transport: natsTransport({ servers: 'nats://localhost:4222' }),
+    }),
+  ],
+  providers: [CatsHandler],
+})
+class AppModule {}
+```
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `servers` | `string \| string[]` | `'nats://localhost:4222'` | NATS server URL(s) |
+| `prefix` | `string` | `'banhmi_ms'` | Subject prefix |
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+const client = new ClientProxy(natsTransport({ servers: 'nats://localhost:4222' }))
+const cat = await client.send<Cat>('cats.findOne', '1')
+await client.close()
+```
+
+## Subject naming
+
+- Pattern `cats.findOne` → subject `banhmi_ms.cats.findOne`
+- Server subscribes via `banhmi_ms.>` (wildcard for all patterns)
+- Replies use NATS native reply subjects (`nc.request()`)
 
 ## API reference
 
-TBD
+- `natsTransport(opts?)` — creates a `NatsTransport`.
+- `NatsTransportOptions.servers` — NATS server address(es).
+- `NatsTransportOptions.prefix` — subject prefix.
 
 ## See also
 
-TBD
+- [Overview](/microservices/overview)
+- [Custom Transporters](/microservices/custom-transporters)

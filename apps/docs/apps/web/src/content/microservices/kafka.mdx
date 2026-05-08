@@ -1,23 +1,48 @@
-# Kafka
+# Kafka Transport
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+**Tier C — stub only.** A full implementation is deferred to wave 9.
 
-## When to use
+## Status
 
-TBD
+`kafkaTransport()` exports a `KafkaTransport` class that implements the
+`Transport` interface but **throws at runtime** with a clear error message.
 
-## Setup
+```
+[KafkaTransport] Not implemented (Tier C stub).
+kafkajs has Bun compatibility issues (missing Node.js native modules for
+TLS/admin). Use customTransport() instead.
+TODO(wave-9): implement when kafkajs ships a Bun-native build.
+```
 
-TBD
+## Why deferred
 
-## Usage
+`kafkajs` depends on Node.js `tls`, `net`, and admin-API modules that are not
+fully polyfilled in Bun 1.3.x. The package can be installed but throws at
+runtime when establishing a broker connection.
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+## Workaround
 
-## API reference
+Use `customTransport()` with a Kafka client that is Bun-compatible:
 
-TBD
+```ts
+import { customTransport } from '@banhmi/microservices'
+
+const transport = customTransport({
+  async listen(handler) { /* use your Kafka client here */ },
+  async close() { /* cleanup */ },
+  async send(pattern, data) { return { data: null } },
+  async emit(pattern, data) {},
+})
+```
+
+## API reference (stub)
+
+- `kafkaTransport(opts?)` — creates a `KafkaTransport` stub.
+- `KafkaTransportOptions.brokers` — Kafka broker addresses.
+- `KafkaTransportOptions.groupId` — consumer group id.
+- `KafkaTransportOptions.prefix` — topic prefix.
 
 ## See also
 
-TBD
+- [Custom Transporters](/microservices/custom-transporters)
+- [Overview](/microservices/overview)

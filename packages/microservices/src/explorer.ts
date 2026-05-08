@@ -54,12 +54,14 @@ export class MicroserviceExplorer {
       const classMeta = cls[Symbol.metadata] as Record<symbol, unknown> | null
       if (!classMeta) continue
 
-      const msgMap = (classMeta[MESSAGE_PATTERN_METADATA] as
-        | Record<string, string>
-        | undefined) ?? {}
-      const evtMap = (classMeta[EVENT_PATTERN_METADATA] as
-        | Record<string, string>
-        | undefined) ?? {}
+      const msgMap =
+        (classMeta[MESSAGE_PATTERN_METADATA] as
+          | Record<string, string>
+          | undefined) ?? {}
+      const evtMap =
+        (classMeta[EVENT_PATTERN_METADATA] as
+          | Record<string, string>
+          | undefined) ?? {}
 
       for (const [methodName, pattern] of Object.entries(msgMap)) {
         const fn = (instance as Record<string, unknown>)[methodName]
@@ -109,13 +111,18 @@ export class MicroserviceExplorer {
           return { data: result }
         } catch (err) {
           if (isEvent) return undefined
-          const message =
-            err instanceof Error ? err.message : String(err)
+          const message = err instanceof Error ? err.message : String(err)
           let status = 500
           if (err !== null && typeof err === 'object') {
-            if ('statusCode' in err && typeof (err as { statusCode: unknown }).statusCode === 'number') {
+            if (
+              'statusCode' in err &&
+              typeof (err as { statusCode: unknown }).statusCode === 'number'
+            ) {
               status = (err as { statusCode: number }).statusCode
-            } else if ('status' in err && typeof (err as { status: unknown }).status === 'number') {
+            } else if (
+              'status' in err &&
+              typeof (err as { status: unknown }).status === 'number'
+            ) {
               status = (err as { status: number }).status
             }
           }

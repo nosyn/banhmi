@@ -1,23 +1,56 @@
 # Interceptors
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Microservice interceptors wrap the handler call, enabling before/after logic
+such as logging, caching, or response transformation.
 
 ## When to use
 
-TBD
+- You want to add logging around every handler invocation.
+- You need to cache responses for certain patterns.
+- You want to measure latency on inbound microservice calls.
 
-## Setup
+## Defining an interceptor
 
-TBD
+The interceptor uses the standard `Interceptor` interface from `@banhmi/common`.
+The `MsExecutionContext` is passed as the first argument; interceptors can call
+`ctx.getMessage()` to access the inbound message.
 
-## Usage
+```ts
+import type { Interceptor } from '@banhmi/common'
+import type { CallHandler } from '@banhmi/common'
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+class LogInterceptor implements Interceptor {
+  async intercept(ctx: unknown, next: CallHandler): Promise<unknown> {
+    const start = Date.now()
+    const result = await next.handle()
+    console.log(`[ms] handled in ${Date.now() - start}ms`)
+    return result
+  }
+}
+```
+
+## Using the enhancer pipeline
+
+```ts
+import { runMsEnhancerPipeline } from '@banhmi/microservices'
+
+const result = await runMsEnhancerPipeline(
+  ctx,
+  () => handler(msg),
+  [],                        // guards
+  [new LogInterceptor()],    // interceptors
+  [],                        // filters
+)
+```
 
 ## API reference
 
-TBD
+- `Interceptor` (from `@banhmi/common`) — `intercept(ctx, next): Promise<unknown>`.
+- `CallHandler` — `handle(): Promise<unknown>`.
+- `runMsEnhancerPipeline()` — runs the full pipeline.
 
 ## See also
 
-TBD
+- [Exception Filters](/microservices/exception-filters)
+- [Guards](/microservices/guards)
+- [Overview](/microservices/overview)

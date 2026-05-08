@@ -1,23 +1,111 @@
-# Overview
+# Microservices Overview
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+`@banhmi/microservices` adds distributed-system primitives to Banhmi: transports,
+message/event patterns, a client proxy, and full enhancer support (filters,
+guards, interceptors, pipes).
 
 ## When to use
 
-TBD
+- You need to split a monolith into separate services that communicate over TCP,
+  Redis pub/sub, NATS, MQTT, or RabbitMQ.
+- You want fire-and-forget event publishing (`@EventPattern`) alongside
+  request/reply messaging (`@MessagePattern`).
+- You need guards, interceptors, or exception filters to compose on inbound
+  microservice messages.
+
+## Transports (Tier matrix)
+
+| Transport | Tier | Status |
+|-----------|------|--------|
+| TCP (`tcpTransport`) | A | Ships — uses `Bun.listen`/`Bun.connect` |
+| Redis (`redisTransport`) | A | Ships — uses `ioredis` pub/sub |
+| Custom (`customTransport`) | A | Ships — wraps any strategy |
+| In-Memory (`InMemoryTransport`) | A | Ships — deterministic testing |
+| NATS (`natsTransport`) | B | Ships — requires `nats` peer dep |
+| MQTT (`mqttTransport`) | B | Ships — requires `mqtt` peer dep |
+| RabbitMQ (`rabbitMqTransport`) | B | Ships — requires `amqplib` peer dep |
+| Kafka (`kafkaTransport`) | C | Stub — `kafkajs` has Bun compat issues |
+| gRPC (`grpcTransport`) | C | Stub — `@grpc/grpc-js` needs native addons |
 
 ## Setup
 
-TBD
+```ts
+import { MicroserviceModule, tcpTransport } from '@banhmi/microservices'
+import { Module } from '@banhmi/common'
 
-## Usage
+@Module({
+  imports: [MicroserviceModule.forRoot({ transport: tcpTransport({ port: 3001 }) })],
+  providers: [CatsHandler],
+})
+class AppModule {}
+```
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+## Defining handlers
+
+```ts
+import { Injectable } from '@banhmi/common'
+import { MessagePattern, EventPattern } from '@banhmi/microservices'
+
+@Injectable()
+class CatsHandler {
+  // Request/reply — caller awaits the return value
+  @MessagePattern('cats.findOne')
+  findOne(id: string) {
+    return { id, name: 'Tom' }
+  }
+
+  // Fire-and-forget — no response sent back
+  @EventPattern('user.created')
+  async onUserCreated(data: UserCreatedPayload) {
+    await saveUser(data)
+  }
+}
+```
+
+Handler calling convention: the payload is always the **first argument**;
+the full `MicroserviceMessage` context is always the **second argument**.
+`@Payload()` and `@Ctx()` are documentation-only decorators.
+
+## Starting the server
+
+```ts
+import { MicroserviceServer, tcpTransport } from '@banhmi/microservices'
+
+const transport = tcpTransport({ port: 3001 })
+const server = new MicroserviceServer(transport, [[new CatsHandler(), CatsHandler]])
+await server.start()
+```
+
+## Usage — ClientProxy
+
+```ts
+import { ClientProxy, tcpTransport } from '@banhmi/microservices'
+
+const client = new ClientProxy(tcpTransport({ port: 3001 }))
+
+// Request / reply
+const cat = await client.send<Cat>('cats.findOne', '1')
+
+// Fire-and-forget
+await client.emit('user.created', { id: '1', email: 'a@b.com' })
+
+await client.close()
+```
+
+{/* <CodeFromExample slug="microservices-demo" /> */}
 
 ## API reference
 
-TBD
+- `MicroserviceModule.forRoot(options)` — registers the transport token.
+- `ClientsModule.register(clients)` — registers named `ClientProxy` instances.
+- `MicroserviceServer` — wires the transport to handler registrations.
+- `MicroserviceExplorer` — scans instances for `@MessagePattern`/`@EventPattern`.
+- `ClientProxy` — `send(pattern, data, timeoutMs?)` / `emit(pattern, data)`.
+- `InMemoryTransport` — in-process transport for deterministic tests.
 
 ## See also
 
-TBD
+- [TCP Transport](/microservices/tcp) — built-in TCP using `Bun.listen`.
+- [Redis Transport](/microservices/redis) — pub/sub via `ioredis`.
+- [Custom Transporters](/microservices/custom-transporters) — plug in your own.
+- [Exception Filters](/microservices/exception-filters) — `MsExceptionFilter`.

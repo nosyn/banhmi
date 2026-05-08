@@ -13,7 +13,7 @@ import '../../../../packages/common/src/polyfill-symbol-metadata'
 import { MicroserviceServer, tcpTransport } from '@banhmi/microservices'
 import { CatsHandler } from './cats.handler'
 
-const port = Number(Bun.env['MS_PORT'] ?? 3001)
+const port = Number(Bun.env.MS_PORT ?? 3001)
 
 const transport = tcpTransport({ port })
 const handler = new CatsHandler()

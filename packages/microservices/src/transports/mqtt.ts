@@ -1,4 +1,8 @@
-import type { MicroserviceMessage, MicroserviceResponse, Transport } from '../types'
+import type {
+  MicroserviceMessage,
+  MicroserviceResponse,
+  Transport,
+} from '../types'
 
 /** Options accepted by {@link mqttTransport}. */
 export interface MqttTransportOptions {
@@ -128,7 +132,9 @@ export class MqttTransport implements Transport {
       return await new Promise<MicroserviceResponse<T>>((resolve, reject) => {
         const timeoutId = setTimeout(() => {
           reject(
-            new Error(`[MqttTransport] send timed out for pattern "${pattern}"`),
+            new Error(
+              `[MqttTransport] send timed out for pattern "${pattern}"`,
+            ),
           )
         }, 30_000)
 
@@ -136,7 +142,9 @@ export class MqttTransport implements Transport {
           if (topic !== replyTopic) return
           clearTimeout(timeoutId)
           try {
-            resolve(JSON.parse(payload.toString('utf8')) as MicroserviceResponse<T>)
+            resolve(
+              JSON.parse(payload.toString('utf8')) as MicroserviceResponse<T>,
+            )
           } catch {
             reject(new Error('[MqttTransport] Failed to parse reply'))
           }

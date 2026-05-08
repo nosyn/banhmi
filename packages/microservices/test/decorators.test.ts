@@ -1,12 +1,9 @@
 import { describe, expect, test } from 'bun:test'
+import { Ctx } from '../src/decorators/ctx'
 import { EventPattern } from '../src/decorators/event-pattern'
 import { MessagePattern } from '../src/decorators/message-pattern'
 import { Payload } from '../src/decorators/payload'
-import { Ctx } from '../src/decorators/ctx'
-import {
-  EVENT_PATTERN_METADATA,
-  MESSAGE_PATTERN_METADATA,
-} from '../src/tokens'
+import { EVENT_PATTERN_METADATA, MESSAGE_PATTERN_METADATA } from '../src/tokens'
 
 describe('@MessagePattern', () => {
   test('stores pattern in Symbol.metadata', () => {
@@ -19,7 +16,7 @@ describe('@MessagePattern', () => {
 
     const meta = Handler[Symbol.metadata] as Record<symbol, unknown>
     const map = meta[MESSAGE_PATTERN_METADATA] as Record<string, string>
-    expect(map['findOne']).toBe('cats.findOne')
+    expect(map.findOne).toBe('cats.findOne')
   })
 
   test('multiple patterns on different methods', () => {
@@ -37,8 +34,8 @@ describe('@MessagePattern', () => {
 
     const meta = Handler[Symbol.metadata] as Record<symbol, unknown>
     const map = meta[MESSAGE_PATTERN_METADATA] as Record<string, string>
-    expect(map['findAll']).toBe('cats.findAll')
-    expect(map['create']).toBe('cats.create')
+    expect(map.findAll).toBe('cats.findAll')
+    expect(map.create).toBe('cats.create')
   })
 })
 
@@ -51,7 +48,7 @@ describe('@EventPattern', () => {
 
     const meta = Handler[Symbol.metadata] as Record<symbol, unknown>
     const map = meta[EVENT_PATTERN_METADATA] as Record<string, string>
-    expect(map['onUserCreated']).toBe('user.created')
+    expect(map.onUserCreated).toBe('user.created')
   })
 
   test('does not pollute MessagePattern metadata', () => {
@@ -63,7 +60,7 @@ describe('@EventPattern', () => {
     const meta = Handler[Symbol.metadata] as Record<symbol, unknown>
     expect(meta[MESSAGE_PATTERN_METADATA]).toBeUndefined()
     expect(
-      (meta[EVENT_PATTERN_METADATA] as Record<string, string>)['onDeleted'],
+      (meta[EVENT_PATTERN_METADATA] as Record<string, string>).onDeleted,
     ).toBe('user.deleted')
   })
 })

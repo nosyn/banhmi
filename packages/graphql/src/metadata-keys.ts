@@ -1,3 +1,8 @@
+// Ensure Symbol.metadata polyfill is loaded for TC39 Stage 3 decorators.
+// This mirrors how @banhmi/common/src/index.ts loads the polyfill for all
+// packages that import @banhmi/common.
+import '@banhmi/common'
+
 /**
  * Symbol-keyed metadata constants for GraphQL decorators.
  * All keys are private to the `@banhmi/graphql` package.

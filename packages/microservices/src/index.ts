@@ -21,98 +21,89 @@
  * @module
  */
 
-// Module
-export { MicroserviceModule } from './microservice.module'
-
 // Client
 export { ClientProxy, ClientsModule } from './client/client-proxy'
-
+export { Client } from './decorators/client'
+export { Ctx } from './decorators/ctx'
+export { EventPattern } from './decorators/event-pattern'
 // Decorators
 export { MessagePattern } from './decorators/message-pattern'
-export { EventPattern } from './decorators/event-pattern'
 export { Payload } from './decorators/payload'
-export { Ctx } from './decorators/ctx'
-export { Client } from './decorators/client'
-
-// Transports — Tier A
+// Enhancers
 export {
-  TcpTransport,
-  tcpTransport,
-  type TcpTransportOptions,
-} from './transports/tcp'
+  DefaultMsExceptionFilter,
+  type MsExceptionFilter,
+  type MsExecutionContext,
+  type MsGuard,
+  runMsEnhancerPipeline,
+} from './enhancers/integration'
+// Explorer
 export {
-  RedisTransport,
-  redisTransport,
-  type RedisTransportOptions,
-} from './transports/redis'
+  type HandlerRegistration,
+  MicroserviceExplorer,
+} from './explorer'
+// Module
+export { MicroserviceModule } from './microservice.module'
+// Server
+export { MicroserviceServer } from './server/server'
+// Tokens
 export {
+  CTX_METADATA,
+  EVENT_PATTERN_METADATA,
+  MESSAGE_PATTERN_METADATA,
+  MS_TRANSPORT_TOKEN,
+  PAYLOAD_METADATA,
+} from './tokens'
+export {
+  type CustomTransportStrategy,
   customTransport,
   InMemoryTransport,
-  type CustomTransportStrategy,
 } from './transports/custom'
-
-// Transports — Tier B
 export {
-  NatsTransport,
-  natsTransport,
-  type NatsTransportOptions,
-} from './transports/nats'
-export {
-  MqttTransport,
-  mqttTransport,
-  type MqttTransportOptions,
-} from './transports/mqtt'
-export {
-  RabbitMqTransport,
-  rabbitMqTransport,
-  type RabbitMqTransportOptions,
-} from './transports/rabbitmq'
+  GrpcTransport,
+  type GrpcTransportOptions,
+  grpcTransport,
+} from './transports/grpc'
 
 // Transports — Tier C (stubs)
 export {
   KafkaTransport,
-  kafkaTransport,
   type KafkaTransportOptions,
+  kafkaTransport,
 } from './transports/kafka'
 export {
-  GrpcTransport,
-  grpcTransport,
-  type GrpcTransportOptions,
-} from './transports/grpc'
-
-// Server
-export { MicroserviceServer } from './server/server'
-
-// Explorer
+  MqttTransport,
+  type MqttTransportOptions,
+  mqttTransport,
+} from './transports/mqtt'
+// Transports — Tier B
 export {
-  MicroserviceExplorer,
-  type HandlerRegistration,
-} from './explorer'
-
-// Enhancers
+  NatsTransport,
+  type NatsTransportOptions,
+  natsTransport,
+} from './transports/nats'
 export {
-  runMsEnhancerPipeline,
-  DefaultMsExceptionFilter,
-  type MsExecutionContext,
-  type MsGuard,
-  type MsExceptionFilter,
-} from './enhancers/integration'
-
+  RabbitMqTransport,
+  type RabbitMqTransportOptions,
+  rabbitMqTransport,
+} from './transports/rabbitmq'
+export {
+  RedisTransport,
+  type RedisTransportOptions,
+  redisTransport,
+} from './transports/redis'
+// Transports — Tier A
+export {
+  TcpTransport,
+  type TcpTransportOptions,
+  tcpTransport,
+} from './transports/tcp'
 // Types
 export type {
-  Transport,
-  MicroserviceOptions,
   ClientOptions,
-  MicroserviceMessage,
-  MicroserviceResponse,
   MicroserviceError,
+  MicroserviceMessage,
+  MicroserviceOptions,
+  MicroserviceResponse,
+  Transport,
 } from './types'
-
-// Tokens
-export {
-  MS_TRANSPORT_TOKEN,
-  MESSAGE_PATTERN_METADATA,
-  EVENT_PATTERN_METADATA,
-  PAYLOAD_METADATA,
-  CTX_METADATA,
-} from './tokens'

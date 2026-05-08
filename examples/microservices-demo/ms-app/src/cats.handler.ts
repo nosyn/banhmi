@@ -1,8 +1,5 @@
 import { Injectable } from '@banhmi/common'
-import {
-  EventPattern,
-  MessagePattern,
-} from '@banhmi/microservices'
+import { EventPattern, MessagePattern } from '@banhmi/microservices'
 
 export interface Cat {
   id: string

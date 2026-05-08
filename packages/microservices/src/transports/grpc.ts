@@ -1,4 +1,8 @@
-import type { MicroserviceMessage, MicroserviceResponse, Transport } from '../types'
+import type {
+  MicroserviceMessage,
+  MicroserviceResponse,
+  Transport,
+} from '../types'
 
 /** Options accepted by {@link grpcTransport}. */
 export interface GrpcTransportOptions {
@@ -39,9 +43,8 @@ export interface GrpcTransportOptions {
  * const transport = grpcTransport({ url: 'localhost:5000', protoPath: './cats.proto', package: 'cats.CatsService' })
  */
 export class GrpcTransport implements Transport {
-  constructor(_opts: GrpcTransportOptions = {}) {
-    // Intentionally empty — this is a stub.
-  }
+  // biome-ignore lint/complexity/noUselessConstructor: intentional stub constructor that accepts options
+  constructor(_opts: GrpcTransportOptions = {}) {}
 
   async listen(
     _handler: (

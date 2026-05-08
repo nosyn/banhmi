@@ -1,5 +1,5 @@
 import { Module } from '@banhmi/common'
-import type { Transport, MicroserviceResponse, ClientOptions } from '../types'
+import type { ClientOptions, MicroserviceResponse, Transport } from '../types'
 
 /**
  * Proxy that forwards outgoing requests and events through a configured
@@ -148,7 +148,9 @@ export class ClientsModule {
 
     return {
       module: ClientsRootModule,
-      tokens: Object.fromEntries(tokens.map(({ name, token }) => [name, token])),
+      tokens: Object.fromEntries(
+        tokens.map(({ name, token }) => [name, token]),
+      ),
     }
   }
 }

@@ -1,4 +1,8 @@
-import type { MicroserviceMessage, MicroserviceResponse, Transport } from '../types'
+import type {
+  MicroserviceMessage,
+  MicroserviceResponse,
+  Transport,
+} from '../types'
 
 /** Options accepted by {@link natsTransport}. */
 export interface NatsTransportOptions {
@@ -112,7 +116,11 @@ export class NatsTransport implements Transport {
     const sc = nats.StringCodec()
 
     try {
-      const msg: MicroserviceMessage = { pattern, data, correlationId: crypto.randomUUID() }
+      const msg: MicroserviceMessage = {
+        pattern,
+        data,
+        correlationId: crypto.randomUUID(),
+      }
       const reply = await nc.request(
         `${prefix}.${pattern}`,
         sc.encode(JSON.stringify(msg)),

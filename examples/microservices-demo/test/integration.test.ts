@@ -10,7 +10,11 @@
  */
 
 import { afterAll, beforeAll, describe, expect, test } from 'bun:test'
-import { MicroserviceServer, ClientProxy, tcpTransport } from '@banhmi/microservices'
+import {
+  ClientProxy,
+  MicroserviceServer,
+  tcpTransport,
+} from '@banhmi/microservices'
 import { CatsHandler } from '../ms-app/src/cats.handler'
 
 let server: MicroserviceServer
@@ -25,7 +29,9 @@ async function getFreePort(): Promise<number> {
       socket: {
         open() {},
         data() {},
-        error(_sock: unknown, e: Error) { reject(e) },
+        error(_sock: unknown, e: Error) {
+          reject(e)
+        },
         close() {},
       },
     })

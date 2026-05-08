@@ -1,13 +1,15 @@
 import { describe, expect, test } from 'bun:test'
 import { EventPattern } from '../src/decorators/event-pattern'
 import { MessagePattern } from '../src/decorators/message-pattern'
-import { customTransport, InMemoryTransport } from '../src/transports/custom'
 import { MicroserviceServer } from '../src/server/server'
+import { customTransport, InMemoryTransport } from '../src/transports/custom'
 
 describe('InMemoryTransport', () => {
   test('send routes to listen handler and returns data', async () => {
     const transport = new InMemoryTransport()
-    await transport.listen(async (msg) => ({ data: `echo:${String(msg.data)}` }))
+    await transport.listen(async (msg) => ({
+      data: `echo:${String(msg.data)}`,
+    }))
     const res = await transport.send<string>('ping', 'hello')
     expect(res.data).toBe('echo:hello')
     await transport.close()

@@ -1,23 +1,49 @@
-# gRPC
+# gRPC Transport
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+**Tier C — stub only.** A full implementation is deferred to wave 9.
 
-## When to use
+## Status
 
-TBD
+`grpcTransport()` exports a `GrpcTransport` class that implements the
+`Transport` interface but **throws at runtime** with a clear error message.
 
-## Setup
+```
+[GrpcTransport] Not implemented (Tier C stub).
+@grpc/grpc-js requires native addons not yet stable in Bun.
+Use customTransport() instead.
+TODO(wave-9): implement when @grpc/grpc-js is Bun-compatible.
+```
 
-TBD
+## Why deferred
 
-## Usage
+`@grpc/grpc-js` requires native Node.js addons (`grpc_node.node`) for TLS and
+HTTP/2 framing. Bun's native-addon loading is not yet stable enough to support
+these in production.
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+## Workaround
 
-## API reference
+Use `customTransport()` with a gRPC library that works under Bun's environment,
+or use the TCP transport and define your own serialisation layer:
 
-TBD
+```ts
+import { customTransport } from '@banhmi/microservices'
+
+const transport = customTransport({
+  async listen(handler) { /* gRPC-compatible impl */ },
+  async close() { /* cleanup */ },
+  async send(pattern, data) { return { data: null } },
+  async emit(pattern, data) {},
+})
+```
+
+## API reference (stub)
+
+- `grpcTransport(opts?)` — creates a `GrpcTransport` stub.
+- `GrpcTransportOptions.url` — gRPC server address.
+- `GrpcTransportOptions.protoPath` — path to the `.proto` file.
+- `GrpcTransportOptions.package` — fully-qualified gRPC package name.
 
 ## See also
 
-TBD
+- [Custom Transporters](/microservices/custom-transporters)
+- [Overview](/microservices/overview)

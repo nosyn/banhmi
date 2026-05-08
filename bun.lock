@@ -384,6 +384,22 @@
         "banhmi": "workspace:*",
       },
     },
+    "examples/graphql-demo": {
+      "name": "graphql-demo",
+      "version": "0.0.1",
+      "dependencies": {
+        "@banhmi/graphql": "workspace:*",
+        "graphql": "^16.11.0",
+      },
+    },
+    "examples/microservices-demo": {
+      "name": "banhmi-microservices-demo",
+      "version": "0.0.1",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/microservices": "workspace:*",
+      },
+    },
     "examples/scheduling-queues": {
       "name": "banhmi-example-scheduling-queues",
       "version": "0.0.0",
@@ -435,6 +451,7 @@
         "@banhmi/jwt": "workspace:*",
         "@banhmi/logger": "workspace:*",
         "@banhmi/mailer": "workspace:*",
+        "@banhmi/microservices": "workspace:*",
         "@banhmi/middleware": "workspace:*",
         "@banhmi/mongo": "workspace:*",
         "@banhmi/multipart": "workspace:*",
@@ -647,6 +664,30 @@
       "peerDependencies": {
         "nodemailer": ">=6.0.0",
       },
+    },
+    "packages/microservices": {
+      "name": "@banhmi/microservices",
+      "version": "0.1.0",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/core": "workspace:*",
+      },
+      "peerDependencies": {
+        "@grpc/grpc-js": ">=1",
+        "amqplib": ">=0.10",
+        "ioredis": ">=5",
+        "kafkajs": ">=2",
+        "mqtt": ">=5",
+        "nats": ">=2",
+      },
+      "optionalPeers": [
+        "@grpc/grpc-js",
+        "amqplib",
+        "ioredis",
+        "kafkajs",
+        "mqtt",
+        "nats",
+      ],
     },
     "packages/middleware": {
       "name": "@banhmi/middleware",
@@ -1003,6 +1044,8 @@
     "@banhmi/logger": ["@banhmi/logger@workspace:packages/logger"],
 
     "@banhmi/mailer": ["@banhmi/mailer@workspace:packages/mailer"],
+
+    "@banhmi/microservices": ["@banhmi/microservices@workspace:packages/microservices"],
 
     "@banhmi/middleware": ["@banhmi/middleware@workspace:packages/middleware"],
 
@@ -1394,6 +1437,8 @@
 
     "banhmi-feature-validation-zod": ["banhmi-feature-validation-zod@workspace:examples/features/validation-zod"],
 
+    "banhmi-microservices-demo": ["banhmi-microservices-demo@workspace:examples/microservices-demo"],
+
     "base64-js": ["base64-js@1.5.1", "", {}, "sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA=="],
 
     "better-auth": ["better-auth@1.6.9", "", { "dependencies": { "@better-auth/core": "1.6.9", "@better-auth/drizzle-adapter": "1.6.9", "@better-auth/kysely-adapter": "1.6.9", "@better-auth/memory-adapter": "1.6.9", "@better-auth/mongo-adapter": "1.6.9", "@better-auth/prisma-adapter": "1.6.9", "@better-auth/telemetry": "1.6.9", "@better-auth/utils": "0.4.0", "@better-fetch/fetch": "1.1.21", "@noble/ciphers": "^2.1.1", "@noble/hashes": "^2.0.1", "better-call": "1.3.5", "defu": "^6.1.4", "jose": "^6.1.3", "kysely": "^0.28.14", "nanostores": "^1.1.1", "zod": "^4.3.6" }, "peerDependencies": { "@lynx-js/react": "*", "@prisma/client": "^5.0.0 || ^6.0.0 || ^7.0.0", "@sveltejs/kit": "^2.0.0", "@tanstack/react-start": "^1.0.0", "@tanstack/solid-start": "^1.0.0", "better-sqlite3": "^12.0.0", "drizzle-kit": ">=0.31.4", "drizzle-orm": "^0.45.2", "mongodb": "^6.0.0 || ^7.0.0", "mysql2": "^3.0.0", "next": "^14.0.0 || ^15.0.0 || ^16.0.0", "pg": "^8.0.0", "prisma": "^5.0.0 || ^6.0.0 || ^7.0.0", "react": "^18.0.0 || ^19.0.0", "react-dom": "^18.0.0 || ^19.0.0", "solid-js": "^1.0.0", "svelte": "^4.0.0 || ^5.0.0", "vitest": "^2.0.0 || ^3.0.0 || ^4.0.0", "vue": "^3.0.0" }, "optionalPeers": ["@lynx-js/react", "@prisma/client", "@sveltejs/kit", "@tanstack/react-start", "@tanstack/solid-start", "better-sqlite3", "drizzle-kit", "drizzle-orm", "mongodb", "mysql2", "next", "pg", "prisma", "react", "react-dom", "solid-js", "svelte", "vitest", "vue"] }, "sha512-EBFURtglyiEZxbx4NJBoqUD8J65dX24yC+6I9AUbIXNgUkt76mshzGbHkxZ3n/lB7Dwq3kBC+hHt0hUQsnL7HA=="],
@@ -1591,6 +1636,8 @@
     "graceful-fs": ["graceful-fs@4.2.11", "", {}, "sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ=="],
 
     "graphql": ["graphql@16.14.0", "", {}, "sha512-BBvQ/406p+4CZbTpCbVPSxfzrZrbnuWSP1ELYgyS6B+hNeKzgrdB4JczCa5VZUBQrDa9hUngm0KnexY6pJRN5Q=="],
+
+    "graphql-demo": ["graphql-demo@workspace:examples/graphql-demo"],
 
     "graphql-tag": ["graphql-tag@2.12.6", "", { "dependencies": { "tslib": "^2.1.0" }, "peerDependencies": { "graphql": "^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0" } }, "sha512-FdSNcu2QQcWnM2VNvSCCDCVS5PpPqpzgFT8+GXzqJuoDd0CBncxCY278u4mhRO7tMgo2JjgJA5aZ+nWSQ/Z+xg=="],
 

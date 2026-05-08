@@ -1,23 +1,48 @@
 # Pipes
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Pipes transform or validate the payload before it reaches the handler.
+In microservice contexts, the payload is the first argument passed to the handler.
 
 ## When to use
 
-TBD
+- You want to validate or coerce incoming message payloads.
+- You need to transform raw data (e.g. parse a date string) before the handler runs.
 
-## Setup
+## Note on microservice pipes
 
-TBD
+`@banhmi/microservices` does not inject pipes automatically into the handler
+call path — payload transformation happens in the handler itself (first arg).
 
-## Usage
+To compose validation/transformation, call your pipe's `transform()` inside the
+handler, or use `runMsEnhancerPipeline()` with interceptors to pre-process the
+payload before it reaches the handler.
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+## Example — validation inside handler
+
+```ts
+import { Injectable } from '@banhmi/common'
+import { MessagePattern } from '@banhmi/microservices'
+import { ValidationPipe } from '@banhmi/validation'
+
+const pipe = new ValidationPipe()
+
+@Injectable()
+class CatsHandler {
+  @MessagePattern('cats.create')
+  async create(payload: unknown) {
+    const dto = await pipe.transform(payload, { type: 'body' })
+    return this.cats.create(dto)
+  }
+}
+```
 
 ## API reference
 
-TBD
+- `PipeTransform<T, R>` — `transform(value: T, metadata: PipeMetadata): R | Promise<R>`.
+- `PipeMetadata` — `{ type, data? }`.
 
 ## See also
 
-TBD
+- [Exception Filters](/microservices/exception-filters)
+- [Guards](/microservices/guards)
+- [Overview](/microservices/overview)

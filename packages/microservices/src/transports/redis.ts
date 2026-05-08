@@ -1,4 +1,8 @@
-import type { MicroserviceMessage, MicroserviceResponse, Transport } from '../types'
+import type {
+  MicroserviceMessage,
+  MicroserviceResponse,
+  Transport,
+} from '../types'
 
 /** Options accepted by {@link redisTransport}. */
 export interface RedisTransportOptions {
@@ -53,8 +57,7 @@ export class RedisTransport implements Transport {
 
   private loadIORedis(): typeof import('ioredis').default {
     try {
-      // biome-ignore lint/performance/noBarrelFile: dynamic peer dep
-      return require('ioredis')
+      return require('ioredis') as typeof import('ioredis').default
     } catch {
       throw new Error(
         '[RedisTransport] ioredis is a required peer dependency. ' +

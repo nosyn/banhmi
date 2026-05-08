@@ -1,4 +1,8 @@
-import type { MicroserviceMessage, MicroserviceResponse, Transport } from '../types'
+import type {
+  MicroserviceMessage,
+  MicroserviceResponse,
+  Transport,
+} from '../types'
 
 /** Options accepted by {@link rabbitMqTransport}. */
 export interface RabbitMqTransportOptions {
@@ -56,7 +60,9 @@ export class RabbitMqTransport implements Transport {
   ): Promise<void> {
     const amqp = this.loadAmqplib()
     const conn = await amqp.connect(this.url)
-    const ch = await (conn as { createChannel(): Promise<unknown> }).createChannel()
+    const ch = await (
+      conn as { createChannel(): Promise<unknown> }
+    ).createChannel()
     this.connection = conn
     this.channel = ch
 
@@ -67,7 +73,11 @@ export class RabbitMqTransport implements Transport {
         cb: (msg: unknown) => void,
         opts?: { noAck?: boolean },
       ): Promise<unknown>
-      sendToQueue(name: string, content: Buffer, opts?: { correlationId?: string; replyTo?: string }): void
+      sendToQueue(
+        name: string,
+        content: Buffer,
+        opts?: { correlationId?: string; replyTo?: string },
+      ): void
       ack(msg: unknown): void
     }
 
@@ -76,10 +86,15 @@ export class RabbitMqTransport implements Transport {
       this.queue,
       (rawMsg: unknown) => {
         if (!rawMsg) return
-        const m = rawMsg as { content: Buffer; properties: { correlationId?: string; replyTo?: string } }
+        const m = rawMsg as {
+          content: Buffer
+          properties: { correlationId?: string; replyTo?: string }
+        }
         let inbound: MicroserviceMessage
         try {
-          inbound = JSON.parse(m.content.toString('utf8')) as MicroserviceMessage
+          inbound = JSON.parse(
+            m.content.toString('utf8'),
+          ) as MicroserviceMessage
         } catch {
           return
         }
@@ -134,32 +149,59 @@ export class RabbitMqTransport implements Transport {
   ): Promise<MicroserviceResponse<T>> {
     const amqp = this.loadAmqplib()
     const conn = await amqp.connect(this.url)
-    const ch = await (conn as { createChannel(): Promise<unknown> }).createChannel()
+    const ch = await (
+      conn as { createChannel(): Promise<unknown> }
+    ).createChannel()
     const channel = ch as {
-      assertQueue(name: string, opts?: { durable?: boolean; exclusive?: boolean; autoDelete?: boolean }): Promise<{ queue: string }>
-      consume(name: string, cb: (msg: unknown) => void, opts?: { noAck?: boolean }): Promise<unknown>
-      sendToQueue(name: string, content: Buffer, opts?: { correlationId?: string; replyTo?: string }): void
+      assertQueue(
+        name: string,
+        opts?: { durable?: boolean; exclusive?: boolean; autoDelete?: boolean },
+      ): Promise<{ queue: string }>
+      consume(
+        name: string,
+        cb: (msg: unknown) => void,
+        opts?: { noAck?: boolean },
+      ): Promise<unknown>
+      sendToQueue(
+        name: string,
+        content: Buffer,
+        opts?: { correlationId?: string; replyTo?: string },
+      ): void
       close(): Promise<void>
     }
 
     const correlationId = crypto.randomUUID()
-    const replyQueue = await channel.assertQueue('', { exclusive: true, autoDelete: true })
+    const replyQueue = await channel.assertQueue('', {
+      exclusive: true,
+      autoDelete: true,
+    })
 
     try {
       return await new Promise<MicroserviceResponse<T>>((resolve, reject) => {
         const timeoutId = setTimeout(() => {
-          reject(new Error(`[RabbitMqTransport] send timed out for pattern "${pattern}"`))
+          reject(
+            new Error(
+              `[RabbitMqTransport] send timed out for pattern "${pattern}"`,
+            ),
+          )
         }, 30_000)
 
         channel.consume(
           replyQueue.queue,
           (msg: unknown) => {
             if (!msg) return
-            const m = msg as { properties: { correlationId?: string }; content: Buffer }
+            const m = msg as {
+              properties: { correlationId?: string }
+              content: Buffer
+            }
             if (m.properties.correlationId !== correlationId) return
             clearTimeout(timeoutId)
             try {
-              resolve(JSON.parse(m.content.toString('utf8')) as MicroserviceResponse<T>)
+              resolve(
+                JSON.parse(
+                  m.content.toString('utf8'),
+                ) as MicroserviceResponse<T>,
+              )
             } catch {
               reject(new Error('[RabbitMqTransport] Failed to parse reply'))
             }
@@ -168,11 +210,10 @@ export class RabbitMqTransport implements Transport {
         )
 
         const envelope: MicroserviceMessage = { pattern, data, correlationId }
-        channel.sendToQueue(
-          this.queue,
-          Buffer.from(JSON.stringify(envelope)),
-          { correlationId, replyTo: replyQueue.queue },
-        )
+        channel.sendToQueue(this.queue, Buffer.from(JSON.stringify(envelope)), {
+          correlationId,
+          replyTo: replyQueue.queue,
+        })
       })
     } finally {
       await channel.close()
@@ -184,7 +225,9 @@ export class RabbitMqTransport implements Transport {
   async emit(pattern: string, data: unknown): Promise<void> {
     const amqp = this.loadAmqplib()
     const conn = await amqp.connect(this.url)
-    const ch = await (conn as { createChannel(): Promise<unknown> }).createChannel()
+    const ch = await (
+      conn as { createChannel(): Promise<unknown> }
+    ).createChannel()
     const channel = ch as {
       assertQueue(name: string, opts?: { durable?: boolean }): Promise<unknown>
       sendToQueue(name: string, content: Buffer): void
