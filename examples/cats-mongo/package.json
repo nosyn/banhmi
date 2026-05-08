@@ -1,0 +1,14 @@
+{
+  "name": "cats-mongo-example",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --watch src/main.ts"
+  },
+  "dependencies": {
+    "@banhmi/core": "workspace:*",
+    "@banhmi/mongo": "workspace:*",
+    "@banhmi/platform-bun": "workspace:*",
+    "banhmi": "workspace:*"
+  }
+}
