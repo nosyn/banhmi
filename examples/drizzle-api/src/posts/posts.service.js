@@ -1,32 +1,27 @@
 import { Injectable, NotFoundException } from 'banhmi'
 import { eq } from 'drizzle-orm'
-import type { DrizzleDB } from '../database/database.module'
 import { DB_TOKEN } from '../database/database.module'
 import { posts } from '../database/schema'
-
 @Injectable()
 export class PostsService {
-  static inject = [DB_TOKEN] as const
-
-  constructor(private db: DrizzleDB) {}
-
-  findAll() {
-    return (this.db as DrizzleDB).query.posts.findMany({
-      with: { author: true },
-    })
+  db
+  static inject = [DB_TOKEN]
+  constructor(db) {
+    this.db = db
   }
-
-  findById(id: number) {
-    const post = (this.db as DrizzleDB).query.posts.findFirst({
+  findAll() {
+    return this.db.query.posts.findMany({ with: { author: true } })
+  }
+  findById(id) {
+    const post = this.db.query.posts.findFirst({
       where: eq(posts.id, id),
       with: { author: true },
     })
     if (!post) throw new NotFoundException(`Post #${id} not found`)
     return post
   }
-
-  create(title: string, body: string, authorId: number) {
-    return (this.db as DrizzleDB)
+  create(title, body, authorId) {
+    return this.db
       .insert(posts)
       .values({ title, body, authorId })
       .returning()

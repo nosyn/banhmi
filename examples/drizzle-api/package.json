@@ -8,6 +8,10 @@
     "db:studio": "bunx drizzle-kit studio"
   },
   "dependencies": {
+    "@banhmi/core": "workspace:*",
+    "@banhmi/drizzle": "workspace:*",
+    "@banhmi/platform-bun": "workspace:*",
+    "@banhmi/postgres": "workspace:*",
     "banhmi": "workspace:*",
     "drizzle-orm": "^0.45.2"
   },

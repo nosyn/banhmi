@@ -11,17 +11,21 @@ export class UsersService {
   constructor(private db: DrizzleDB) {}
 
   findAll() {
-    return this.db.select().from(users).all()
+    return (this.db as DrizzleDB).select().from(users).all()
   }
 
   findById(id: number) {
-    const user = this.db.select().from(users).where(eq(users.id, id)).get()
+    const user = (this.db as DrizzleDB)
+      .select()
+      .from(users)
+      .where(eq(users.id, id))
+      .get()
     if (!user) throw new NotFoundException(`User #${id} not found`)
     return user
   }
 
   findWithPosts(id: number) {
-    const result = this.db.query.users.findFirst({
+    const result = (this.db as DrizzleDB).query.users.findFirst({
       where: eq(users.id, id),
       with: { posts: true },
     })
@@ -30,11 +34,15 @@ export class UsersService {
   }
 
   create(name: string, email: string) {
-    return this.db.insert(users).values({ name, email }).returning().get()
+    return (this.db as DrizzleDB)
+      .insert(users)
+      .values({ name, email })
+      .returning()
+      .get()
   }
 
   delete(id: number): void {
     this.findById(id)
-    this.db.delete(users).where(eq(users.id, id)).run()
+    ;(this.db as DrizzleDB).delete(users).where(eq(users.id, id)).run()
   }
 }
