@@ -10,33 +10,2203 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DocsProductionIndexRouteImport } from './routes/docs/production.index'
+import { Route as DocsExamplesIndexRouteImport } from './routes/docs/examples.index'
+import { Route as DocsWebsocketsPipesRouteImport } from './routes/docs/websockets.pipes'
+import { Route as DocsWebsocketsInterceptorsRouteImport } from './routes/docs/websockets.interceptors'
+import { Route as DocsWebsocketsGuardsRouteImport } from './routes/docs/websockets.guards'
+import { Route as DocsWebsocketsGatewaysRouteImport } from './routes/docs/websockets.gateways'
+import { Route as DocsWebsocketsExceptionFiltersRouteImport } from './routes/docs/websockets.exception-filters'
+import { Route as DocsWebsocketsAdaptersRouteImport } from './routes/docs/websockets.adapters'
+import { Route as DocsTechniquesVersioningRouteImport } from './routes/docs/techniques.versioning'
+import { Route as DocsTechniquesValidationRouteImport } from './routes/docs/techniques.validation'
+import { Route as DocsTechniquesTaskSchedulingRouteImport } from './routes/docs/techniques.task-scheduling'
+import { Route as DocsTechniquesStreamingFilesRouteImport } from './routes/docs/techniques.streaming-files'
+import { Route as DocsTechniquesSseRouteImport } from './routes/docs/techniques.sse'
+import { Route as DocsTechniquesSessionRouteImport } from './routes/docs/techniques.session'
+import { Route as DocsTechniquesSerializationRouteImport } from './routes/docs/techniques.serialization'
+import { Route as DocsTechniquesQueuesRouteImport } from './routes/docs/techniques.queues'
+import { Route as DocsTechniquesPerformanceRouteImport } from './routes/docs/techniques.performance'
+import { Route as DocsTechniquesMvcRouteImport } from './routes/docs/techniques.mvc'
+import { Route as DocsTechniquesMongoRouteImport } from './routes/docs/techniques.mongo'
+import { Route as DocsTechniquesLoggingRouteImport } from './routes/docs/techniques.logging'
+import { Route as DocsTechniquesHttpModuleRouteImport } from './routes/docs/techniques.http-module'
+import { Route as DocsTechniquesFileUploadRouteImport } from './routes/docs/techniques.file-upload'
+import { Route as DocsTechniquesEventsRouteImport } from './routes/docs/techniques.events'
+import { Route as DocsTechniquesDatabaseRouteImport } from './routes/docs/techniques.database'
+import { Route as DocsTechniquesCookiesRouteImport } from './routes/docs/techniques.cookies'
+import { Route as DocsTechniquesConfigurationRouteImport } from './routes/docs/techniques.configuration'
+import { Route as DocsTechniquesCompressionRouteImport } from './routes/docs/techniques.compression'
+import { Route as DocsTechniquesCachingRouteImport } from './routes/docs/techniques.caching'
+import { Route as DocsSecurityRateLimitingRouteImport } from './routes/docs/security.rate-limiting'
+import { Route as DocsSecurityHelmetRouteImport } from './routes/docs/security.helmet'
+import { Route as DocsSecurityEncryptionAndHashingRouteImport } from './routes/docs/security.encryption-and-hashing'
+import { Route as DocsSecurityCsrfRouteImport } from './routes/docs/security.csrf'
+import { Route as DocsSecurityCorsRouteImport } from './routes/docs/security.cors'
+import { Route as DocsSecurityAuthorizationRouteImport } from './routes/docs/security.authorization'
+import { Route as DocsSecurityAuthenticationRouteImport } from './routes/docs/security.authentication'
+import { Route as DocsRecipesTypeormRouteImport } from './routes/docs/recipes.typeorm'
+import { Route as DocsRecipesSwcRouteImport } from './routes/docs/recipes.swc'
+import { Route as DocsRecipesSwaggerRouteImport } from './routes/docs/recipes.swagger'
+import { Route as DocsRecipesSuitesRouteImport } from './routes/docs/recipes.suites'
+import { Route as DocsRecipesServeStaticRouteImport } from './routes/docs/recipes.serve-static'
+import { Route as DocsRecipesSequelizeRouteImport } from './routes/docs/recipes.sequelize'
+import { Route as DocsRecipesSentryRouteImport } from './routes/docs/recipes.sentry'
+import { Route as DocsRecipesRouterModuleRouteImport } from './routes/docs/recipes.router-module'
+import { Route as DocsRecipesReplRouteImport } from './routes/docs/recipes.repl'
+import { Route as DocsRecipesPrismaRouteImport } from './routes/docs/recipes.prisma'
+import { Route as DocsRecipesPassportRouteImport } from './routes/docs/recipes.passport'
+import { Route as DocsRecipesNecordRouteImport } from './routes/docs/recipes.necord'
+import { Route as DocsRecipesMongooseRouteImport } from './routes/docs/recipes.mongoose'
+import { Route as DocsRecipesMikroormRouteImport } from './routes/docs/recipes.mikroorm'
+import { Route as DocsRecipesHotReloadRouteImport } from './routes/docs/recipes.hot-reload'
+import { Route as DocsRecipesHealthChecksRouteImport } from './routes/docs/recipes.health-checks'
+import { Route as DocsRecipesCrudGeneratorRouteImport } from './routes/docs/recipes.crud-generator'
+import { Route as DocsRecipesCqrsRouteImport } from './routes/docs/recipes.cqrs'
+import { Route as DocsRecipesCompodocRouteImport } from './routes/docs/recipes.compodoc'
+import { Route as DocsRecipesCommanderRouteImport } from './routes/docs/recipes.commander'
+import { Route as DocsRecipesAsyncLocalStorageRouteImport } from './routes/docs/recipes.async-local-storage'
+import { Route as DocsPerformanceTuningRouteImport } from './routes/docs/performance.tuning'
+import { Route as DocsPerformanceResultsRouteImport } from './routes/docs/performance.results'
+import { Route as DocsPerformanceMethodologyRouteImport } from './routes/docs/performance.methodology'
+import { Route as DocsOverviewProvidersRouteImport } from './routes/docs/overview.providers'
+import { Route as DocsOverviewPipesRouteImport } from './routes/docs/overview.pipes'
+import { Route as DocsOverviewModulesRouteImport } from './routes/docs/overview.modules'
+import { Route as DocsOverviewMiddlewareRouteImport } from './routes/docs/overview.middleware'
+import { Route as DocsOverviewInterceptorsRouteImport } from './routes/docs/overview.interceptors'
+import { Route as DocsOverviewGuardsRouteImport } from './routes/docs/overview.guards'
+import { Route as DocsOverviewExceptionFiltersRouteImport } from './routes/docs/overview.exception-filters'
+import { Route as DocsOverviewCustomDecoratorsRouteImport } from './routes/docs/overview.custom-decorators'
+import { Route as DocsOverviewControllersRouteImport } from './routes/docs/overview.controllers'
+import { Route as DocsOpenapiTypesAndParametersRouteImport } from './routes/docs/openapi.types-and-parameters'
+import { Route as DocsOpenapiSecurityRouteImport } from './routes/docs/openapi.security'
+import { Route as DocsOpenapiScalarRouteImport } from './routes/docs/openapi.scalar'
+import { Route as DocsOpenapiOtherFeaturesRouteImport } from './routes/docs/openapi.other-features'
+import { Route as DocsOpenapiOperationsRouteImport } from './routes/docs/openapi.operations'
+import { Route as DocsOpenapiMappedTypesRouteImport } from './routes/docs/openapi.mapped-types'
+import { Route as DocsOpenapiIntroductionRouteImport } from './routes/docs/openapi.introduction'
+import { Route as DocsOpenapiDecoratorsRouteImport } from './routes/docs/openapi.decorators'
+import { Route as DocsOpenapiCliPluginRouteImport } from './routes/docs/openapi.cli-plugin'
+import { Route as DocsMigrationConceptsRouteImport } from './routes/docs/migration.concepts'
+import { Route as DocsMigrationCompatRouteImport } from './routes/docs/migration.compat'
+import { Route as DocsMigrationCodemodsRouteImport } from './routes/docs/migration.codemods'
+import { Route as DocsMicroservicesRedisRouteImport } from './routes/docs/microservices.redis'
+import { Route as DocsMicroservicesRabbitmqRouteImport } from './routes/docs/microservices.rabbitmq'
+import { Route as DocsMicroservicesPipesRouteImport } from './routes/docs/microservices.pipes'
+import { Route as DocsMicroservicesOverviewRouteImport } from './routes/docs/microservices.overview'
+import { Route as DocsMicroservicesNatsRouteImport } from './routes/docs/microservices.nats'
+import { Route as DocsMicroservicesMqttRouteImport } from './routes/docs/microservices.mqtt'
+import { Route as DocsMicroservicesKafkaRouteImport } from './routes/docs/microservices.kafka'
+import { Route as DocsMicroservicesInterceptorsRouteImport } from './routes/docs/microservices.interceptors'
+import { Route as DocsMicroservicesGuardsRouteImport } from './routes/docs/microservices.guards'
+import { Route as DocsMicroservicesGrpcRouteImport } from './routes/docs/microservices.grpc'
+import { Route as DocsMicroservicesExceptionFiltersRouteImport } from './routes/docs/microservices.exception-filters'
+import { Route as DocsMicroservicesCustomTransportersRouteImport } from './routes/docs/microservices.custom-transporters'
+import { Route as DocsIntroductionFirstStepsRouteImport } from './routes/docs/introduction.first-steps'
+import { Route as DocsGraphqlUnionsAndEnumsRouteImport } from './routes/docs/graphql.unions-and-enums'
+import { Route as DocsGraphqlSubscriptionsRouteImport } from './routes/docs/graphql.subscriptions'
+import { Route as DocsGraphqlSharingModelsRouteImport } from './routes/docs/graphql.sharing-models'
+import { Route as DocsGraphqlScalarsRouteImport } from './routes/docs/graphql.scalars'
+import { Route as DocsGraphqlResolversRouteImport } from './routes/docs/graphql.resolvers'
+import { Route as DocsGraphqlQuickStartRouteImport } from './routes/docs/graphql.quick-start'
+import { Route as DocsGraphqlPluginsRouteImport } from './routes/docs/graphql.plugins'
+import { Route as DocsGraphqlOtherFeaturesRouteImport } from './routes/docs/graphql.other-features'
+import { Route as DocsGraphqlMutationsRouteImport } from './routes/docs/graphql.mutations'
+import { Route as DocsGraphqlMappedTypesRouteImport } from './routes/docs/graphql.mapped-types'
+import { Route as DocsGraphqlInterfacesRouteImport } from './routes/docs/graphql.interfaces'
+import { Route as DocsGraphqlGeneratingSdlRouteImport } from './routes/docs/graphql.generating-sdl'
+import { Route as DocsGraphqlFieldMiddlewareRouteImport } from './routes/docs/graphql.field-middleware'
+import { Route as DocsGraphqlFederationRouteImport } from './routes/docs/graphql.federation'
+import { Route as DocsGraphqlExtensionsRouteImport } from './routes/docs/graphql.extensions'
+import { Route as DocsGraphqlDirectivesRouteImport } from './routes/docs/graphql.directives'
+import { Route as DocsGraphqlComplexityRouteImport } from './routes/docs/graphql.complexity'
+import { Route as DocsGraphqlCliPluginRouteImport } from './routes/docs/graphql.cli-plugin'
+import { Route as DocsFundamentalsTestingRouteImport } from './routes/docs/fundamentals.testing'
+import { Route as DocsFundamentalsPlatformAgnosticismRouteImport } from './routes/docs/fundamentals.platform-agnosticism'
+import { Route as DocsFundamentalsModuleReferenceRouteImport } from './routes/docs/fundamentals.module-reference'
+import { Route as DocsFundamentalsLifecycleEventsRouteImport } from './routes/docs/fundamentals.lifecycle-events'
+import { Route as DocsFundamentalsLazyLoadingModulesRouteImport } from './routes/docs/fundamentals.lazy-loading-modules'
+import { Route as DocsFundamentalsInjectionScopesRouteImport } from './routes/docs/fundamentals.injection-scopes'
+import { Route as DocsFundamentalsExecutionContextRouteImport } from './routes/docs/fundamentals.execution-context'
+import { Route as DocsFundamentalsDynamicModulesRouteImport } from './routes/docs/fundamentals.dynamic-modules'
+import { Route as DocsFundamentalsDiscoveryServiceRouteImport } from './routes/docs/fundamentals.discovery-service'
+import { Route as DocsFundamentalsCustomProvidersRouteImport } from './routes/docs/fundamentals.custom-providers'
+import { Route as DocsFundamentalsCircularDependencyRouteImport } from './routes/docs/fundamentals.circular-dependency'
+import { Route as DocsFundamentalsAsynchronousProvidersRouteImport } from './routes/docs/fundamentals.asynchronous-providers'
+import { Route as DocsFaqServerlessRouteImport } from './routes/docs/faq.serverless'
+import { Route as DocsFaqRequestLifecycleRouteImport } from './routes/docs/faq.request-lifecycle'
+import { Route as DocsFaqRawBodyRouteImport } from './routes/docs/faq.raw-body'
+import { Route as DocsFaqKeepAliveRouteImport } from './routes/docs/faq.keep-alive'
+import { Route as DocsFaqHybridApplicationRouteImport } from './routes/docs/faq.hybrid-application'
+import { Route as DocsFaqHttpsAndMultipleServersRouteImport } from './routes/docs/faq.https-and-multiple-servers'
+import { Route as DocsFaqHttpAdapterRouteImport } from './routes/docs/faq.http-adapter'
+import { Route as DocsFaqGlobalPathPrefixRouteImport } from './routes/docs/faq.global-path-prefix'
+import { Route as DocsFaqExamplesRouteImport } from './routes/docs/faq.examples'
+import { Route as DocsFaqCommonErrorsRouteImport } from './routes/docs/faq.common-errors'
+import { Route as DocsDevtoolsOverviewRouteImport } from './routes/docs/devtools.overview'
+import { Route as DocsDevtoolsCiCdIntegrationRouteImport } from './routes/docs/devtools.ci-cd-integration'
+import { Route as DocsDeploymentStandaloneAppsRouteImport } from './routes/docs/deployment.standalone-apps'
+import { Route as DocsDeploymentRequestLifecycleRouteImport } from './routes/docs/deployment.request-lifecycle'
+import { Route as DocsDeploymentRawBodyRouteImport } from './routes/docs/deployment.raw-body'
+import { Route as DocsDeploymentKeepAliveRouteImport } from './routes/docs/deployment.keep-alive'
+import { Route as DocsDeploymentHybridRouteImport } from './routes/docs/deployment.hybrid'
+import { Route as DocsDeploymentHttpsAndMultipleServersRouteImport } from './routes/docs/deployment.https-and-multiple-servers'
+import { Route as DocsDeploymentHotReloadRouteImport } from './routes/docs/deployment.hot-reload'
+import { Route as DocsDeploymentEdgeRouteImport } from './routes/docs/deployment.edge'
+import { Route as DocsDeploymentCommonErrorsRouteImport } from './routes/docs/deployment.common-errors'
+import { Route as DocsCliWorkspacesRouteImport } from './routes/docs/cli.workspaces'
+import { Route as DocsCliUsageRouteImport } from './routes/docs/cli.usage'
+import { Route as DocsCliScriptsRouteImport } from './routes/docs/cli.scripts'
+import { Route as DocsCliOverviewRouteImport } from './routes/docs/cli.overview'
+import { Route as DocsCliLibrariesRouteImport } from './routes/docs/cli.libraries'
+import { Route as DocsBunNativeNativeWebsocketRouteImport } from './routes/docs/bun-native.native-websocket'
+import { Route as DocsBunNativeNativeFormdataRouteImport } from './routes/docs/bun-native.native-formdata'
+import { Route as DocsBunNativeBunSqliteRouteImport } from './routes/docs/bun-native.bun-sqlite'
+import { Route as DocsBunNativeBunSqlRouteImport } from './routes/docs/bun-native.bun-sql'
+import { Route as DocsBunNativeBunServeRouteImport } from './routes/docs/bun-native.bun-serve'
+import { Route as DocsBunNativeBunS3RouteImport } from './routes/docs/bun-native.bun-s3'
+import { Route as DocsBunNativeBunPasswordRouteImport } from './routes/docs/bun-native.bun-password'
+import { Route as DocsBunNativeBunCompressionRouteImport } from './routes/docs/bun-native.bun-compression'
+import { Route as DocsBuiltInsValidatorsRouteImport } from './routes/docs/built-ins.validators'
+import { Route as DocsBuiltInsTransformersRouteImport } from './routes/docs/built-ins.transformers'
+import { Route as DocsBuiltInsPipesRouteImport } from './routes/docs/built-ins.pipes'
+import { Route as DocsBuiltInsInterceptorsRouteImport } from './routes/docs/built-ins.interceptors'
+import { Route as DocsBuiltInsExceptionsRouteImport } from './routes/docs/built-ins.exceptions'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DocsProductionIndexRoute = DocsProductionIndexRouteImport.update({
+  id: '/docs/production/',
+  path: '/docs/production/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsExamplesIndexRoute = DocsExamplesIndexRouteImport.update({
+  id: '/docs/examples/',
+  path: '/docs/examples/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsWebsocketsPipesRoute = DocsWebsocketsPipesRouteImport.update({
+  id: '/docs/websockets/pipes',
+  path: '/docs/websockets/pipes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsWebsocketsInterceptorsRoute =
+  DocsWebsocketsInterceptorsRouteImport.update({
+    id: '/docs/websockets/interceptors',
+    path: '/docs/websockets/interceptors',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsWebsocketsGuardsRoute = DocsWebsocketsGuardsRouteImport.update({
+  id: '/docs/websockets/guards',
+  path: '/docs/websockets/guards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsWebsocketsGatewaysRoute = DocsWebsocketsGatewaysRouteImport.update({
+  id: '/docs/websockets/gateways',
+  path: '/docs/websockets/gateways',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsWebsocketsExceptionFiltersRoute =
+  DocsWebsocketsExceptionFiltersRouteImport.update({
+    id: '/docs/websockets/exception-filters',
+    path: '/docs/websockets/exception-filters',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsWebsocketsAdaptersRoute = DocsWebsocketsAdaptersRouteImport.update({
+  id: '/docs/websockets/adapters',
+  path: '/docs/websockets/adapters',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsTechniquesVersioningRoute =
+  DocsTechniquesVersioningRouteImport.update({
+    id: '/docs/techniques/versioning',
+    path: '/docs/techniques/versioning',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsTechniquesValidationRoute =
+  DocsTechniquesValidationRouteImport.update({
+    id: '/docs/techniques/validation',
+    path: '/docs/techniques/validation',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsTechniquesTaskSchedulingRoute =
+  DocsTechniquesTaskSchedulingRouteImport.update({
+    id: '/docs/techniques/task-scheduling',
+    path: '/docs/techniques/task-scheduling',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsTechniquesStreamingFilesRoute =
+  DocsTechniquesStreamingFilesRouteImport.update({
+    id: '/docs/techniques/streaming-files',
+    path: '/docs/techniques/streaming-files',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsTechniquesSseRoute = DocsTechniquesSseRouteImport.update({
+  id: '/docs/techniques/sse',
+  path: '/docs/techniques/sse',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsTechniquesSessionRoute = DocsTechniquesSessionRouteImport.update({
+  id: '/docs/techniques/session',
+  path: '/docs/techniques/session',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsTechniquesSerializationRoute =
+  DocsTechniquesSerializationRouteImport.update({
+    id: '/docs/techniques/serialization',
+    path: '/docs/techniques/serialization',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsTechniquesQueuesRoute = DocsTechniquesQueuesRouteImport.update({
+  id: '/docs/techniques/queues',
+  path: '/docs/techniques/queues',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsTechniquesPerformanceRoute =
+  DocsTechniquesPerformanceRouteImport.update({
+    id: '/docs/techniques/performance',
+    path: '/docs/techniques/performance',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsTechniquesMvcRoute = DocsTechniquesMvcRouteImport.update({
+  id: '/docs/techniques/mvc',
+  path: '/docs/techniques/mvc',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsTechniquesMongoRoute = DocsTechniquesMongoRouteImport.update({
+  id: '/docs/techniques/mongo',
+  path: '/docs/techniques/mongo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsTechniquesLoggingRoute = DocsTechniquesLoggingRouteImport.update({
+  id: '/docs/techniques/logging',
+  path: '/docs/techniques/logging',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsTechniquesHttpModuleRoute =
+  DocsTechniquesHttpModuleRouteImport.update({
+    id: '/docs/techniques/http-module',
+    path: '/docs/techniques/http-module',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsTechniquesFileUploadRoute =
+  DocsTechniquesFileUploadRouteImport.update({
+    id: '/docs/techniques/file-upload',
+    path: '/docs/techniques/file-upload',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsTechniquesEventsRoute = DocsTechniquesEventsRouteImport.update({
+  id: '/docs/techniques/events',
+  path: '/docs/techniques/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsTechniquesDatabaseRoute = DocsTechniquesDatabaseRouteImport.update({
+  id: '/docs/techniques/database',
+  path: '/docs/techniques/database',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsTechniquesCookiesRoute = DocsTechniquesCookiesRouteImport.update({
+  id: '/docs/techniques/cookies',
+  path: '/docs/techniques/cookies',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsTechniquesConfigurationRoute =
+  DocsTechniquesConfigurationRouteImport.update({
+    id: '/docs/techniques/configuration',
+    path: '/docs/techniques/configuration',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsTechniquesCompressionRoute =
+  DocsTechniquesCompressionRouteImport.update({
+    id: '/docs/techniques/compression',
+    path: '/docs/techniques/compression',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsTechniquesCachingRoute = DocsTechniquesCachingRouteImport.update({
+  id: '/docs/techniques/caching',
+  path: '/docs/techniques/caching',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsSecurityRateLimitingRoute =
+  DocsSecurityRateLimitingRouteImport.update({
+    id: '/docs/security/rate-limiting',
+    path: '/docs/security/rate-limiting',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsSecurityHelmetRoute = DocsSecurityHelmetRouteImport.update({
+  id: '/docs/security/helmet',
+  path: '/docs/security/helmet',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsSecurityEncryptionAndHashingRoute =
+  DocsSecurityEncryptionAndHashingRouteImport.update({
+    id: '/docs/security/encryption-and-hashing',
+    path: '/docs/security/encryption-and-hashing',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsSecurityCsrfRoute = DocsSecurityCsrfRouteImport.update({
+  id: '/docs/security/csrf',
+  path: '/docs/security/csrf',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsSecurityCorsRoute = DocsSecurityCorsRouteImport.update({
+  id: '/docs/security/cors',
+  path: '/docs/security/cors',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsSecurityAuthorizationRoute =
+  DocsSecurityAuthorizationRouteImport.update({
+    id: '/docs/security/authorization',
+    path: '/docs/security/authorization',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsSecurityAuthenticationRoute =
+  DocsSecurityAuthenticationRouteImport.update({
+    id: '/docs/security/authentication',
+    path: '/docs/security/authentication',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsRecipesTypeormRoute = DocsRecipesTypeormRouteImport.update({
+  id: '/docs/recipes/typeorm',
+  path: '/docs/recipes/typeorm',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRecipesSwcRoute = DocsRecipesSwcRouteImport.update({
+  id: '/docs/recipes/swc',
+  path: '/docs/recipes/swc',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRecipesSwaggerRoute = DocsRecipesSwaggerRouteImport.update({
+  id: '/docs/recipes/swagger',
+  path: '/docs/recipes/swagger',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRecipesSuitesRoute = DocsRecipesSuitesRouteImport.update({
+  id: '/docs/recipes/suites',
+  path: '/docs/recipes/suites',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRecipesServeStaticRoute = DocsRecipesServeStaticRouteImport.update({
+  id: '/docs/recipes/serve-static',
+  path: '/docs/recipes/serve-static',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRecipesSequelizeRoute = DocsRecipesSequelizeRouteImport.update({
+  id: '/docs/recipes/sequelize',
+  path: '/docs/recipes/sequelize',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRecipesSentryRoute = DocsRecipesSentryRouteImport.update({
+  id: '/docs/recipes/sentry',
+  path: '/docs/recipes/sentry',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRecipesRouterModuleRoute = DocsRecipesRouterModuleRouteImport.update({
+  id: '/docs/recipes/router-module',
+  path: '/docs/recipes/router-module',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRecipesReplRoute = DocsRecipesReplRouteImport.update({
+  id: '/docs/recipes/repl',
+  path: '/docs/recipes/repl',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRecipesPrismaRoute = DocsRecipesPrismaRouteImport.update({
+  id: '/docs/recipes/prisma',
+  path: '/docs/recipes/prisma',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRecipesPassportRoute = DocsRecipesPassportRouteImport.update({
+  id: '/docs/recipes/passport',
+  path: '/docs/recipes/passport',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRecipesNecordRoute = DocsRecipesNecordRouteImport.update({
+  id: '/docs/recipes/necord',
+  path: '/docs/recipes/necord',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRecipesMongooseRoute = DocsRecipesMongooseRouteImport.update({
+  id: '/docs/recipes/mongoose',
+  path: '/docs/recipes/mongoose',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRecipesMikroormRoute = DocsRecipesMikroormRouteImport.update({
+  id: '/docs/recipes/mikroorm',
+  path: '/docs/recipes/mikroorm',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRecipesHotReloadRoute = DocsRecipesHotReloadRouteImport.update({
+  id: '/docs/recipes/hot-reload',
+  path: '/docs/recipes/hot-reload',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRecipesHealthChecksRoute = DocsRecipesHealthChecksRouteImport.update({
+  id: '/docs/recipes/health-checks',
+  path: '/docs/recipes/health-checks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRecipesCrudGeneratorRoute =
+  DocsRecipesCrudGeneratorRouteImport.update({
+    id: '/docs/recipes/crud-generator',
+    path: '/docs/recipes/crud-generator',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsRecipesCqrsRoute = DocsRecipesCqrsRouteImport.update({
+  id: '/docs/recipes/cqrs',
+  path: '/docs/recipes/cqrs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRecipesCompodocRoute = DocsRecipesCompodocRouteImport.update({
+  id: '/docs/recipes/compodoc',
+  path: '/docs/recipes/compodoc',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRecipesCommanderRoute = DocsRecipesCommanderRouteImport.update({
+  id: '/docs/recipes/commander',
+  path: '/docs/recipes/commander',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRecipesAsyncLocalStorageRoute =
+  DocsRecipesAsyncLocalStorageRouteImport.update({
+    id: '/docs/recipes/async-local-storage',
+    path: '/docs/recipes/async-local-storage',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsPerformanceTuningRoute = DocsPerformanceTuningRouteImport.update({
+  id: '/docs/performance/tuning',
+  path: '/docs/performance/tuning',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsPerformanceResultsRoute = DocsPerformanceResultsRouteImport.update({
+  id: '/docs/performance/results',
+  path: '/docs/performance/results',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsPerformanceMethodologyRoute =
+  DocsPerformanceMethodologyRouteImport.update({
+    id: '/docs/performance/methodology',
+    path: '/docs/performance/methodology',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsOverviewProvidersRoute = DocsOverviewProvidersRouteImport.update({
+  id: '/docs/overview/providers',
+  path: '/docs/overview/providers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsOverviewPipesRoute = DocsOverviewPipesRouteImport.update({
+  id: '/docs/overview/pipes',
+  path: '/docs/overview/pipes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsOverviewModulesRoute = DocsOverviewModulesRouteImport.update({
+  id: '/docs/overview/modules',
+  path: '/docs/overview/modules',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsOverviewMiddlewareRoute = DocsOverviewMiddlewareRouteImport.update({
+  id: '/docs/overview/middleware',
+  path: '/docs/overview/middleware',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsOverviewInterceptorsRoute =
+  DocsOverviewInterceptorsRouteImport.update({
+    id: '/docs/overview/interceptors',
+    path: '/docs/overview/interceptors',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsOverviewGuardsRoute = DocsOverviewGuardsRouteImport.update({
+  id: '/docs/overview/guards',
+  path: '/docs/overview/guards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsOverviewExceptionFiltersRoute =
+  DocsOverviewExceptionFiltersRouteImport.update({
+    id: '/docs/overview/exception-filters',
+    path: '/docs/overview/exception-filters',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsOverviewCustomDecoratorsRoute =
+  DocsOverviewCustomDecoratorsRouteImport.update({
+    id: '/docs/overview/custom-decorators',
+    path: '/docs/overview/custom-decorators',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsOverviewControllersRoute = DocsOverviewControllersRouteImport.update({
+  id: '/docs/overview/controllers',
+  path: '/docs/overview/controllers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsOpenapiTypesAndParametersRoute =
+  DocsOpenapiTypesAndParametersRouteImport.update({
+    id: '/docs/openapi/types-and-parameters',
+    path: '/docs/openapi/types-and-parameters',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsOpenapiSecurityRoute = DocsOpenapiSecurityRouteImport.update({
+  id: '/docs/openapi/security',
+  path: '/docs/openapi/security',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsOpenapiScalarRoute = DocsOpenapiScalarRouteImport.update({
+  id: '/docs/openapi/scalar',
+  path: '/docs/openapi/scalar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsOpenapiOtherFeaturesRoute =
+  DocsOpenapiOtherFeaturesRouteImport.update({
+    id: '/docs/openapi/other-features',
+    path: '/docs/openapi/other-features',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsOpenapiOperationsRoute = DocsOpenapiOperationsRouteImport.update({
+  id: '/docs/openapi/operations',
+  path: '/docs/openapi/operations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsOpenapiMappedTypesRoute = DocsOpenapiMappedTypesRouteImport.update({
+  id: '/docs/openapi/mapped-types',
+  path: '/docs/openapi/mapped-types',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsOpenapiIntroductionRoute = DocsOpenapiIntroductionRouteImport.update({
+  id: '/docs/openapi/introduction',
+  path: '/docs/openapi/introduction',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsOpenapiDecoratorsRoute = DocsOpenapiDecoratorsRouteImport.update({
+  id: '/docs/openapi/decorators',
+  path: '/docs/openapi/decorators',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsOpenapiCliPluginRoute = DocsOpenapiCliPluginRouteImport.update({
+  id: '/docs/openapi/cli-plugin',
+  path: '/docs/openapi/cli-plugin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsMigrationConceptsRoute = DocsMigrationConceptsRouteImport.update({
+  id: '/docs/migration/concepts',
+  path: '/docs/migration/concepts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsMigrationCompatRoute = DocsMigrationCompatRouteImport.update({
+  id: '/docs/migration/compat',
+  path: '/docs/migration/compat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsMigrationCodemodsRoute = DocsMigrationCodemodsRouteImport.update({
+  id: '/docs/migration/codemods',
+  path: '/docs/migration/codemods',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsMicroservicesRedisRoute = DocsMicroservicesRedisRouteImport.update({
+  id: '/docs/microservices/redis',
+  path: '/docs/microservices/redis',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsMicroservicesRabbitmqRoute =
+  DocsMicroservicesRabbitmqRouteImport.update({
+    id: '/docs/microservices/rabbitmq',
+    path: '/docs/microservices/rabbitmq',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsMicroservicesPipesRoute = DocsMicroservicesPipesRouteImport.update({
+  id: '/docs/microservices/pipes',
+  path: '/docs/microservices/pipes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsMicroservicesOverviewRoute =
+  DocsMicroservicesOverviewRouteImport.update({
+    id: '/docs/microservices/overview',
+    path: '/docs/microservices/overview',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsMicroservicesNatsRoute = DocsMicroservicesNatsRouteImport.update({
+  id: '/docs/microservices/nats',
+  path: '/docs/microservices/nats',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsMicroservicesMqttRoute = DocsMicroservicesMqttRouteImport.update({
+  id: '/docs/microservices/mqtt',
+  path: '/docs/microservices/mqtt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsMicroservicesKafkaRoute = DocsMicroservicesKafkaRouteImport.update({
+  id: '/docs/microservices/kafka',
+  path: '/docs/microservices/kafka',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsMicroservicesInterceptorsRoute =
+  DocsMicroservicesInterceptorsRouteImport.update({
+    id: '/docs/microservices/interceptors',
+    path: '/docs/microservices/interceptors',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsMicroservicesGuardsRoute = DocsMicroservicesGuardsRouteImport.update({
+  id: '/docs/microservices/guards',
+  path: '/docs/microservices/guards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsMicroservicesGrpcRoute = DocsMicroservicesGrpcRouteImport.update({
+  id: '/docs/microservices/grpc',
+  path: '/docs/microservices/grpc',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsMicroservicesExceptionFiltersRoute =
+  DocsMicroservicesExceptionFiltersRouteImport.update({
+    id: '/docs/microservices/exception-filters',
+    path: '/docs/microservices/exception-filters',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsMicroservicesCustomTransportersRoute =
+  DocsMicroservicesCustomTransportersRouteImport.update({
+    id: '/docs/microservices/custom-transporters',
+    path: '/docs/microservices/custom-transporters',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsIntroductionFirstStepsRoute =
+  DocsIntroductionFirstStepsRouteImport.update({
+    id: '/docs/introduction/first-steps',
+    path: '/docs/introduction/first-steps',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsGraphqlUnionsAndEnumsRoute =
+  DocsGraphqlUnionsAndEnumsRouteImport.update({
+    id: '/docs/graphql/unions-and-enums',
+    path: '/docs/graphql/unions-and-enums',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsGraphqlSubscriptionsRoute =
+  DocsGraphqlSubscriptionsRouteImport.update({
+    id: '/docs/graphql/subscriptions',
+    path: '/docs/graphql/subscriptions',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsGraphqlSharingModelsRoute =
+  DocsGraphqlSharingModelsRouteImport.update({
+    id: '/docs/graphql/sharing-models',
+    path: '/docs/graphql/sharing-models',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsGraphqlScalarsRoute = DocsGraphqlScalarsRouteImport.update({
+  id: '/docs/graphql/scalars',
+  path: '/docs/graphql/scalars',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsGraphqlResolversRoute = DocsGraphqlResolversRouteImport.update({
+  id: '/docs/graphql/resolvers',
+  path: '/docs/graphql/resolvers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsGraphqlQuickStartRoute = DocsGraphqlQuickStartRouteImport.update({
+  id: '/docs/graphql/quick-start',
+  path: '/docs/graphql/quick-start',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsGraphqlPluginsRoute = DocsGraphqlPluginsRouteImport.update({
+  id: '/docs/graphql/plugins',
+  path: '/docs/graphql/plugins',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsGraphqlOtherFeaturesRoute =
+  DocsGraphqlOtherFeaturesRouteImport.update({
+    id: '/docs/graphql/other-features',
+    path: '/docs/graphql/other-features',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsGraphqlMutationsRoute = DocsGraphqlMutationsRouteImport.update({
+  id: '/docs/graphql/mutations',
+  path: '/docs/graphql/mutations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsGraphqlMappedTypesRoute = DocsGraphqlMappedTypesRouteImport.update({
+  id: '/docs/graphql/mapped-types',
+  path: '/docs/graphql/mapped-types',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsGraphqlInterfacesRoute = DocsGraphqlInterfacesRouteImport.update({
+  id: '/docs/graphql/interfaces',
+  path: '/docs/graphql/interfaces',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsGraphqlGeneratingSdlRoute =
+  DocsGraphqlGeneratingSdlRouteImport.update({
+    id: '/docs/graphql/generating-sdl',
+    path: '/docs/graphql/generating-sdl',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsGraphqlFieldMiddlewareRoute =
+  DocsGraphqlFieldMiddlewareRouteImport.update({
+    id: '/docs/graphql/field-middleware',
+    path: '/docs/graphql/field-middleware',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsGraphqlFederationRoute = DocsGraphqlFederationRouteImport.update({
+  id: '/docs/graphql/federation',
+  path: '/docs/graphql/federation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsGraphqlExtensionsRoute = DocsGraphqlExtensionsRouteImport.update({
+  id: '/docs/graphql/extensions',
+  path: '/docs/graphql/extensions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsGraphqlDirectivesRoute = DocsGraphqlDirectivesRouteImport.update({
+  id: '/docs/graphql/directives',
+  path: '/docs/graphql/directives',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsGraphqlComplexityRoute = DocsGraphqlComplexityRouteImport.update({
+  id: '/docs/graphql/complexity',
+  path: '/docs/graphql/complexity',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsGraphqlCliPluginRoute = DocsGraphqlCliPluginRouteImport.update({
+  id: '/docs/graphql/cli-plugin',
+  path: '/docs/graphql/cli-plugin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsFundamentalsTestingRoute = DocsFundamentalsTestingRouteImport.update({
+  id: '/docs/fundamentals/testing',
+  path: '/docs/fundamentals/testing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsFundamentalsPlatformAgnosticismRoute =
+  DocsFundamentalsPlatformAgnosticismRouteImport.update({
+    id: '/docs/fundamentals/platform-agnosticism',
+    path: '/docs/fundamentals/platform-agnosticism',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsFundamentalsModuleReferenceRoute =
+  DocsFundamentalsModuleReferenceRouteImport.update({
+    id: '/docs/fundamentals/module-reference',
+    path: '/docs/fundamentals/module-reference',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsFundamentalsLifecycleEventsRoute =
+  DocsFundamentalsLifecycleEventsRouteImport.update({
+    id: '/docs/fundamentals/lifecycle-events',
+    path: '/docs/fundamentals/lifecycle-events',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsFundamentalsLazyLoadingModulesRoute =
+  DocsFundamentalsLazyLoadingModulesRouteImport.update({
+    id: '/docs/fundamentals/lazy-loading-modules',
+    path: '/docs/fundamentals/lazy-loading-modules',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsFundamentalsInjectionScopesRoute =
+  DocsFundamentalsInjectionScopesRouteImport.update({
+    id: '/docs/fundamentals/injection-scopes',
+    path: '/docs/fundamentals/injection-scopes',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsFundamentalsExecutionContextRoute =
+  DocsFundamentalsExecutionContextRouteImport.update({
+    id: '/docs/fundamentals/execution-context',
+    path: '/docs/fundamentals/execution-context',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsFundamentalsDynamicModulesRoute =
+  DocsFundamentalsDynamicModulesRouteImport.update({
+    id: '/docs/fundamentals/dynamic-modules',
+    path: '/docs/fundamentals/dynamic-modules',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsFundamentalsDiscoveryServiceRoute =
+  DocsFundamentalsDiscoveryServiceRouteImport.update({
+    id: '/docs/fundamentals/discovery-service',
+    path: '/docs/fundamentals/discovery-service',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsFundamentalsCustomProvidersRoute =
+  DocsFundamentalsCustomProvidersRouteImport.update({
+    id: '/docs/fundamentals/custom-providers',
+    path: '/docs/fundamentals/custom-providers',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsFundamentalsCircularDependencyRoute =
+  DocsFundamentalsCircularDependencyRouteImport.update({
+    id: '/docs/fundamentals/circular-dependency',
+    path: '/docs/fundamentals/circular-dependency',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsFundamentalsAsynchronousProvidersRoute =
+  DocsFundamentalsAsynchronousProvidersRouteImport.update({
+    id: '/docs/fundamentals/asynchronous-providers',
+    path: '/docs/fundamentals/asynchronous-providers',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsFaqServerlessRoute = DocsFaqServerlessRouteImport.update({
+  id: '/docs/faq/serverless',
+  path: '/docs/faq/serverless',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsFaqRequestLifecycleRoute = DocsFaqRequestLifecycleRouteImport.update({
+  id: '/docs/faq/request-lifecycle',
+  path: '/docs/faq/request-lifecycle',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsFaqRawBodyRoute = DocsFaqRawBodyRouteImport.update({
+  id: '/docs/faq/raw-body',
+  path: '/docs/faq/raw-body',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsFaqKeepAliveRoute = DocsFaqKeepAliveRouteImport.update({
+  id: '/docs/faq/keep-alive',
+  path: '/docs/faq/keep-alive',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsFaqHybridApplicationRoute =
+  DocsFaqHybridApplicationRouteImport.update({
+    id: '/docs/faq/hybrid-application',
+    path: '/docs/faq/hybrid-application',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsFaqHttpsAndMultipleServersRoute =
+  DocsFaqHttpsAndMultipleServersRouteImport.update({
+    id: '/docs/faq/https-and-multiple-servers',
+    path: '/docs/faq/https-and-multiple-servers',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsFaqHttpAdapterRoute = DocsFaqHttpAdapterRouteImport.update({
+  id: '/docs/faq/http-adapter',
+  path: '/docs/faq/http-adapter',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsFaqGlobalPathPrefixRoute = DocsFaqGlobalPathPrefixRouteImport.update({
+  id: '/docs/faq/global-path-prefix',
+  path: '/docs/faq/global-path-prefix',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsFaqExamplesRoute = DocsFaqExamplesRouteImport.update({
+  id: '/docs/faq/examples',
+  path: '/docs/faq/examples',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsFaqCommonErrorsRoute = DocsFaqCommonErrorsRouteImport.update({
+  id: '/docs/faq/common-errors',
+  path: '/docs/faq/common-errors',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsDevtoolsOverviewRoute = DocsDevtoolsOverviewRouteImport.update({
+  id: '/docs/devtools/overview',
+  path: '/docs/devtools/overview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsDevtoolsCiCdIntegrationRoute =
+  DocsDevtoolsCiCdIntegrationRouteImport.update({
+    id: '/docs/devtools/ci-cd-integration',
+    path: '/docs/devtools/ci-cd-integration',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsDeploymentStandaloneAppsRoute =
+  DocsDeploymentStandaloneAppsRouteImport.update({
+    id: '/docs/deployment/standalone-apps',
+    path: '/docs/deployment/standalone-apps',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsDeploymentRequestLifecycleRoute =
+  DocsDeploymentRequestLifecycleRouteImport.update({
+    id: '/docs/deployment/request-lifecycle',
+    path: '/docs/deployment/request-lifecycle',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsDeploymentRawBodyRoute = DocsDeploymentRawBodyRouteImport.update({
+  id: '/docs/deployment/raw-body',
+  path: '/docs/deployment/raw-body',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsDeploymentKeepAliveRoute = DocsDeploymentKeepAliveRouteImport.update({
+  id: '/docs/deployment/keep-alive',
+  path: '/docs/deployment/keep-alive',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsDeploymentHybridRoute = DocsDeploymentHybridRouteImport.update({
+  id: '/docs/deployment/hybrid',
+  path: '/docs/deployment/hybrid',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsDeploymentHttpsAndMultipleServersRoute =
+  DocsDeploymentHttpsAndMultipleServersRouteImport.update({
+    id: '/docs/deployment/https-and-multiple-servers',
+    path: '/docs/deployment/https-and-multiple-servers',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsDeploymentHotReloadRoute = DocsDeploymentHotReloadRouteImport.update({
+  id: '/docs/deployment/hot-reload',
+  path: '/docs/deployment/hot-reload',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsDeploymentEdgeRoute = DocsDeploymentEdgeRouteImport.update({
+  id: '/docs/deployment/edge',
+  path: '/docs/deployment/edge',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsDeploymentCommonErrorsRoute =
+  DocsDeploymentCommonErrorsRouteImport.update({
+    id: '/docs/deployment/common-errors',
+    path: '/docs/deployment/common-errors',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsCliWorkspacesRoute = DocsCliWorkspacesRouteImport.update({
+  id: '/docs/cli/workspaces',
+  path: '/docs/cli/workspaces',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsCliUsageRoute = DocsCliUsageRouteImport.update({
+  id: '/docs/cli/usage',
+  path: '/docs/cli/usage',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsCliScriptsRoute = DocsCliScriptsRouteImport.update({
+  id: '/docs/cli/scripts',
+  path: '/docs/cli/scripts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsCliOverviewRoute = DocsCliOverviewRouteImport.update({
+  id: '/docs/cli/overview',
+  path: '/docs/cli/overview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsCliLibrariesRoute = DocsCliLibrariesRouteImport.update({
+  id: '/docs/cli/libraries',
+  path: '/docs/cli/libraries',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsBunNativeNativeWebsocketRoute =
+  DocsBunNativeNativeWebsocketRouteImport.update({
+    id: '/docs/bun-native/native-websocket',
+    path: '/docs/bun-native/native-websocket',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsBunNativeNativeFormdataRoute =
+  DocsBunNativeNativeFormdataRouteImport.update({
+    id: '/docs/bun-native/native-formdata',
+    path: '/docs/bun-native/native-formdata',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsBunNativeBunSqliteRoute = DocsBunNativeBunSqliteRouteImport.update({
+  id: '/docs/bun-native/bun-sqlite',
+  path: '/docs/bun-native/bun-sqlite',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsBunNativeBunSqlRoute = DocsBunNativeBunSqlRouteImport.update({
+  id: '/docs/bun-native/bun-sql',
+  path: '/docs/bun-native/bun-sql',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsBunNativeBunServeRoute = DocsBunNativeBunServeRouteImport.update({
+  id: '/docs/bun-native/bun-serve',
+  path: '/docs/bun-native/bun-serve',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsBunNativeBunS3Route = DocsBunNativeBunS3RouteImport.update({
+  id: '/docs/bun-native/bun-s3',
+  path: '/docs/bun-native/bun-s3',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsBunNativeBunPasswordRoute =
+  DocsBunNativeBunPasswordRouteImport.update({
+    id: '/docs/bun-native/bun-password',
+    path: '/docs/bun-native/bun-password',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsBunNativeBunCompressionRoute =
+  DocsBunNativeBunCompressionRouteImport.update({
+    id: '/docs/bun-native/bun-compression',
+    path: '/docs/bun-native/bun-compression',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsBuiltInsValidatorsRoute = DocsBuiltInsValidatorsRouteImport.update({
+  id: '/docs/built-ins/validators',
+  path: '/docs/built-ins/validators',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsBuiltInsTransformersRoute =
+  DocsBuiltInsTransformersRouteImport.update({
+    id: '/docs/built-ins/transformers',
+    path: '/docs/built-ins/transformers',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsBuiltInsPipesRoute = DocsBuiltInsPipesRouteImport.update({
+  id: '/docs/built-ins/pipes',
+  path: '/docs/built-ins/pipes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsBuiltInsInterceptorsRoute =
+  DocsBuiltInsInterceptorsRouteImport.update({
+    id: '/docs/built-ins/interceptors',
+    path: '/docs/built-ins/interceptors',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsBuiltInsExceptionsRoute = DocsBuiltInsExceptionsRouteImport.update({
+  id: '/docs/built-ins/exceptions',
+  path: '/docs/built-ins/exceptions',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/docs/built-ins/exceptions': typeof DocsBuiltInsExceptionsRoute
+  '/docs/built-ins/interceptors': typeof DocsBuiltInsInterceptorsRoute
+  '/docs/built-ins/pipes': typeof DocsBuiltInsPipesRoute
+  '/docs/built-ins/transformers': typeof DocsBuiltInsTransformersRoute
+  '/docs/built-ins/validators': typeof DocsBuiltInsValidatorsRoute
+  '/docs/bun-native/bun-compression': typeof DocsBunNativeBunCompressionRoute
+  '/docs/bun-native/bun-password': typeof DocsBunNativeBunPasswordRoute
+  '/docs/bun-native/bun-s3': typeof DocsBunNativeBunS3Route
+  '/docs/bun-native/bun-serve': typeof DocsBunNativeBunServeRoute
+  '/docs/bun-native/bun-sql': typeof DocsBunNativeBunSqlRoute
+  '/docs/bun-native/bun-sqlite': typeof DocsBunNativeBunSqliteRoute
+  '/docs/bun-native/native-formdata': typeof DocsBunNativeNativeFormdataRoute
+  '/docs/bun-native/native-websocket': typeof DocsBunNativeNativeWebsocketRoute
+  '/docs/cli/libraries': typeof DocsCliLibrariesRoute
+  '/docs/cli/overview': typeof DocsCliOverviewRoute
+  '/docs/cli/scripts': typeof DocsCliScriptsRoute
+  '/docs/cli/usage': typeof DocsCliUsageRoute
+  '/docs/cli/workspaces': typeof DocsCliWorkspacesRoute
+  '/docs/deployment/common-errors': typeof DocsDeploymentCommonErrorsRoute
+  '/docs/deployment/edge': typeof DocsDeploymentEdgeRoute
+  '/docs/deployment/hot-reload': typeof DocsDeploymentHotReloadRoute
+  '/docs/deployment/https-and-multiple-servers': typeof DocsDeploymentHttpsAndMultipleServersRoute
+  '/docs/deployment/hybrid': typeof DocsDeploymentHybridRoute
+  '/docs/deployment/keep-alive': typeof DocsDeploymentKeepAliveRoute
+  '/docs/deployment/raw-body': typeof DocsDeploymentRawBodyRoute
+  '/docs/deployment/request-lifecycle': typeof DocsDeploymentRequestLifecycleRoute
+  '/docs/deployment/standalone-apps': typeof DocsDeploymentStandaloneAppsRoute
+  '/docs/devtools/ci-cd-integration': typeof DocsDevtoolsCiCdIntegrationRoute
+  '/docs/devtools/overview': typeof DocsDevtoolsOverviewRoute
+  '/docs/faq/common-errors': typeof DocsFaqCommonErrorsRoute
+  '/docs/faq/examples': typeof DocsFaqExamplesRoute
+  '/docs/faq/global-path-prefix': typeof DocsFaqGlobalPathPrefixRoute
+  '/docs/faq/http-adapter': typeof DocsFaqHttpAdapterRoute
+  '/docs/faq/https-and-multiple-servers': typeof DocsFaqHttpsAndMultipleServersRoute
+  '/docs/faq/hybrid-application': typeof DocsFaqHybridApplicationRoute
+  '/docs/faq/keep-alive': typeof DocsFaqKeepAliveRoute
+  '/docs/faq/raw-body': typeof DocsFaqRawBodyRoute
+  '/docs/faq/request-lifecycle': typeof DocsFaqRequestLifecycleRoute
+  '/docs/faq/serverless': typeof DocsFaqServerlessRoute
+  '/docs/fundamentals/asynchronous-providers': typeof DocsFundamentalsAsynchronousProvidersRoute
+  '/docs/fundamentals/circular-dependency': typeof DocsFundamentalsCircularDependencyRoute
+  '/docs/fundamentals/custom-providers': typeof DocsFundamentalsCustomProvidersRoute
+  '/docs/fundamentals/discovery-service': typeof DocsFundamentalsDiscoveryServiceRoute
+  '/docs/fundamentals/dynamic-modules': typeof DocsFundamentalsDynamicModulesRoute
+  '/docs/fundamentals/execution-context': typeof DocsFundamentalsExecutionContextRoute
+  '/docs/fundamentals/injection-scopes': typeof DocsFundamentalsInjectionScopesRoute
+  '/docs/fundamentals/lazy-loading-modules': typeof DocsFundamentalsLazyLoadingModulesRoute
+  '/docs/fundamentals/lifecycle-events': typeof DocsFundamentalsLifecycleEventsRoute
+  '/docs/fundamentals/module-reference': typeof DocsFundamentalsModuleReferenceRoute
+  '/docs/fundamentals/platform-agnosticism': typeof DocsFundamentalsPlatformAgnosticismRoute
+  '/docs/fundamentals/testing': typeof DocsFundamentalsTestingRoute
+  '/docs/graphql/cli-plugin': typeof DocsGraphqlCliPluginRoute
+  '/docs/graphql/complexity': typeof DocsGraphqlComplexityRoute
+  '/docs/graphql/directives': typeof DocsGraphqlDirectivesRoute
+  '/docs/graphql/extensions': typeof DocsGraphqlExtensionsRoute
+  '/docs/graphql/federation': typeof DocsGraphqlFederationRoute
+  '/docs/graphql/field-middleware': typeof DocsGraphqlFieldMiddlewareRoute
+  '/docs/graphql/generating-sdl': typeof DocsGraphqlGeneratingSdlRoute
+  '/docs/graphql/interfaces': typeof DocsGraphqlInterfacesRoute
+  '/docs/graphql/mapped-types': typeof DocsGraphqlMappedTypesRoute
+  '/docs/graphql/mutations': typeof DocsGraphqlMutationsRoute
+  '/docs/graphql/other-features': typeof DocsGraphqlOtherFeaturesRoute
+  '/docs/graphql/plugins': typeof DocsGraphqlPluginsRoute
+  '/docs/graphql/quick-start': typeof DocsGraphqlQuickStartRoute
+  '/docs/graphql/resolvers': typeof DocsGraphqlResolversRoute
+  '/docs/graphql/scalars': typeof DocsGraphqlScalarsRoute
+  '/docs/graphql/sharing-models': typeof DocsGraphqlSharingModelsRoute
+  '/docs/graphql/subscriptions': typeof DocsGraphqlSubscriptionsRoute
+  '/docs/graphql/unions-and-enums': typeof DocsGraphqlUnionsAndEnumsRoute
+  '/docs/introduction/first-steps': typeof DocsIntroductionFirstStepsRoute
+  '/docs/microservices/custom-transporters': typeof DocsMicroservicesCustomTransportersRoute
+  '/docs/microservices/exception-filters': typeof DocsMicroservicesExceptionFiltersRoute
+  '/docs/microservices/grpc': typeof DocsMicroservicesGrpcRoute
+  '/docs/microservices/guards': typeof DocsMicroservicesGuardsRoute
+  '/docs/microservices/interceptors': typeof DocsMicroservicesInterceptorsRoute
+  '/docs/microservices/kafka': typeof DocsMicroservicesKafkaRoute
+  '/docs/microservices/mqtt': typeof DocsMicroservicesMqttRoute
+  '/docs/microservices/nats': typeof DocsMicroservicesNatsRoute
+  '/docs/microservices/overview': typeof DocsMicroservicesOverviewRoute
+  '/docs/microservices/pipes': typeof DocsMicroservicesPipesRoute
+  '/docs/microservices/rabbitmq': typeof DocsMicroservicesRabbitmqRoute
+  '/docs/microservices/redis': typeof DocsMicroservicesRedisRoute
+  '/docs/migration/codemods': typeof DocsMigrationCodemodsRoute
+  '/docs/migration/compat': typeof DocsMigrationCompatRoute
+  '/docs/migration/concepts': typeof DocsMigrationConceptsRoute
+  '/docs/openapi/cli-plugin': typeof DocsOpenapiCliPluginRoute
+  '/docs/openapi/decorators': typeof DocsOpenapiDecoratorsRoute
+  '/docs/openapi/introduction': typeof DocsOpenapiIntroductionRoute
+  '/docs/openapi/mapped-types': typeof DocsOpenapiMappedTypesRoute
+  '/docs/openapi/operations': typeof DocsOpenapiOperationsRoute
+  '/docs/openapi/other-features': typeof DocsOpenapiOtherFeaturesRoute
+  '/docs/openapi/scalar': typeof DocsOpenapiScalarRoute
+  '/docs/openapi/security': typeof DocsOpenapiSecurityRoute
+  '/docs/openapi/types-and-parameters': typeof DocsOpenapiTypesAndParametersRoute
+  '/docs/overview/controllers': typeof DocsOverviewControllersRoute
+  '/docs/overview/custom-decorators': typeof DocsOverviewCustomDecoratorsRoute
+  '/docs/overview/exception-filters': typeof DocsOverviewExceptionFiltersRoute
+  '/docs/overview/guards': typeof DocsOverviewGuardsRoute
+  '/docs/overview/interceptors': typeof DocsOverviewInterceptorsRoute
+  '/docs/overview/middleware': typeof DocsOverviewMiddlewareRoute
+  '/docs/overview/modules': typeof DocsOverviewModulesRoute
+  '/docs/overview/pipes': typeof DocsOverviewPipesRoute
+  '/docs/overview/providers': typeof DocsOverviewProvidersRoute
+  '/docs/performance/methodology': typeof DocsPerformanceMethodologyRoute
+  '/docs/performance/results': typeof DocsPerformanceResultsRoute
+  '/docs/performance/tuning': typeof DocsPerformanceTuningRoute
+  '/docs/recipes/async-local-storage': typeof DocsRecipesAsyncLocalStorageRoute
+  '/docs/recipes/commander': typeof DocsRecipesCommanderRoute
+  '/docs/recipes/compodoc': typeof DocsRecipesCompodocRoute
+  '/docs/recipes/cqrs': typeof DocsRecipesCqrsRoute
+  '/docs/recipes/crud-generator': typeof DocsRecipesCrudGeneratorRoute
+  '/docs/recipes/health-checks': typeof DocsRecipesHealthChecksRoute
+  '/docs/recipes/hot-reload': typeof DocsRecipesHotReloadRoute
+  '/docs/recipes/mikroorm': typeof DocsRecipesMikroormRoute
+  '/docs/recipes/mongoose': typeof DocsRecipesMongooseRoute
+  '/docs/recipes/necord': typeof DocsRecipesNecordRoute
+  '/docs/recipes/passport': typeof DocsRecipesPassportRoute
+  '/docs/recipes/prisma': typeof DocsRecipesPrismaRoute
+  '/docs/recipes/repl': typeof DocsRecipesReplRoute
+  '/docs/recipes/router-module': typeof DocsRecipesRouterModuleRoute
+  '/docs/recipes/sentry': typeof DocsRecipesSentryRoute
+  '/docs/recipes/sequelize': typeof DocsRecipesSequelizeRoute
+  '/docs/recipes/serve-static': typeof DocsRecipesServeStaticRoute
+  '/docs/recipes/suites': typeof DocsRecipesSuitesRoute
+  '/docs/recipes/swagger': typeof DocsRecipesSwaggerRoute
+  '/docs/recipes/swc': typeof DocsRecipesSwcRoute
+  '/docs/recipes/typeorm': typeof DocsRecipesTypeormRoute
+  '/docs/security/authentication': typeof DocsSecurityAuthenticationRoute
+  '/docs/security/authorization': typeof DocsSecurityAuthorizationRoute
+  '/docs/security/cors': typeof DocsSecurityCorsRoute
+  '/docs/security/csrf': typeof DocsSecurityCsrfRoute
+  '/docs/security/encryption-and-hashing': typeof DocsSecurityEncryptionAndHashingRoute
+  '/docs/security/helmet': typeof DocsSecurityHelmetRoute
+  '/docs/security/rate-limiting': typeof DocsSecurityRateLimitingRoute
+  '/docs/techniques/caching': typeof DocsTechniquesCachingRoute
+  '/docs/techniques/compression': typeof DocsTechniquesCompressionRoute
+  '/docs/techniques/configuration': typeof DocsTechniquesConfigurationRoute
+  '/docs/techniques/cookies': typeof DocsTechniquesCookiesRoute
+  '/docs/techniques/database': typeof DocsTechniquesDatabaseRoute
+  '/docs/techniques/events': typeof DocsTechniquesEventsRoute
+  '/docs/techniques/file-upload': typeof DocsTechniquesFileUploadRoute
+  '/docs/techniques/http-module': typeof DocsTechniquesHttpModuleRoute
+  '/docs/techniques/logging': typeof DocsTechniquesLoggingRoute
+  '/docs/techniques/mongo': typeof DocsTechniquesMongoRoute
+  '/docs/techniques/mvc': typeof DocsTechniquesMvcRoute
+  '/docs/techniques/performance': typeof DocsTechniquesPerformanceRoute
+  '/docs/techniques/queues': typeof DocsTechniquesQueuesRoute
+  '/docs/techniques/serialization': typeof DocsTechniquesSerializationRoute
+  '/docs/techniques/session': typeof DocsTechniquesSessionRoute
+  '/docs/techniques/sse': typeof DocsTechniquesSseRoute
+  '/docs/techniques/streaming-files': typeof DocsTechniquesStreamingFilesRoute
+  '/docs/techniques/task-scheduling': typeof DocsTechniquesTaskSchedulingRoute
+  '/docs/techniques/validation': typeof DocsTechniquesValidationRoute
+  '/docs/techniques/versioning': typeof DocsTechniquesVersioningRoute
+  '/docs/websockets/adapters': typeof DocsWebsocketsAdaptersRoute
+  '/docs/websockets/exception-filters': typeof DocsWebsocketsExceptionFiltersRoute
+  '/docs/websockets/gateways': typeof DocsWebsocketsGatewaysRoute
+  '/docs/websockets/guards': typeof DocsWebsocketsGuardsRoute
+  '/docs/websockets/interceptors': typeof DocsWebsocketsInterceptorsRoute
+  '/docs/websockets/pipes': typeof DocsWebsocketsPipesRoute
+  '/docs/examples/': typeof DocsExamplesIndexRoute
+  '/docs/production/': typeof DocsProductionIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/docs/built-ins/exceptions': typeof DocsBuiltInsExceptionsRoute
+  '/docs/built-ins/interceptors': typeof DocsBuiltInsInterceptorsRoute
+  '/docs/built-ins/pipes': typeof DocsBuiltInsPipesRoute
+  '/docs/built-ins/transformers': typeof DocsBuiltInsTransformersRoute
+  '/docs/built-ins/validators': typeof DocsBuiltInsValidatorsRoute
+  '/docs/bun-native/bun-compression': typeof DocsBunNativeBunCompressionRoute
+  '/docs/bun-native/bun-password': typeof DocsBunNativeBunPasswordRoute
+  '/docs/bun-native/bun-s3': typeof DocsBunNativeBunS3Route
+  '/docs/bun-native/bun-serve': typeof DocsBunNativeBunServeRoute
+  '/docs/bun-native/bun-sql': typeof DocsBunNativeBunSqlRoute
+  '/docs/bun-native/bun-sqlite': typeof DocsBunNativeBunSqliteRoute
+  '/docs/bun-native/native-formdata': typeof DocsBunNativeNativeFormdataRoute
+  '/docs/bun-native/native-websocket': typeof DocsBunNativeNativeWebsocketRoute
+  '/docs/cli/libraries': typeof DocsCliLibrariesRoute
+  '/docs/cli/overview': typeof DocsCliOverviewRoute
+  '/docs/cli/scripts': typeof DocsCliScriptsRoute
+  '/docs/cli/usage': typeof DocsCliUsageRoute
+  '/docs/cli/workspaces': typeof DocsCliWorkspacesRoute
+  '/docs/deployment/common-errors': typeof DocsDeploymentCommonErrorsRoute
+  '/docs/deployment/edge': typeof DocsDeploymentEdgeRoute
+  '/docs/deployment/hot-reload': typeof DocsDeploymentHotReloadRoute
+  '/docs/deployment/https-and-multiple-servers': typeof DocsDeploymentHttpsAndMultipleServersRoute
+  '/docs/deployment/hybrid': typeof DocsDeploymentHybridRoute
+  '/docs/deployment/keep-alive': typeof DocsDeploymentKeepAliveRoute
+  '/docs/deployment/raw-body': typeof DocsDeploymentRawBodyRoute
+  '/docs/deployment/request-lifecycle': typeof DocsDeploymentRequestLifecycleRoute
+  '/docs/deployment/standalone-apps': typeof DocsDeploymentStandaloneAppsRoute
+  '/docs/devtools/ci-cd-integration': typeof DocsDevtoolsCiCdIntegrationRoute
+  '/docs/devtools/overview': typeof DocsDevtoolsOverviewRoute
+  '/docs/faq/common-errors': typeof DocsFaqCommonErrorsRoute
+  '/docs/faq/examples': typeof DocsFaqExamplesRoute
+  '/docs/faq/global-path-prefix': typeof DocsFaqGlobalPathPrefixRoute
+  '/docs/faq/http-adapter': typeof DocsFaqHttpAdapterRoute
+  '/docs/faq/https-and-multiple-servers': typeof DocsFaqHttpsAndMultipleServersRoute
+  '/docs/faq/hybrid-application': typeof DocsFaqHybridApplicationRoute
+  '/docs/faq/keep-alive': typeof DocsFaqKeepAliveRoute
+  '/docs/faq/raw-body': typeof DocsFaqRawBodyRoute
+  '/docs/faq/request-lifecycle': typeof DocsFaqRequestLifecycleRoute
+  '/docs/faq/serverless': typeof DocsFaqServerlessRoute
+  '/docs/fundamentals/asynchronous-providers': typeof DocsFundamentalsAsynchronousProvidersRoute
+  '/docs/fundamentals/circular-dependency': typeof DocsFundamentalsCircularDependencyRoute
+  '/docs/fundamentals/custom-providers': typeof DocsFundamentalsCustomProvidersRoute
+  '/docs/fundamentals/discovery-service': typeof DocsFundamentalsDiscoveryServiceRoute
+  '/docs/fundamentals/dynamic-modules': typeof DocsFundamentalsDynamicModulesRoute
+  '/docs/fundamentals/execution-context': typeof DocsFundamentalsExecutionContextRoute
+  '/docs/fundamentals/injection-scopes': typeof DocsFundamentalsInjectionScopesRoute
+  '/docs/fundamentals/lazy-loading-modules': typeof DocsFundamentalsLazyLoadingModulesRoute
+  '/docs/fundamentals/lifecycle-events': typeof DocsFundamentalsLifecycleEventsRoute
+  '/docs/fundamentals/module-reference': typeof DocsFundamentalsModuleReferenceRoute
+  '/docs/fundamentals/platform-agnosticism': typeof DocsFundamentalsPlatformAgnosticismRoute
+  '/docs/fundamentals/testing': typeof DocsFundamentalsTestingRoute
+  '/docs/graphql/cli-plugin': typeof DocsGraphqlCliPluginRoute
+  '/docs/graphql/complexity': typeof DocsGraphqlComplexityRoute
+  '/docs/graphql/directives': typeof DocsGraphqlDirectivesRoute
+  '/docs/graphql/extensions': typeof DocsGraphqlExtensionsRoute
+  '/docs/graphql/federation': typeof DocsGraphqlFederationRoute
+  '/docs/graphql/field-middleware': typeof DocsGraphqlFieldMiddlewareRoute
+  '/docs/graphql/generating-sdl': typeof DocsGraphqlGeneratingSdlRoute
+  '/docs/graphql/interfaces': typeof DocsGraphqlInterfacesRoute
+  '/docs/graphql/mapped-types': typeof DocsGraphqlMappedTypesRoute
+  '/docs/graphql/mutations': typeof DocsGraphqlMutationsRoute
+  '/docs/graphql/other-features': typeof DocsGraphqlOtherFeaturesRoute
+  '/docs/graphql/plugins': typeof DocsGraphqlPluginsRoute
+  '/docs/graphql/quick-start': typeof DocsGraphqlQuickStartRoute
+  '/docs/graphql/resolvers': typeof DocsGraphqlResolversRoute
+  '/docs/graphql/scalars': typeof DocsGraphqlScalarsRoute
+  '/docs/graphql/sharing-models': typeof DocsGraphqlSharingModelsRoute
+  '/docs/graphql/subscriptions': typeof DocsGraphqlSubscriptionsRoute
+  '/docs/graphql/unions-and-enums': typeof DocsGraphqlUnionsAndEnumsRoute
+  '/docs/introduction/first-steps': typeof DocsIntroductionFirstStepsRoute
+  '/docs/microservices/custom-transporters': typeof DocsMicroservicesCustomTransportersRoute
+  '/docs/microservices/exception-filters': typeof DocsMicroservicesExceptionFiltersRoute
+  '/docs/microservices/grpc': typeof DocsMicroservicesGrpcRoute
+  '/docs/microservices/guards': typeof DocsMicroservicesGuardsRoute
+  '/docs/microservices/interceptors': typeof DocsMicroservicesInterceptorsRoute
+  '/docs/microservices/kafka': typeof DocsMicroservicesKafkaRoute
+  '/docs/microservices/mqtt': typeof DocsMicroservicesMqttRoute
+  '/docs/microservices/nats': typeof DocsMicroservicesNatsRoute
+  '/docs/microservices/overview': typeof DocsMicroservicesOverviewRoute
+  '/docs/microservices/pipes': typeof DocsMicroservicesPipesRoute
+  '/docs/microservices/rabbitmq': typeof DocsMicroservicesRabbitmqRoute
+  '/docs/microservices/redis': typeof DocsMicroservicesRedisRoute
+  '/docs/migration/codemods': typeof DocsMigrationCodemodsRoute
+  '/docs/migration/compat': typeof DocsMigrationCompatRoute
+  '/docs/migration/concepts': typeof DocsMigrationConceptsRoute
+  '/docs/openapi/cli-plugin': typeof DocsOpenapiCliPluginRoute
+  '/docs/openapi/decorators': typeof DocsOpenapiDecoratorsRoute
+  '/docs/openapi/introduction': typeof DocsOpenapiIntroductionRoute
+  '/docs/openapi/mapped-types': typeof DocsOpenapiMappedTypesRoute
+  '/docs/openapi/operations': typeof DocsOpenapiOperationsRoute
+  '/docs/openapi/other-features': typeof DocsOpenapiOtherFeaturesRoute
+  '/docs/openapi/scalar': typeof DocsOpenapiScalarRoute
+  '/docs/openapi/security': typeof DocsOpenapiSecurityRoute
+  '/docs/openapi/types-and-parameters': typeof DocsOpenapiTypesAndParametersRoute
+  '/docs/overview/controllers': typeof DocsOverviewControllersRoute
+  '/docs/overview/custom-decorators': typeof DocsOverviewCustomDecoratorsRoute
+  '/docs/overview/exception-filters': typeof DocsOverviewExceptionFiltersRoute
+  '/docs/overview/guards': typeof DocsOverviewGuardsRoute
+  '/docs/overview/interceptors': typeof DocsOverviewInterceptorsRoute
+  '/docs/overview/middleware': typeof DocsOverviewMiddlewareRoute
+  '/docs/overview/modules': typeof DocsOverviewModulesRoute
+  '/docs/overview/pipes': typeof DocsOverviewPipesRoute
+  '/docs/overview/providers': typeof DocsOverviewProvidersRoute
+  '/docs/performance/methodology': typeof DocsPerformanceMethodologyRoute
+  '/docs/performance/results': typeof DocsPerformanceResultsRoute
+  '/docs/performance/tuning': typeof DocsPerformanceTuningRoute
+  '/docs/recipes/async-local-storage': typeof DocsRecipesAsyncLocalStorageRoute
+  '/docs/recipes/commander': typeof DocsRecipesCommanderRoute
+  '/docs/recipes/compodoc': typeof DocsRecipesCompodocRoute
+  '/docs/recipes/cqrs': typeof DocsRecipesCqrsRoute
+  '/docs/recipes/crud-generator': typeof DocsRecipesCrudGeneratorRoute
+  '/docs/recipes/health-checks': typeof DocsRecipesHealthChecksRoute
+  '/docs/recipes/hot-reload': typeof DocsRecipesHotReloadRoute
+  '/docs/recipes/mikroorm': typeof DocsRecipesMikroormRoute
+  '/docs/recipes/mongoose': typeof DocsRecipesMongooseRoute
+  '/docs/recipes/necord': typeof DocsRecipesNecordRoute
+  '/docs/recipes/passport': typeof DocsRecipesPassportRoute
+  '/docs/recipes/prisma': typeof DocsRecipesPrismaRoute
+  '/docs/recipes/repl': typeof DocsRecipesReplRoute
+  '/docs/recipes/router-module': typeof DocsRecipesRouterModuleRoute
+  '/docs/recipes/sentry': typeof DocsRecipesSentryRoute
+  '/docs/recipes/sequelize': typeof DocsRecipesSequelizeRoute
+  '/docs/recipes/serve-static': typeof DocsRecipesServeStaticRoute
+  '/docs/recipes/suites': typeof DocsRecipesSuitesRoute
+  '/docs/recipes/swagger': typeof DocsRecipesSwaggerRoute
+  '/docs/recipes/swc': typeof DocsRecipesSwcRoute
+  '/docs/recipes/typeorm': typeof DocsRecipesTypeormRoute
+  '/docs/security/authentication': typeof DocsSecurityAuthenticationRoute
+  '/docs/security/authorization': typeof DocsSecurityAuthorizationRoute
+  '/docs/security/cors': typeof DocsSecurityCorsRoute
+  '/docs/security/csrf': typeof DocsSecurityCsrfRoute
+  '/docs/security/encryption-and-hashing': typeof DocsSecurityEncryptionAndHashingRoute
+  '/docs/security/helmet': typeof DocsSecurityHelmetRoute
+  '/docs/security/rate-limiting': typeof DocsSecurityRateLimitingRoute
+  '/docs/techniques/caching': typeof DocsTechniquesCachingRoute
+  '/docs/techniques/compression': typeof DocsTechniquesCompressionRoute
+  '/docs/techniques/configuration': typeof DocsTechniquesConfigurationRoute
+  '/docs/techniques/cookies': typeof DocsTechniquesCookiesRoute
+  '/docs/techniques/database': typeof DocsTechniquesDatabaseRoute
+  '/docs/techniques/events': typeof DocsTechniquesEventsRoute
+  '/docs/techniques/file-upload': typeof DocsTechniquesFileUploadRoute
+  '/docs/techniques/http-module': typeof DocsTechniquesHttpModuleRoute
+  '/docs/techniques/logging': typeof DocsTechniquesLoggingRoute
+  '/docs/techniques/mongo': typeof DocsTechniquesMongoRoute
+  '/docs/techniques/mvc': typeof DocsTechniquesMvcRoute
+  '/docs/techniques/performance': typeof DocsTechniquesPerformanceRoute
+  '/docs/techniques/queues': typeof DocsTechniquesQueuesRoute
+  '/docs/techniques/serialization': typeof DocsTechniquesSerializationRoute
+  '/docs/techniques/session': typeof DocsTechniquesSessionRoute
+  '/docs/techniques/sse': typeof DocsTechniquesSseRoute
+  '/docs/techniques/streaming-files': typeof DocsTechniquesStreamingFilesRoute
+  '/docs/techniques/task-scheduling': typeof DocsTechniquesTaskSchedulingRoute
+  '/docs/techniques/validation': typeof DocsTechniquesValidationRoute
+  '/docs/techniques/versioning': typeof DocsTechniquesVersioningRoute
+  '/docs/websockets/adapters': typeof DocsWebsocketsAdaptersRoute
+  '/docs/websockets/exception-filters': typeof DocsWebsocketsExceptionFiltersRoute
+  '/docs/websockets/gateways': typeof DocsWebsocketsGatewaysRoute
+  '/docs/websockets/guards': typeof DocsWebsocketsGuardsRoute
+  '/docs/websockets/interceptors': typeof DocsWebsocketsInterceptorsRoute
+  '/docs/websockets/pipes': typeof DocsWebsocketsPipesRoute
+  '/docs/examples': typeof DocsExamplesIndexRoute
+  '/docs/production': typeof DocsProductionIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/docs/built-ins/exceptions': typeof DocsBuiltInsExceptionsRoute
+  '/docs/built-ins/interceptors': typeof DocsBuiltInsInterceptorsRoute
+  '/docs/built-ins/pipes': typeof DocsBuiltInsPipesRoute
+  '/docs/built-ins/transformers': typeof DocsBuiltInsTransformersRoute
+  '/docs/built-ins/validators': typeof DocsBuiltInsValidatorsRoute
+  '/docs/bun-native/bun-compression': typeof DocsBunNativeBunCompressionRoute
+  '/docs/bun-native/bun-password': typeof DocsBunNativeBunPasswordRoute
+  '/docs/bun-native/bun-s3': typeof DocsBunNativeBunS3Route
+  '/docs/bun-native/bun-serve': typeof DocsBunNativeBunServeRoute
+  '/docs/bun-native/bun-sql': typeof DocsBunNativeBunSqlRoute
+  '/docs/bun-native/bun-sqlite': typeof DocsBunNativeBunSqliteRoute
+  '/docs/bun-native/native-formdata': typeof DocsBunNativeNativeFormdataRoute
+  '/docs/bun-native/native-websocket': typeof DocsBunNativeNativeWebsocketRoute
+  '/docs/cli/libraries': typeof DocsCliLibrariesRoute
+  '/docs/cli/overview': typeof DocsCliOverviewRoute
+  '/docs/cli/scripts': typeof DocsCliScriptsRoute
+  '/docs/cli/usage': typeof DocsCliUsageRoute
+  '/docs/cli/workspaces': typeof DocsCliWorkspacesRoute
+  '/docs/deployment/common-errors': typeof DocsDeploymentCommonErrorsRoute
+  '/docs/deployment/edge': typeof DocsDeploymentEdgeRoute
+  '/docs/deployment/hot-reload': typeof DocsDeploymentHotReloadRoute
+  '/docs/deployment/https-and-multiple-servers': typeof DocsDeploymentHttpsAndMultipleServersRoute
+  '/docs/deployment/hybrid': typeof DocsDeploymentHybridRoute
+  '/docs/deployment/keep-alive': typeof DocsDeploymentKeepAliveRoute
+  '/docs/deployment/raw-body': typeof DocsDeploymentRawBodyRoute
+  '/docs/deployment/request-lifecycle': typeof DocsDeploymentRequestLifecycleRoute
+  '/docs/deployment/standalone-apps': typeof DocsDeploymentStandaloneAppsRoute
+  '/docs/devtools/ci-cd-integration': typeof DocsDevtoolsCiCdIntegrationRoute
+  '/docs/devtools/overview': typeof DocsDevtoolsOverviewRoute
+  '/docs/faq/common-errors': typeof DocsFaqCommonErrorsRoute
+  '/docs/faq/examples': typeof DocsFaqExamplesRoute
+  '/docs/faq/global-path-prefix': typeof DocsFaqGlobalPathPrefixRoute
+  '/docs/faq/http-adapter': typeof DocsFaqHttpAdapterRoute
+  '/docs/faq/https-and-multiple-servers': typeof DocsFaqHttpsAndMultipleServersRoute
+  '/docs/faq/hybrid-application': typeof DocsFaqHybridApplicationRoute
+  '/docs/faq/keep-alive': typeof DocsFaqKeepAliveRoute
+  '/docs/faq/raw-body': typeof DocsFaqRawBodyRoute
+  '/docs/faq/request-lifecycle': typeof DocsFaqRequestLifecycleRoute
+  '/docs/faq/serverless': typeof DocsFaqServerlessRoute
+  '/docs/fundamentals/asynchronous-providers': typeof DocsFundamentalsAsynchronousProvidersRoute
+  '/docs/fundamentals/circular-dependency': typeof DocsFundamentalsCircularDependencyRoute
+  '/docs/fundamentals/custom-providers': typeof DocsFundamentalsCustomProvidersRoute
+  '/docs/fundamentals/discovery-service': typeof DocsFundamentalsDiscoveryServiceRoute
+  '/docs/fundamentals/dynamic-modules': typeof DocsFundamentalsDynamicModulesRoute
+  '/docs/fundamentals/execution-context': typeof DocsFundamentalsExecutionContextRoute
+  '/docs/fundamentals/injection-scopes': typeof DocsFundamentalsInjectionScopesRoute
+  '/docs/fundamentals/lazy-loading-modules': typeof DocsFundamentalsLazyLoadingModulesRoute
+  '/docs/fundamentals/lifecycle-events': typeof DocsFundamentalsLifecycleEventsRoute
+  '/docs/fundamentals/module-reference': typeof DocsFundamentalsModuleReferenceRoute
+  '/docs/fundamentals/platform-agnosticism': typeof DocsFundamentalsPlatformAgnosticismRoute
+  '/docs/fundamentals/testing': typeof DocsFundamentalsTestingRoute
+  '/docs/graphql/cli-plugin': typeof DocsGraphqlCliPluginRoute
+  '/docs/graphql/complexity': typeof DocsGraphqlComplexityRoute
+  '/docs/graphql/directives': typeof DocsGraphqlDirectivesRoute
+  '/docs/graphql/extensions': typeof DocsGraphqlExtensionsRoute
+  '/docs/graphql/federation': typeof DocsGraphqlFederationRoute
+  '/docs/graphql/field-middleware': typeof DocsGraphqlFieldMiddlewareRoute
+  '/docs/graphql/generating-sdl': typeof DocsGraphqlGeneratingSdlRoute
+  '/docs/graphql/interfaces': typeof DocsGraphqlInterfacesRoute
+  '/docs/graphql/mapped-types': typeof DocsGraphqlMappedTypesRoute
+  '/docs/graphql/mutations': typeof DocsGraphqlMutationsRoute
+  '/docs/graphql/other-features': typeof DocsGraphqlOtherFeaturesRoute
+  '/docs/graphql/plugins': typeof DocsGraphqlPluginsRoute
+  '/docs/graphql/quick-start': typeof DocsGraphqlQuickStartRoute
+  '/docs/graphql/resolvers': typeof DocsGraphqlResolversRoute
+  '/docs/graphql/scalars': typeof DocsGraphqlScalarsRoute
+  '/docs/graphql/sharing-models': typeof DocsGraphqlSharingModelsRoute
+  '/docs/graphql/subscriptions': typeof DocsGraphqlSubscriptionsRoute
+  '/docs/graphql/unions-and-enums': typeof DocsGraphqlUnionsAndEnumsRoute
+  '/docs/introduction/first-steps': typeof DocsIntroductionFirstStepsRoute
+  '/docs/microservices/custom-transporters': typeof DocsMicroservicesCustomTransportersRoute
+  '/docs/microservices/exception-filters': typeof DocsMicroservicesExceptionFiltersRoute
+  '/docs/microservices/grpc': typeof DocsMicroservicesGrpcRoute
+  '/docs/microservices/guards': typeof DocsMicroservicesGuardsRoute
+  '/docs/microservices/interceptors': typeof DocsMicroservicesInterceptorsRoute
+  '/docs/microservices/kafka': typeof DocsMicroservicesKafkaRoute
+  '/docs/microservices/mqtt': typeof DocsMicroservicesMqttRoute
+  '/docs/microservices/nats': typeof DocsMicroservicesNatsRoute
+  '/docs/microservices/overview': typeof DocsMicroservicesOverviewRoute
+  '/docs/microservices/pipes': typeof DocsMicroservicesPipesRoute
+  '/docs/microservices/rabbitmq': typeof DocsMicroservicesRabbitmqRoute
+  '/docs/microservices/redis': typeof DocsMicroservicesRedisRoute
+  '/docs/migration/codemods': typeof DocsMigrationCodemodsRoute
+  '/docs/migration/compat': typeof DocsMigrationCompatRoute
+  '/docs/migration/concepts': typeof DocsMigrationConceptsRoute
+  '/docs/openapi/cli-plugin': typeof DocsOpenapiCliPluginRoute
+  '/docs/openapi/decorators': typeof DocsOpenapiDecoratorsRoute
+  '/docs/openapi/introduction': typeof DocsOpenapiIntroductionRoute
+  '/docs/openapi/mapped-types': typeof DocsOpenapiMappedTypesRoute
+  '/docs/openapi/operations': typeof DocsOpenapiOperationsRoute
+  '/docs/openapi/other-features': typeof DocsOpenapiOtherFeaturesRoute
+  '/docs/openapi/scalar': typeof DocsOpenapiScalarRoute
+  '/docs/openapi/security': typeof DocsOpenapiSecurityRoute
+  '/docs/openapi/types-and-parameters': typeof DocsOpenapiTypesAndParametersRoute
+  '/docs/overview/controllers': typeof DocsOverviewControllersRoute
+  '/docs/overview/custom-decorators': typeof DocsOverviewCustomDecoratorsRoute
+  '/docs/overview/exception-filters': typeof DocsOverviewExceptionFiltersRoute
+  '/docs/overview/guards': typeof DocsOverviewGuardsRoute
+  '/docs/overview/interceptors': typeof DocsOverviewInterceptorsRoute
+  '/docs/overview/middleware': typeof DocsOverviewMiddlewareRoute
+  '/docs/overview/modules': typeof DocsOverviewModulesRoute
+  '/docs/overview/pipes': typeof DocsOverviewPipesRoute
+  '/docs/overview/providers': typeof DocsOverviewProvidersRoute
+  '/docs/performance/methodology': typeof DocsPerformanceMethodologyRoute
+  '/docs/performance/results': typeof DocsPerformanceResultsRoute
+  '/docs/performance/tuning': typeof DocsPerformanceTuningRoute
+  '/docs/recipes/async-local-storage': typeof DocsRecipesAsyncLocalStorageRoute
+  '/docs/recipes/commander': typeof DocsRecipesCommanderRoute
+  '/docs/recipes/compodoc': typeof DocsRecipesCompodocRoute
+  '/docs/recipes/cqrs': typeof DocsRecipesCqrsRoute
+  '/docs/recipes/crud-generator': typeof DocsRecipesCrudGeneratorRoute
+  '/docs/recipes/health-checks': typeof DocsRecipesHealthChecksRoute
+  '/docs/recipes/hot-reload': typeof DocsRecipesHotReloadRoute
+  '/docs/recipes/mikroorm': typeof DocsRecipesMikroormRoute
+  '/docs/recipes/mongoose': typeof DocsRecipesMongooseRoute
+  '/docs/recipes/necord': typeof DocsRecipesNecordRoute
+  '/docs/recipes/passport': typeof DocsRecipesPassportRoute
+  '/docs/recipes/prisma': typeof DocsRecipesPrismaRoute
+  '/docs/recipes/repl': typeof DocsRecipesReplRoute
+  '/docs/recipes/router-module': typeof DocsRecipesRouterModuleRoute
+  '/docs/recipes/sentry': typeof DocsRecipesSentryRoute
+  '/docs/recipes/sequelize': typeof DocsRecipesSequelizeRoute
+  '/docs/recipes/serve-static': typeof DocsRecipesServeStaticRoute
+  '/docs/recipes/suites': typeof DocsRecipesSuitesRoute
+  '/docs/recipes/swagger': typeof DocsRecipesSwaggerRoute
+  '/docs/recipes/swc': typeof DocsRecipesSwcRoute
+  '/docs/recipes/typeorm': typeof DocsRecipesTypeormRoute
+  '/docs/security/authentication': typeof DocsSecurityAuthenticationRoute
+  '/docs/security/authorization': typeof DocsSecurityAuthorizationRoute
+  '/docs/security/cors': typeof DocsSecurityCorsRoute
+  '/docs/security/csrf': typeof DocsSecurityCsrfRoute
+  '/docs/security/encryption-and-hashing': typeof DocsSecurityEncryptionAndHashingRoute
+  '/docs/security/helmet': typeof DocsSecurityHelmetRoute
+  '/docs/security/rate-limiting': typeof DocsSecurityRateLimitingRoute
+  '/docs/techniques/caching': typeof DocsTechniquesCachingRoute
+  '/docs/techniques/compression': typeof DocsTechniquesCompressionRoute
+  '/docs/techniques/configuration': typeof DocsTechniquesConfigurationRoute
+  '/docs/techniques/cookies': typeof DocsTechniquesCookiesRoute
+  '/docs/techniques/database': typeof DocsTechniquesDatabaseRoute
+  '/docs/techniques/events': typeof DocsTechniquesEventsRoute
+  '/docs/techniques/file-upload': typeof DocsTechniquesFileUploadRoute
+  '/docs/techniques/http-module': typeof DocsTechniquesHttpModuleRoute
+  '/docs/techniques/logging': typeof DocsTechniquesLoggingRoute
+  '/docs/techniques/mongo': typeof DocsTechniquesMongoRoute
+  '/docs/techniques/mvc': typeof DocsTechniquesMvcRoute
+  '/docs/techniques/performance': typeof DocsTechniquesPerformanceRoute
+  '/docs/techniques/queues': typeof DocsTechniquesQueuesRoute
+  '/docs/techniques/serialization': typeof DocsTechniquesSerializationRoute
+  '/docs/techniques/session': typeof DocsTechniquesSessionRoute
+  '/docs/techniques/sse': typeof DocsTechniquesSseRoute
+  '/docs/techniques/streaming-files': typeof DocsTechniquesStreamingFilesRoute
+  '/docs/techniques/task-scheduling': typeof DocsTechniquesTaskSchedulingRoute
+  '/docs/techniques/validation': typeof DocsTechniquesValidationRoute
+  '/docs/techniques/versioning': typeof DocsTechniquesVersioningRoute
+  '/docs/websockets/adapters': typeof DocsWebsocketsAdaptersRoute
+  '/docs/websockets/exception-filters': typeof DocsWebsocketsExceptionFiltersRoute
+  '/docs/websockets/gateways': typeof DocsWebsocketsGatewaysRoute
+  '/docs/websockets/guards': typeof DocsWebsocketsGuardsRoute
+  '/docs/websockets/interceptors': typeof DocsWebsocketsInterceptorsRoute
+  '/docs/websockets/pipes': typeof DocsWebsocketsPipesRoute
+  '/docs/examples/': typeof DocsExamplesIndexRoute
+  '/docs/production/': typeof DocsProductionIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/docs/built-ins/exceptions'
+    | '/docs/built-ins/interceptors'
+    | '/docs/built-ins/pipes'
+    | '/docs/built-ins/transformers'
+    | '/docs/built-ins/validators'
+    | '/docs/bun-native/bun-compression'
+    | '/docs/bun-native/bun-password'
+    | '/docs/bun-native/bun-s3'
+    | '/docs/bun-native/bun-serve'
+    | '/docs/bun-native/bun-sql'
+    | '/docs/bun-native/bun-sqlite'
+    | '/docs/bun-native/native-formdata'
+    | '/docs/bun-native/native-websocket'
+    | '/docs/cli/libraries'
+    | '/docs/cli/overview'
+    | '/docs/cli/scripts'
+    | '/docs/cli/usage'
+    | '/docs/cli/workspaces'
+    | '/docs/deployment/common-errors'
+    | '/docs/deployment/edge'
+    | '/docs/deployment/hot-reload'
+    | '/docs/deployment/https-and-multiple-servers'
+    | '/docs/deployment/hybrid'
+    | '/docs/deployment/keep-alive'
+    | '/docs/deployment/raw-body'
+    | '/docs/deployment/request-lifecycle'
+    | '/docs/deployment/standalone-apps'
+    | '/docs/devtools/ci-cd-integration'
+    | '/docs/devtools/overview'
+    | '/docs/faq/common-errors'
+    | '/docs/faq/examples'
+    | '/docs/faq/global-path-prefix'
+    | '/docs/faq/http-adapter'
+    | '/docs/faq/https-and-multiple-servers'
+    | '/docs/faq/hybrid-application'
+    | '/docs/faq/keep-alive'
+    | '/docs/faq/raw-body'
+    | '/docs/faq/request-lifecycle'
+    | '/docs/faq/serverless'
+    | '/docs/fundamentals/asynchronous-providers'
+    | '/docs/fundamentals/circular-dependency'
+    | '/docs/fundamentals/custom-providers'
+    | '/docs/fundamentals/discovery-service'
+    | '/docs/fundamentals/dynamic-modules'
+    | '/docs/fundamentals/execution-context'
+    | '/docs/fundamentals/injection-scopes'
+    | '/docs/fundamentals/lazy-loading-modules'
+    | '/docs/fundamentals/lifecycle-events'
+    | '/docs/fundamentals/module-reference'
+    | '/docs/fundamentals/platform-agnosticism'
+    | '/docs/fundamentals/testing'
+    | '/docs/graphql/cli-plugin'
+    | '/docs/graphql/complexity'
+    | '/docs/graphql/directives'
+    | '/docs/graphql/extensions'
+    | '/docs/graphql/federation'
+    | '/docs/graphql/field-middleware'
+    | '/docs/graphql/generating-sdl'
+    | '/docs/graphql/interfaces'
+    | '/docs/graphql/mapped-types'
+    | '/docs/graphql/mutations'
+    | '/docs/graphql/other-features'
+    | '/docs/graphql/plugins'
+    | '/docs/graphql/quick-start'
+    | '/docs/graphql/resolvers'
+    | '/docs/graphql/scalars'
+    | '/docs/graphql/sharing-models'
+    | '/docs/graphql/subscriptions'
+    | '/docs/graphql/unions-and-enums'
+    | '/docs/introduction/first-steps'
+    | '/docs/microservices/custom-transporters'
+    | '/docs/microservices/exception-filters'
+    | '/docs/microservices/grpc'
+    | '/docs/microservices/guards'
+    | '/docs/microservices/interceptors'
+    | '/docs/microservices/kafka'
+    | '/docs/microservices/mqtt'
+    | '/docs/microservices/nats'
+    | '/docs/microservices/overview'
+    | '/docs/microservices/pipes'
+    | '/docs/microservices/rabbitmq'
+    | '/docs/microservices/redis'
+    | '/docs/migration/codemods'
+    | '/docs/migration/compat'
+    | '/docs/migration/concepts'
+    | '/docs/openapi/cli-plugin'
+    | '/docs/openapi/decorators'
+    | '/docs/openapi/introduction'
+    | '/docs/openapi/mapped-types'
+    | '/docs/openapi/operations'
+    | '/docs/openapi/other-features'
+    | '/docs/openapi/scalar'
+    | '/docs/openapi/security'
+    | '/docs/openapi/types-and-parameters'
+    | '/docs/overview/controllers'
+    | '/docs/overview/custom-decorators'
+    | '/docs/overview/exception-filters'
+    | '/docs/overview/guards'
+    | '/docs/overview/interceptors'
+    | '/docs/overview/middleware'
+    | '/docs/overview/modules'
+    | '/docs/overview/pipes'
+    | '/docs/overview/providers'
+    | '/docs/performance/methodology'
+    | '/docs/performance/results'
+    | '/docs/performance/tuning'
+    | '/docs/recipes/async-local-storage'
+    | '/docs/recipes/commander'
+    | '/docs/recipes/compodoc'
+    | '/docs/recipes/cqrs'
+    | '/docs/recipes/crud-generator'
+    | '/docs/recipes/health-checks'
+    | '/docs/recipes/hot-reload'
+    | '/docs/recipes/mikroorm'
+    | '/docs/recipes/mongoose'
+    | '/docs/recipes/necord'
+    | '/docs/recipes/passport'
+    | '/docs/recipes/prisma'
+    | '/docs/recipes/repl'
+    | '/docs/recipes/router-module'
+    | '/docs/recipes/sentry'
+    | '/docs/recipes/sequelize'
+    | '/docs/recipes/serve-static'
+    | '/docs/recipes/suites'
+    | '/docs/recipes/swagger'
+    | '/docs/recipes/swc'
+    | '/docs/recipes/typeorm'
+    | '/docs/security/authentication'
+    | '/docs/security/authorization'
+    | '/docs/security/cors'
+    | '/docs/security/csrf'
+    | '/docs/security/encryption-and-hashing'
+    | '/docs/security/helmet'
+    | '/docs/security/rate-limiting'
+    | '/docs/techniques/caching'
+    | '/docs/techniques/compression'
+    | '/docs/techniques/configuration'
+    | '/docs/techniques/cookies'
+    | '/docs/techniques/database'
+    | '/docs/techniques/events'
+    | '/docs/techniques/file-upload'
+    | '/docs/techniques/http-module'
+    | '/docs/techniques/logging'
+    | '/docs/techniques/mongo'
+    | '/docs/techniques/mvc'
+    | '/docs/techniques/performance'
+    | '/docs/techniques/queues'
+    | '/docs/techniques/serialization'
+    | '/docs/techniques/session'
+    | '/docs/techniques/sse'
+    | '/docs/techniques/streaming-files'
+    | '/docs/techniques/task-scheduling'
+    | '/docs/techniques/validation'
+    | '/docs/techniques/versioning'
+    | '/docs/websockets/adapters'
+    | '/docs/websockets/exception-filters'
+    | '/docs/websockets/gateways'
+    | '/docs/websockets/guards'
+    | '/docs/websockets/interceptors'
+    | '/docs/websockets/pipes'
+    | '/docs/examples/'
+    | '/docs/production/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/docs/built-ins/exceptions'
+    | '/docs/built-ins/interceptors'
+    | '/docs/built-ins/pipes'
+    | '/docs/built-ins/transformers'
+    | '/docs/built-ins/validators'
+    | '/docs/bun-native/bun-compression'
+    | '/docs/bun-native/bun-password'
+    | '/docs/bun-native/bun-s3'
+    | '/docs/bun-native/bun-serve'
+    | '/docs/bun-native/bun-sql'
+    | '/docs/bun-native/bun-sqlite'
+    | '/docs/bun-native/native-formdata'
+    | '/docs/bun-native/native-websocket'
+    | '/docs/cli/libraries'
+    | '/docs/cli/overview'
+    | '/docs/cli/scripts'
+    | '/docs/cli/usage'
+    | '/docs/cli/workspaces'
+    | '/docs/deployment/common-errors'
+    | '/docs/deployment/edge'
+    | '/docs/deployment/hot-reload'
+    | '/docs/deployment/https-and-multiple-servers'
+    | '/docs/deployment/hybrid'
+    | '/docs/deployment/keep-alive'
+    | '/docs/deployment/raw-body'
+    | '/docs/deployment/request-lifecycle'
+    | '/docs/deployment/standalone-apps'
+    | '/docs/devtools/ci-cd-integration'
+    | '/docs/devtools/overview'
+    | '/docs/faq/common-errors'
+    | '/docs/faq/examples'
+    | '/docs/faq/global-path-prefix'
+    | '/docs/faq/http-adapter'
+    | '/docs/faq/https-and-multiple-servers'
+    | '/docs/faq/hybrid-application'
+    | '/docs/faq/keep-alive'
+    | '/docs/faq/raw-body'
+    | '/docs/faq/request-lifecycle'
+    | '/docs/faq/serverless'
+    | '/docs/fundamentals/asynchronous-providers'
+    | '/docs/fundamentals/circular-dependency'
+    | '/docs/fundamentals/custom-providers'
+    | '/docs/fundamentals/discovery-service'
+    | '/docs/fundamentals/dynamic-modules'
+    | '/docs/fundamentals/execution-context'
+    | '/docs/fundamentals/injection-scopes'
+    | '/docs/fundamentals/lazy-loading-modules'
+    | '/docs/fundamentals/lifecycle-events'
+    | '/docs/fundamentals/module-reference'
+    | '/docs/fundamentals/platform-agnosticism'
+    | '/docs/fundamentals/testing'
+    | '/docs/graphql/cli-plugin'
+    | '/docs/graphql/complexity'
+    | '/docs/graphql/directives'
+    | '/docs/graphql/extensions'
+    | '/docs/graphql/federation'
+    | '/docs/graphql/field-middleware'
+    | '/docs/graphql/generating-sdl'
+    | '/docs/graphql/interfaces'
+    | '/docs/graphql/mapped-types'
+    | '/docs/graphql/mutations'
+    | '/docs/graphql/other-features'
+    | '/docs/graphql/plugins'
+    | '/docs/graphql/quick-start'
+    | '/docs/graphql/resolvers'
+    | '/docs/graphql/scalars'
+    | '/docs/graphql/sharing-models'
+    | '/docs/graphql/subscriptions'
+    | '/docs/graphql/unions-and-enums'
+    | '/docs/introduction/first-steps'
+    | '/docs/microservices/custom-transporters'
+    | '/docs/microservices/exception-filters'
+    | '/docs/microservices/grpc'
+    | '/docs/microservices/guards'
+    | '/docs/microservices/interceptors'
+    | '/docs/microservices/kafka'
+    | '/docs/microservices/mqtt'
+    | '/docs/microservices/nats'
+    | '/docs/microservices/overview'
+    | '/docs/microservices/pipes'
+    | '/docs/microservices/rabbitmq'
+    | '/docs/microservices/redis'
+    | '/docs/migration/codemods'
+    | '/docs/migration/compat'
+    | '/docs/migration/concepts'
+    | '/docs/openapi/cli-plugin'
+    | '/docs/openapi/decorators'
+    | '/docs/openapi/introduction'
+    | '/docs/openapi/mapped-types'
+    | '/docs/openapi/operations'
+    | '/docs/openapi/other-features'
+    | '/docs/openapi/scalar'
+    | '/docs/openapi/security'
+    | '/docs/openapi/types-and-parameters'
+    | '/docs/overview/controllers'
+    | '/docs/overview/custom-decorators'
+    | '/docs/overview/exception-filters'
+    | '/docs/overview/guards'
+    | '/docs/overview/interceptors'
+    | '/docs/overview/middleware'
+    | '/docs/overview/modules'
+    | '/docs/overview/pipes'
+    | '/docs/overview/providers'
+    | '/docs/performance/methodology'
+    | '/docs/performance/results'
+    | '/docs/performance/tuning'
+    | '/docs/recipes/async-local-storage'
+    | '/docs/recipes/commander'
+    | '/docs/recipes/compodoc'
+    | '/docs/recipes/cqrs'
+    | '/docs/recipes/crud-generator'
+    | '/docs/recipes/health-checks'
+    | '/docs/recipes/hot-reload'
+    | '/docs/recipes/mikroorm'
+    | '/docs/recipes/mongoose'
+    | '/docs/recipes/necord'
+    | '/docs/recipes/passport'
+    | '/docs/recipes/prisma'
+    | '/docs/recipes/repl'
+    | '/docs/recipes/router-module'
+    | '/docs/recipes/sentry'
+    | '/docs/recipes/sequelize'
+    | '/docs/recipes/serve-static'
+    | '/docs/recipes/suites'
+    | '/docs/recipes/swagger'
+    | '/docs/recipes/swc'
+    | '/docs/recipes/typeorm'
+    | '/docs/security/authentication'
+    | '/docs/security/authorization'
+    | '/docs/security/cors'
+    | '/docs/security/csrf'
+    | '/docs/security/encryption-and-hashing'
+    | '/docs/security/helmet'
+    | '/docs/security/rate-limiting'
+    | '/docs/techniques/caching'
+    | '/docs/techniques/compression'
+    | '/docs/techniques/configuration'
+    | '/docs/techniques/cookies'
+    | '/docs/techniques/database'
+    | '/docs/techniques/events'
+    | '/docs/techniques/file-upload'
+    | '/docs/techniques/http-module'
+    | '/docs/techniques/logging'
+    | '/docs/techniques/mongo'
+    | '/docs/techniques/mvc'
+    | '/docs/techniques/performance'
+    | '/docs/techniques/queues'
+    | '/docs/techniques/serialization'
+    | '/docs/techniques/session'
+    | '/docs/techniques/sse'
+    | '/docs/techniques/streaming-files'
+    | '/docs/techniques/task-scheduling'
+    | '/docs/techniques/validation'
+    | '/docs/techniques/versioning'
+    | '/docs/websockets/adapters'
+    | '/docs/websockets/exception-filters'
+    | '/docs/websockets/gateways'
+    | '/docs/websockets/guards'
+    | '/docs/websockets/interceptors'
+    | '/docs/websockets/pipes'
+    | '/docs/examples'
+    | '/docs/production'
+  id:
+    | '__root__'
+    | '/'
+    | '/docs/built-ins/exceptions'
+    | '/docs/built-ins/interceptors'
+    | '/docs/built-ins/pipes'
+    | '/docs/built-ins/transformers'
+    | '/docs/built-ins/validators'
+    | '/docs/bun-native/bun-compression'
+    | '/docs/bun-native/bun-password'
+    | '/docs/bun-native/bun-s3'
+    | '/docs/bun-native/bun-serve'
+    | '/docs/bun-native/bun-sql'
+    | '/docs/bun-native/bun-sqlite'
+    | '/docs/bun-native/native-formdata'
+    | '/docs/bun-native/native-websocket'
+    | '/docs/cli/libraries'
+    | '/docs/cli/overview'
+    | '/docs/cli/scripts'
+    | '/docs/cli/usage'
+    | '/docs/cli/workspaces'
+    | '/docs/deployment/common-errors'
+    | '/docs/deployment/edge'
+    | '/docs/deployment/hot-reload'
+    | '/docs/deployment/https-and-multiple-servers'
+    | '/docs/deployment/hybrid'
+    | '/docs/deployment/keep-alive'
+    | '/docs/deployment/raw-body'
+    | '/docs/deployment/request-lifecycle'
+    | '/docs/deployment/standalone-apps'
+    | '/docs/devtools/ci-cd-integration'
+    | '/docs/devtools/overview'
+    | '/docs/faq/common-errors'
+    | '/docs/faq/examples'
+    | '/docs/faq/global-path-prefix'
+    | '/docs/faq/http-adapter'
+    | '/docs/faq/https-and-multiple-servers'
+    | '/docs/faq/hybrid-application'
+    | '/docs/faq/keep-alive'
+    | '/docs/faq/raw-body'
+    | '/docs/faq/request-lifecycle'
+    | '/docs/faq/serverless'
+    | '/docs/fundamentals/asynchronous-providers'
+    | '/docs/fundamentals/circular-dependency'
+    | '/docs/fundamentals/custom-providers'
+    | '/docs/fundamentals/discovery-service'
+    | '/docs/fundamentals/dynamic-modules'
+    | '/docs/fundamentals/execution-context'
+    | '/docs/fundamentals/injection-scopes'
+    | '/docs/fundamentals/lazy-loading-modules'
+    | '/docs/fundamentals/lifecycle-events'
+    | '/docs/fundamentals/module-reference'
+    | '/docs/fundamentals/platform-agnosticism'
+    | '/docs/fundamentals/testing'
+    | '/docs/graphql/cli-plugin'
+    | '/docs/graphql/complexity'
+    | '/docs/graphql/directives'
+    | '/docs/graphql/extensions'
+    | '/docs/graphql/federation'
+    | '/docs/graphql/field-middleware'
+    | '/docs/graphql/generating-sdl'
+    | '/docs/graphql/interfaces'
+    | '/docs/graphql/mapped-types'
+    | '/docs/graphql/mutations'
+    | '/docs/graphql/other-features'
+    | '/docs/graphql/plugins'
+    | '/docs/graphql/quick-start'
+    | '/docs/graphql/resolvers'
+    | '/docs/graphql/scalars'
+    | '/docs/graphql/sharing-models'
+    | '/docs/graphql/subscriptions'
+    | '/docs/graphql/unions-and-enums'
+    | '/docs/introduction/first-steps'
+    | '/docs/microservices/custom-transporters'
+    | '/docs/microservices/exception-filters'
+    | '/docs/microservices/grpc'
+    | '/docs/microservices/guards'
+    | '/docs/microservices/interceptors'
+    | '/docs/microservices/kafka'
+    | '/docs/microservices/mqtt'
+    | '/docs/microservices/nats'
+    | '/docs/microservices/overview'
+    | '/docs/microservices/pipes'
+    | '/docs/microservices/rabbitmq'
+    | '/docs/microservices/redis'
+    | '/docs/migration/codemods'
+    | '/docs/migration/compat'
+    | '/docs/migration/concepts'
+    | '/docs/openapi/cli-plugin'
+    | '/docs/openapi/decorators'
+    | '/docs/openapi/introduction'
+    | '/docs/openapi/mapped-types'
+    | '/docs/openapi/operations'
+    | '/docs/openapi/other-features'
+    | '/docs/openapi/scalar'
+    | '/docs/openapi/security'
+    | '/docs/openapi/types-and-parameters'
+    | '/docs/overview/controllers'
+    | '/docs/overview/custom-decorators'
+    | '/docs/overview/exception-filters'
+    | '/docs/overview/guards'
+    | '/docs/overview/interceptors'
+    | '/docs/overview/middleware'
+    | '/docs/overview/modules'
+    | '/docs/overview/pipes'
+    | '/docs/overview/providers'
+    | '/docs/performance/methodology'
+    | '/docs/performance/results'
+    | '/docs/performance/tuning'
+    | '/docs/recipes/async-local-storage'
+    | '/docs/recipes/commander'
+    | '/docs/recipes/compodoc'
+    | '/docs/recipes/cqrs'
+    | '/docs/recipes/crud-generator'
+    | '/docs/recipes/health-checks'
+    | '/docs/recipes/hot-reload'
+    | '/docs/recipes/mikroorm'
+    | '/docs/recipes/mongoose'
+    | '/docs/recipes/necord'
+    | '/docs/recipes/passport'
+    | '/docs/recipes/prisma'
+    | '/docs/recipes/repl'
+    | '/docs/recipes/router-module'
+    | '/docs/recipes/sentry'
+    | '/docs/recipes/sequelize'
+    | '/docs/recipes/serve-static'
+    | '/docs/recipes/suites'
+    | '/docs/recipes/swagger'
+    | '/docs/recipes/swc'
+    | '/docs/recipes/typeorm'
+    | '/docs/security/authentication'
+    | '/docs/security/authorization'
+    | '/docs/security/cors'
+    | '/docs/security/csrf'
+    | '/docs/security/encryption-and-hashing'
+    | '/docs/security/helmet'
+    | '/docs/security/rate-limiting'
+    | '/docs/techniques/caching'
+    | '/docs/techniques/compression'
+    | '/docs/techniques/configuration'
+    | '/docs/techniques/cookies'
+    | '/docs/techniques/database'
+    | '/docs/techniques/events'
+    | '/docs/techniques/file-upload'
+    | '/docs/techniques/http-module'
+    | '/docs/techniques/logging'
+    | '/docs/techniques/mongo'
+    | '/docs/techniques/mvc'
+    | '/docs/techniques/performance'
+    | '/docs/techniques/queues'
+    | '/docs/techniques/serialization'
+    | '/docs/techniques/session'
+    | '/docs/techniques/sse'
+    | '/docs/techniques/streaming-files'
+    | '/docs/techniques/task-scheduling'
+    | '/docs/techniques/validation'
+    | '/docs/techniques/versioning'
+    | '/docs/websockets/adapters'
+    | '/docs/websockets/exception-filters'
+    | '/docs/websockets/gateways'
+    | '/docs/websockets/guards'
+    | '/docs/websockets/interceptors'
+    | '/docs/websockets/pipes'
+    | '/docs/examples/'
+    | '/docs/production/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DocsBuiltInsExceptionsRoute: typeof DocsBuiltInsExceptionsRoute
+  DocsBuiltInsInterceptorsRoute: typeof DocsBuiltInsInterceptorsRoute
+  DocsBuiltInsPipesRoute: typeof DocsBuiltInsPipesRoute
+  DocsBuiltInsTransformersRoute: typeof DocsBuiltInsTransformersRoute
+  DocsBuiltInsValidatorsRoute: typeof DocsBuiltInsValidatorsRoute
+  DocsBunNativeBunCompressionRoute: typeof DocsBunNativeBunCompressionRoute
+  DocsBunNativeBunPasswordRoute: typeof DocsBunNativeBunPasswordRoute
+  DocsBunNativeBunS3Route: typeof DocsBunNativeBunS3Route
+  DocsBunNativeBunServeRoute: typeof DocsBunNativeBunServeRoute
+  DocsBunNativeBunSqlRoute: typeof DocsBunNativeBunSqlRoute
+  DocsBunNativeBunSqliteRoute: typeof DocsBunNativeBunSqliteRoute
+  DocsBunNativeNativeFormdataRoute: typeof DocsBunNativeNativeFormdataRoute
+  DocsBunNativeNativeWebsocketRoute: typeof DocsBunNativeNativeWebsocketRoute
+  DocsCliLibrariesRoute: typeof DocsCliLibrariesRoute
+  DocsCliOverviewRoute: typeof DocsCliOverviewRoute
+  DocsCliScriptsRoute: typeof DocsCliScriptsRoute
+  DocsCliUsageRoute: typeof DocsCliUsageRoute
+  DocsCliWorkspacesRoute: typeof DocsCliWorkspacesRoute
+  DocsDeploymentCommonErrorsRoute: typeof DocsDeploymentCommonErrorsRoute
+  DocsDeploymentEdgeRoute: typeof DocsDeploymentEdgeRoute
+  DocsDeploymentHotReloadRoute: typeof DocsDeploymentHotReloadRoute
+  DocsDeploymentHttpsAndMultipleServersRoute: typeof DocsDeploymentHttpsAndMultipleServersRoute
+  DocsDeploymentHybridRoute: typeof DocsDeploymentHybridRoute
+  DocsDeploymentKeepAliveRoute: typeof DocsDeploymentKeepAliveRoute
+  DocsDeploymentRawBodyRoute: typeof DocsDeploymentRawBodyRoute
+  DocsDeploymentRequestLifecycleRoute: typeof DocsDeploymentRequestLifecycleRoute
+  DocsDeploymentStandaloneAppsRoute: typeof DocsDeploymentStandaloneAppsRoute
+  DocsDevtoolsCiCdIntegrationRoute: typeof DocsDevtoolsCiCdIntegrationRoute
+  DocsDevtoolsOverviewRoute: typeof DocsDevtoolsOverviewRoute
+  DocsFaqCommonErrorsRoute: typeof DocsFaqCommonErrorsRoute
+  DocsFaqExamplesRoute: typeof DocsFaqExamplesRoute
+  DocsFaqGlobalPathPrefixRoute: typeof DocsFaqGlobalPathPrefixRoute
+  DocsFaqHttpAdapterRoute: typeof DocsFaqHttpAdapterRoute
+  DocsFaqHttpsAndMultipleServersRoute: typeof DocsFaqHttpsAndMultipleServersRoute
+  DocsFaqHybridApplicationRoute: typeof DocsFaqHybridApplicationRoute
+  DocsFaqKeepAliveRoute: typeof DocsFaqKeepAliveRoute
+  DocsFaqRawBodyRoute: typeof DocsFaqRawBodyRoute
+  DocsFaqRequestLifecycleRoute: typeof DocsFaqRequestLifecycleRoute
+  DocsFaqServerlessRoute: typeof DocsFaqServerlessRoute
+  DocsFundamentalsAsynchronousProvidersRoute: typeof DocsFundamentalsAsynchronousProvidersRoute
+  DocsFundamentalsCircularDependencyRoute: typeof DocsFundamentalsCircularDependencyRoute
+  DocsFundamentalsCustomProvidersRoute: typeof DocsFundamentalsCustomProvidersRoute
+  DocsFundamentalsDiscoveryServiceRoute: typeof DocsFundamentalsDiscoveryServiceRoute
+  DocsFundamentalsDynamicModulesRoute: typeof DocsFundamentalsDynamicModulesRoute
+  DocsFundamentalsExecutionContextRoute: typeof DocsFundamentalsExecutionContextRoute
+  DocsFundamentalsInjectionScopesRoute: typeof DocsFundamentalsInjectionScopesRoute
+  DocsFundamentalsLazyLoadingModulesRoute: typeof DocsFundamentalsLazyLoadingModulesRoute
+  DocsFundamentalsLifecycleEventsRoute: typeof DocsFundamentalsLifecycleEventsRoute
+  DocsFundamentalsModuleReferenceRoute: typeof DocsFundamentalsModuleReferenceRoute
+  DocsFundamentalsPlatformAgnosticismRoute: typeof DocsFundamentalsPlatformAgnosticismRoute
+  DocsFundamentalsTestingRoute: typeof DocsFundamentalsTestingRoute
+  DocsGraphqlCliPluginRoute: typeof DocsGraphqlCliPluginRoute
+  DocsGraphqlComplexityRoute: typeof DocsGraphqlComplexityRoute
+  DocsGraphqlDirectivesRoute: typeof DocsGraphqlDirectivesRoute
+  DocsGraphqlExtensionsRoute: typeof DocsGraphqlExtensionsRoute
+  DocsGraphqlFederationRoute: typeof DocsGraphqlFederationRoute
+  DocsGraphqlFieldMiddlewareRoute: typeof DocsGraphqlFieldMiddlewareRoute
+  DocsGraphqlGeneratingSdlRoute: typeof DocsGraphqlGeneratingSdlRoute
+  DocsGraphqlInterfacesRoute: typeof DocsGraphqlInterfacesRoute
+  DocsGraphqlMappedTypesRoute: typeof DocsGraphqlMappedTypesRoute
+  DocsGraphqlMutationsRoute: typeof DocsGraphqlMutationsRoute
+  DocsGraphqlOtherFeaturesRoute: typeof DocsGraphqlOtherFeaturesRoute
+  DocsGraphqlPluginsRoute: typeof DocsGraphqlPluginsRoute
+  DocsGraphqlQuickStartRoute: typeof DocsGraphqlQuickStartRoute
+  DocsGraphqlResolversRoute: typeof DocsGraphqlResolversRoute
+  DocsGraphqlScalarsRoute: typeof DocsGraphqlScalarsRoute
+  DocsGraphqlSharingModelsRoute: typeof DocsGraphqlSharingModelsRoute
+  DocsGraphqlSubscriptionsRoute: typeof DocsGraphqlSubscriptionsRoute
+  DocsGraphqlUnionsAndEnumsRoute: typeof DocsGraphqlUnionsAndEnumsRoute
+  DocsIntroductionFirstStepsRoute: typeof DocsIntroductionFirstStepsRoute
+  DocsMicroservicesCustomTransportersRoute: typeof DocsMicroservicesCustomTransportersRoute
+  DocsMicroservicesExceptionFiltersRoute: typeof DocsMicroservicesExceptionFiltersRoute
+  DocsMicroservicesGrpcRoute: typeof DocsMicroservicesGrpcRoute
+  DocsMicroservicesGuardsRoute: typeof DocsMicroservicesGuardsRoute
+  DocsMicroservicesInterceptorsRoute: typeof DocsMicroservicesInterceptorsRoute
+  DocsMicroservicesKafkaRoute: typeof DocsMicroservicesKafkaRoute
+  DocsMicroservicesMqttRoute: typeof DocsMicroservicesMqttRoute
+  DocsMicroservicesNatsRoute: typeof DocsMicroservicesNatsRoute
+  DocsMicroservicesOverviewRoute: typeof DocsMicroservicesOverviewRoute
+  DocsMicroservicesPipesRoute: typeof DocsMicroservicesPipesRoute
+  DocsMicroservicesRabbitmqRoute: typeof DocsMicroservicesRabbitmqRoute
+  DocsMicroservicesRedisRoute: typeof DocsMicroservicesRedisRoute
+  DocsMigrationCodemodsRoute: typeof DocsMigrationCodemodsRoute
+  DocsMigrationCompatRoute: typeof DocsMigrationCompatRoute
+  DocsMigrationConceptsRoute: typeof DocsMigrationConceptsRoute
+  DocsOpenapiCliPluginRoute: typeof DocsOpenapiCliPluginRoute
+  DocsOpenapiDecoratorsRoute: typeof DocsOpenapiDecoratorsRoute
+  DocsOpenapiIntroductionRoute: typeof DocsOpenapiIntroductionRoute
+  DocsOpenapiMappedTypesRoute: typeof DocsOpenapiMappedTypesRoute
+  DocsOpenapiOperationsRoute: typeof DocsOpenapiOperationsRoute
+  DocsOpenapiOtherFeaturesRoute: typeof DocsOpenapiOtherFeaturesRoute
+  DocsOpenapiScalarRoute: typeof DocsOpenapiScalarRoute
+  DocsOpenapiSecurityRoute: typeof DocsOpenapiSecurityRoute
+  DocsOpenapiTypesAndParametersRoute: typeof DocsOpenapiTypesAndParametersRoute
+  DocsOverviewControllersRoute: typeof DocsOverviewControllersRoute
+  DocsOverviewCustomDecoratorsRoute: typeof DocsOverviewCustomDecoratorsRoute
+  DocsOverviewExceptionFiltersRoute: typeof DocsOverviewExceptionFiltersRoute
+  DocsOverviewGuardsRoute: typeof DocsOverviewGuardsRoute
+  DocsOverviewInterceptorsRoute: typeof DocsOverviewInterceptorsRoute
+  DocsOverviewMiddlewareRoute: typeof DocsOverviewMiddlewareRoute
+  DocsOverviewModulesRoute: typeof DocsOverviewModulesRoute
+  DocsOverviewPipesRoute: typeof DocsOverviewPipesRoute
+  DocsOverviewProvidersRoute: typeof DocsOverviewProvidersRoute
+  DocsPerformanceMethodologyRoute: typeof DocsPerformanceMethodologyRoute
+  DocsPerformanceResultsRoute: typeof DocsPerformanceResultsRoute
+  DocsPerformanceTuningRoute: typeof DocsPerformanceTuningRoute
+  DocsRecipesAsyncLocalStorageRoute: typeof DocsRecipesAsyncLocalStorageRoute
+  DocsRecipesCommanderRoute: typeof DocsRecipesCommanderRoute
+  DocsRecipesCompodocRoute: typeof DocsRecipesCompodocRoute
+  DocsRecipesCqrsRoute: typeof DocsRecipesCqrsRoute
+  DocsRecipesCrudGeneratorRoute: typeof DocsRecipesCrudGeneratorRoute
+  DocsRecipesHealthChecksRoute: typeof DocsRecipesHealthChecksRoute
+  DocsRecipesHotReloadRoute: typeof DocsRecipesHotReloadRoute
+  DocsRecipesMikroormRoute: typeof DocsRecipesMikroormRoute
+  DocsRecipesMongooseRoute: typeof DocsRecipesMongooseRoute
+  DocsRecipesNecordRoute: typeof DocsRecipesNecordRoute
+  DocsRecipesPassportRoute: typeof DocsRecipesPassportRoute
+  DocsRecipesPrismaRoute: typeof DocsRecipesPrismaRoute
+  DocsRecipesReplRoute: typeof DocsRecipesReplRoute
+  DocsRecipesRouterModuleRoute: typeof DocsRecipesRouterModuleRoute
+  DocsRecipesSentryRoute: typeof DocsRecipesSentryRoute
+  DocsRecipesSequelizeRoute: typeof DocsRecipesSequelizeRoute
+  DocsRecipesServeStaticRoute: typeof DocsRecipesServeStaticRoute
+  DocsRecipesSuitesRoute: typeof DocsRecipesSuitesRoute
+  DocsRecipesSwaggerRoute: typeof DocsRecipesSwaggerRoute
+  DocsRecipesSwcRoute: typeof DocsRecipesSwcRoute
+  DocsRecipesTypeormRoute: typeof DocsRecipesTypeormRoute
+  DocsSecurityAuthenticationRoute: typeof DocsSecurityAuthenticationRoute
+  DocsSecurityAuthorizationRoute: typeof DocsSecurityAuthorizationRoute
+  DocsSecurityCorsRoute: typeof DocsSecurityCorsRoute
+  DocsSecurityCsrfRoute: typeof DocsSecurityCsrfRoute
+  DocsSecurityEncryptionAndHashingRoute: typeof DocsSecurityEncryptionAndHashingRoute
+  DocsSecurityHelmetRoute: typeof DocsSecurityHelmetRoute
+  DocsSecurityRateLimitingRoute: typeof DocsSecurityRateLimitingRoute
+  DocsTechniquesCachingRoute: typeof DocsTechniquesCachingRoute
+  DocsTechniquesCompressionRoute: typeof DocsTechniquesCompressionRoute
+  DocsTechniquesConfigurationRoute: typeof DocsTechniquesConfigurationRoute
+  DocsTechniquesCookiesRoute: typeof DocsTechniquesCookiesRoute
+  DocsTechniquesDatabaseRoute: typeof DocsTechniquesDatabaseRoute
+  DocsTechniquesEventsRoute: typeof DocsTechniquesEventsRoute
+  DocsTechniquesFileUploadRoute: typeof DocsTechniquesFileUploadRoute
+  DocsTechniquesHttpModuleRoute: typeof DocsTechniquesHttpModuleRoute
+  DocsTechniquesLoggingRoute: typeof DocsTechniquesLoggingRoute
+  DocsTechniquesMongoRoute: typeof DocsTechniquesMongoRoute
+  DocsTechniquesMvcRoute: typeof DocsTechniquesMvcRoute
+  DocsTechniquesPerformanceRoute: typeof DocsTechniquesPerformanceRoute
+  DocsTechniquesQueuesRoute: typeof DocsTechniquesQueuesRoute
+  DocsTechniquesSerializationRoute: typeof DocsTechniquesSerializationRoute
+  DocsTechniquesSessionRoute: typeof DocsTechniquesSessionRoute
+  DocsTechniquesSseRoute: typeof DocsTechniquesSseRoute
+  DocsTechniquesStreamingFilesRoute: typeof DocsTechniquesStreamingFilesRoute
+  DocsTechniquesTaskSchedulingRoute: typeof DocsTechniquesTaskSchedulingRoute
+  DocsTechniquesValidationRoute: typeof DocsTechniquesValidationRoute
+  DocsTechniquesVersioningRoute: typeof DocsTechniquesVersioningRoute
+  DocsWebsocketsAdaptersRoute: typeof DocsWebsocketsAdaptersRoute
+  DocsWebsocketsExceptionFiltersRoute: typeof DocsWebsocketsExceptionFiltersRoute
+  DocsWebsocketsGatewaysRoute: typeof DocsWebsocketsGatewaysRoute
+  DocsWebsocketsGuardsRoute: typeof DocsWebsocketsGuardsRoute
+  DocsWebsocketsInterceptorsRoute: typeof DocsWebsocketsInterceptorsRoute
+  DocsWebsocketsPipesRoute: typeof DocsWebsocketsPipesRoute
+  DocsExamplesIndexRoute: typeof DocsExamplesIndexRoute
+  DocsProductionIndexRoute: typeof DocsProductionIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +2218,1314 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/docs/production/': {
+      id: '/docs/production/'
+      path: '/docs/production'
+      fullPath: '/docs/production/'
+      preLoaderRoute: typeof DocsProductionIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/examples/': {
+      id: '/docs/examples/'
+      path: '/docs/examples'
+      fullPath: '/docs/examples/'
+      preLoaderRoute: typeof DocsExamplesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/websockets/pipes': {
+      id: '/docs/websockets/pipes'
+      path: '/docs/websockets/pipes'
+      fullPath: '/docs/websockets/pipes'
+      preLoaderRoute: typeof DocsWebsocketsPipesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/websockets/interceptors': {
+      id: '/docs/websockets/interceptors'
+      path: '/docs/websockets/interceptors'
+      fullPath: '/docs/websockets/interceptors'
+      preLoaderRoute: typeof DocsWebsocketsInterceptorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/websockets/guards': {
+      id: '/docs/websockets/guards'
+      path: '/docs/websockets/guards'
+      fullPath: '/docs/websockets/guards'
+      preLoaderRoute: typeof DocsWebsocketsGuardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/websockets/gateways': {
+      id: '/docs/websockets/gateways'
+      path: '/docs/websockets/gateways'
+      fullPath: '/docs/websockets/gateways'
+      preLoaderRoute: typeof DocsWebsocketsGatewaysRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/websockets/exception-filters': {
+      id: '/docs/websockets/exception-filters'
+      path: '/docs/websockets/exception-filters'
+      fullPath: '/docs/websockets/exception-filters'
+      preLoaderRoute: typeof DocsWebsocketsExceptionFiltersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/websockets/adapters': {
+      id: '/docs/websockets/adapters'
+      path: '/docs/websockets/adapters'
+      fullPath: '/docs/websockets/adapters'
+      preLoaderRoute: typeof DocsWebsocketsAdaptersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/techniques/versioning': {
+      id: '/docs/techniques/versioning'
+      path: '/docs/techniques/versioning'
+      fullPath: '/docs/techniques/versioning'
+      preLoaderRoute: typeof DocsTechniquesVersioningRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/techniques/validation': {
+      id: '/docs/techniques/validation'
+      path: '/docs/techniques/validation'
+      fullPath: '/docs/techniques/validation'
+      preLoaderRoute: typeof DocsTechniquesValidationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/techniques/task-scheduling': {
+      id: '/docs/techniques/task-scheduling'
+      path: '/docs/techniques/task-scheduling'
+      fullPath: '/docs/techniques/task-scheduling'
+      preLoaderRoute: typeof DocsTechniquesTaskSchedulingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/techniques/streaming-files': {
+      id: '/docs/techniques/streaming-files'
+      path: '/docs/techniques/streaming-files'
+      fullPath: '/docs/techniques/streaming-files'
+      preLoaderRoute: typeof DocsTechniquesStreamingFilesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/techniques/sse': {
+      id: '/docs/techniques/sse'
+      path: '/docs/techniques/sse'
+      fullPath: '/docs/techniques/sse'
+      preLoaderRoute: typeof DocsTechniquesSseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/techniques/session': {
+      id: '/docs/techniques/session'
+      path: '/docs/techniques/session'
+      fullPath: '/docs/techniques/session'
+      preLoaderRoute: typeof DocsTechniquesSessionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/techniques/serialization': {
+      id: '/docs/techniques/serialization'
+      path: '/docs/techniques/serialization'
+      fullPath: '/docs/techniques/serialization'
+      preLoaderRoute: typeof DocsTechniquesSerializationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/techniques/queues': {
+      id: '/docs/techniques/queues'
+      path: '/docs/techniques/queues'
+      fullPath: '/docs/techniques/queues'
+      preLoaderRoute: typeof DocsTechniquesQueuesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/techniques/performance': {
+      id: '/docs/techniques/performance'
+      path: '/docs/techniques/performance'
+      fullPath: '/docs/techniques/performance'
+      preLoaderRoute: typeof DocsTechniquesPerformanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/techniques/mvc': {
+      id: '/docs/techniques/mvc'
+      path: '/docs/techniques/mvc'
+      fullPath: '/docs/techniques/mvc'
+      preLoaderRoute: typeof DocsTechniquesMvcRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/techniques/mongo': {
+      id: '/docs/techniques/mongo'
+      path: '/docs/techniques/mongo'
+      fullPath: '/docs/techniques/mongo'
+      preLoaderRoute: typeof DocsTechniquesMongoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/techniques/logging': {
+      id: '/docs/techniques/logging'
+      path: '/docs/techniques/logging'
+      fullPath: '/docs/techniques/logging'
+      preLoaderRoute: typeof DocsTechniquesLoggingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/techniques/http-module': {
+      id: '/docs/techniques/http-module'
+      path: '/docs/techniques/http-module'
+      fullPath: '/docs/techniques/http-module'
+      preLoaderRoute: typeof DocsTechniquesHttpModuleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/techniques/file-upload': {
+      id: '/docs/techniques/file-upload'
+      path: '/docs/techniques/file-upload'
+      fullPath: '/docs/techniques/file-upload'
+      preLoaderRoute: typeof DocsTechniquesFileUploadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/techniques/events': {
+      id: '/docs/techniques/events'
+      path: '/docs/techniques/events'
+      fullPath: '/docs/techniques/events'
+      preLoaderRoute: typeof DocsTechniquesEventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/techniques/database': {
+      id: '/docs/techniques/database'
+      path: '/docs/techniques/database'
+      fullPath: '/docs/techniques/database'
+      preLoaderRoute: typeof DocsTechniquesDatabaseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/techniques/cookies': {
+      id: '/docs/techniques/cookies'
+      path: '/docs/techniques/cookies'
+      fullPath: '/docs/techniques/cookies'
+      preLoaderRoute: typeof DocsTechniquesCookiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/techniques/configuration': {
+      id: '/docs/techniques/configuration'
+      path: '/docs/techniques/configuration'
+      fullPath: '/docs/techniques/configuration'
+      preLoaderRoute: typeof DocsTechniquesConfigurationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/techniques/compression': {
+      id: '/docs/techniques/compression'
+      path: '/docs/techniques/compression'
+      fullPath: '/docs/techniques/compression'
+      preLoaderRoute: typeof DocsTechniquesCompressionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/techniques/caching': {
+      id: '/docs/techniques/caching'
+      path: '/docs/techniques/caching'
+      fullPath: '/docs/techniques/caching'
+      preLoaderRoute: typeof DocsTechniquesCachingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/security/rate-limiting': {
+      id: '/docs/security/rate-limiting'
+      path: '/docs/security/rate-limiting'
+      fullPath: '/docs/security/rate-limiting'
+      preLoaderRoute: typeof DocsSecurityRateLimitingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/security/helmet': {
+      id: '/docs/security/helmet'
+      path: '/docs/security/helmet'
+      fullPath: '/docs/security/helmet'
+      preLoaderRoute: typeof DocsSecurityHelmetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/security/encryption-and-hashing': {
+      id: '/docs/security/encryption-and-hashing'
+      path: '/docs/security/encryption-and-hashing'
+      fullPath: '/docs/security/encryption-and-hashing'
+      preLoaderRoute: typeof DocsSecurityEncryptionAndHashingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/security/csrf': {
+      id: '/docs/security/csrf'
+      path: '/docs/security/csrf'
+      fullPath: '/docs/security/csrf'
+      preLoaderRoute: typeof DocsSecurityCsrfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/security/cors': {
+      id: '/docs/security/cors'
+      path: '/docs/security/cors'
+      fullPath: '/docs/security/cors'
+      preLoaderRoute: typeof DocsSecurityCorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/security/authorization': {
+      id: '/docs/security/authorization'
+      path: '/docs/security/authorization'
+      fullPath: '/docs/security/authorization'
+      preLoaderRoute: typeof DocsSecurityAuthorizationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/security/authentication': {
+      id: '/docs/security/authentication'
+      path: '/docs/security/authentication'
+      fullPath: '/docs/security/authentication'
+      preLoaderRoute: typeof DocsSecurityAuthenticationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/recipes/typeorm': {
+      id: '/docs/recipes/typeorm'
+      path: '/docs/recipes/typeorm'
+      fullPath: '/docs/recipes/typeorm'
+      preLoaderRoute: typeof DocsRecipesTypeormRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/recipes/swc': {
+      id: '/docs/recipes/swc'
+      path: '/docs/recipes/swc'
+      fullPath: '/docs/recipes/swc'
+      preLoaderRoute: typeof DocsRecipesSwcRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/recipes/swagger': {
+      id: '/docs/recipes/swagger'
+      path: '/docs/recipes/swagger'
+      fullPath: '/docs/recipes/swagger'
+      preLoaderRoute: typeof DocsRecipesSwaggerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/recipes/suites': {
+      id: '/docs/recipes/suites'
+      path: '/docs/recipes/suites'
+      fullPath: '/docs/recipes/suites'
+      preLoaderRoute: typeof DocsRecipesSuitesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/recipes/serve-static': {
+      id: '/docs/recipes/serve-static'
+      path: '/docs/recipes/serve-static'
+      fullPath: '/docs/recipes/serve-static'
+      preLoaderRoute: typeof DocsRecipesServeStaticRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/recipes/sequelize': {
+      id: '/docs/recipes/sequelize'
+      path: '/docs/recipes/sequelize'
+      fullPath: '/docs/recipes/sequelize'
+      preLoaderRoute: typeof DocsRecipesSequelizeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/recipes/sentry': {
+      id: '/docs/recipes/sentry'
+      path: '/docs/recipes/sentry'
+      fullPath: '/docs/recipes/sentry'
+      preLoaderRoute: typeof DocsRecipesSentryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/recipes/router-module': {
+      id: '/docs/recipes/router-module'
+      path: '/docs/recipes/router-module'
+      fullPath: '/docs/recipes/router-module'
+      preLoaderRoute: typeof DocsRecipesRouterModuleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/recipes/repl': {
+      id: '/docs/recipes/repl'
+      path: '/docs/recipes/repl'
+      fullPath: '/docs/recipes/repl'
+      preLoaderRoute: typeof DocsRecipesReplRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/recipes/prisma': {
+      id: '/docs/recipes/prisma'
+      path: '/docs/recipes/prisma'
+      fullPath: '/docs/recipes/prisma'
+      preLoaderRoute: typeof DocsRecipesPrismaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/recipes/passport': {
+      id: '/docs/recipes/passport'
+      path: '/docs/recipes/passport'
+      fullPath: '/docs/recipes/passport'
+      preLoaderRoute: typeof DocsRecipesPassportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/recipes/necord': {
+      id: '/docs/recipes/necord'
+      path: '/docs/recipes/necord'
+      fullPath: '/docs/recipes/necord'
+      preLoaderRoute: typeof DocsRecipesNecordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/recipes/mongoose': {
+      id: '/docs/recipes/mongoose'
+      path: '/docs/recipes/mongoose'
+      fullPath: '/docs/recipes/mongoose'
+      preLoaderRoute: typeof DocsRecipesMongooseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/recipes/mikroorm': {
+      id: '/docs/recipes/mikroorm'
+      path: '/docs/recipes/mikroorm'
+      fullPath: '/docs/recipes/mikroorm'
+      preLoaderRoute: typeof DocsRecipesMikroormRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/recipes/hot-reload': {
+      id: '/docs/recipes/hot-reload'
+      path: '/docs/recipes/hot-reload'
+      fullPath: '/docs/recipes/hot-reload'
+      preLoaderRoute: typeof DocsRecipesHotReloadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/recipes/health-checks': {
+      id: '/docs/recipes/health-checks'
+      path: '/docs/recipes/health-checks'
+      fullPath: '/docs/recipes/health-checks'
+      preLoaderRoute: typeof DocsRecipesHealthChecksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/recipes/crud-generator': {
+      id: '/docs/recipes/crud-generator'
+      path: '/docs/recipes/crud-generator'
+      fullPath: '/docs/recipes/crud-generator'
+      preLoaderRoute: typeof DocsRecipesCrudGeneratorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/recipes/cqrs': {
+      id: '/docs/recipes/cqrs'
+      path: '/docs/recipes/cqrs'
+      fullPath: '/docs/recipes/cqrs'
+      preLoaderRoute: typeof DocsRecipesCqrsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/recipes/compodoc': {
+      id: '/docs/recipes/compodoc'
+      path: '/docs/recipes/compodoc'
+      fullPath: '/docs/recipes/compodoc'
+      preLoaderRoute: typeof DocsRecipesCompodocRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/recipes/commander': {
+      id: '/docs/recipes/commander'
+      path: '/docs/recipes/commander'
+      fullPath: '/docs/recipes/commander'
+      preLoaderRoute: typeof DocsRecipesCommanderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/recipes/async-local-storage': {
+      id: '/docs/recipes/async-local-storage'
+      path: '/docs/recipes/async-local-storage'
+      fullPath: '/docs/recipes/async-local-storage'
+      preLoaderRoute: typeof DocsRecipesAsyncLocalStorageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/performance/tuning': {
+      id: '/docs/performance/tuning'
+      path: '/docs/performance/tuning'
+      fullPath: '/docs/performance/tuning'
+      preLoaderRoute: typeof DocsPerformanceTuningRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/performance/results': {
+      id: '/docs/performance/results'
+      path: '/docs/performance/results'
+      fullPath: '/docs/performance/results'
+      preLoaderRoute: typeof DocsPerformanceResultsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/performance/methodology': {
+      id: '/docs/performance/methodology'
+      path: '/docs/performance/methodology'
+      fullPath: '/docs/performance/methodology'
+      preLoaderRoute: typeof DocsPerformanceMethodologyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/overview/providers': {
+      id: '/docs/overview/providers'
+      path: '/docs/overview/providers'
+      fullPath: '/docs/overview/providers'
+      preLoaderRoute: typeof DocsOverviewProvidersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/overview/pipes': {
+      id: '/docs/overview/pipes'
+      path: '/docs/overview/pipes'
+      fullPath: '/docs/overview/pipes'
+      preLoaderRoute: typeof DocsOverviewPipesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/overview/modules': {
+      id: '/docs/overview/modules'
+      path: '/docs/overview/modules'
+      fullPath: '/docs/overview/modules'
+      preLoaderRoute: typeof DocsOverviewModulesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/overview/middleware': {
+      id: '/docs/overview/middleware'
+      path: '/docs/overview/middleware'
+      fullPath: '/docs/overview/middleware'
+      preLoaderRoute: typeof DocsOverviewMiddlewareRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/overview/interceptors': {
+      id: '/docs/overview/interceptors'
+      path: '/docs/overview/interceptors'
+      fullPath: '/docs/overview/interceptors'
+      preLoaderRoute: typeof DocsOverviewInterceptorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/overview/guards': {
+      id: '/docs/overview/guards'
+      path: '/docs/overview/guards'
+      fullPath: '/docs/overview/guards'
+      preLoaderRoute: typeof DocsOverviewGuardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/overview/exception-filters': {
+      id: '/docs/overview/exception-filters'
+      path: '/docs/overview/exception-filters'
+      fullPath: '/docs/overview/exception-filters'
+      preLoaderRoute: typeof DocsOverviewExceptionFiltersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/overview/custom-decorators': {
+      id: '/docs/overview/custom-decorators'
+      path: '/docs/overview/custom-decorators'
+      fullPath: '/docs/overview/custom-decorators'
+      preLoaderRoute: typeof DocsOverviewCustomDecoratorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/overview/controllers': {
+      id: '/docs/overview/controllers'
+      path: '/docs/overview/controllers'
+      fullPath: '/docs/overview/controllers'
+      preLoaderRoute: typeof DocsOverviewControllersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/openapi/types-and-parameters': {
+      id: '/docs/openapi/types-and-parameters'
+      path: '/docs/openapi/types-and-parameters'
+      fullPath: '/docs/openapi/types-and-parameters'
+      preLoaderRoute: typeof DocsOpenapiTypesAndParametersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/openapi/security': {
+      id: '/docs/openapi/security'
+      path: '/docs/openapi/security'
+      fullPath: '/docs/openapi/security'
+      preLoaderRoute: typeof DocsOpenapiSecurityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/openapi/scalar': {
+      id: '/docs/openapi/scalar'
+      path: '/docs/openapi/scalar'
+      fullPath: '/docs/openapi/scalar'
+      preLoaderRoute: typeof DocsOpenapiScalarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/openapi/other-features': {
+      id: '/docs/openapi/other-features'
+      path: '/docs/openapi/other-features'
+      fullPath: '/docs/openapi/other-features'
+      preLoaderRoute: typeof DocsOpenapiOtherFeaturesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/openapi/operations': {
+      id: '/docs/openapi/operations'
+      path: '/docs/openapi/operations'
+      fullPath: '/docs/openapi/operations'
+      preLoaderRoute: typeof DocsOpenapiOperationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/openapi/mapped-types': {
+      id: '/docs/openapi/mapped-types'
+      path: '/docs/openapi/mapped-types'
+      fullPath: '/docs/openapi/mapped-types'
+      preLoaderRoute: typeof DocsOpenapiMappedTypesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/openapi/introduction': {
+      id: '/docs/openapi/introduction'
+      path: '/docs/openapi/introduction'
+      fullPath: '/docs/openapi/introduction'
+      preLoaderRoute: typeof DocsOpenapiIntroductionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/openapi/decorators': {
+      id: '/docs/openapi/decorators'
+      path: '/docs/openapi/decorators'
+      fullPath: '/docs/openapi/decorators'
+      preLoaderRoute: typeof DocsOpenapiDecoratorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/openapi/cli-plugin': {
+      id: '/docs/openapi/cli-plugin'
+      path: '/docs/openapi/cli-plugin'
+      fullPath: '/docs/openapi/cli-plugin'
+      preLoaderRoute: typeof DocsOpenapiCliPluginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/migration/concepts': {
+      id: '/docs/migration/concepts'
+      path: '/docs/migration/concepts'
+      fullPath: '/docs/migration/concepts'
+      preLoaderRoute: typeof DocsMigrationConceptsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/migration/compat': {
+      id: '/docs/migration/compat'
+      path: '/docs/migration/compat'
+      fullPath: '/docs/migration/compat'
+      preLoaderRoute: typeof DocsMigrationCompatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/migration/codemods': {
+      id: '/docs/migration/codemods'
+      path: '/docs/migration/codemods'
+      fullPath: '/docs/migration/codemods'
+      preLoaderRoute: typeof DocsMigrationCodemodsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/microservices/redis': {
+      id: '/docs/microservices/redis'
+      path: '/docs/microservices/redis'
+      fullPath: '/docs/microservices/redis'
+      preLoaderRoute: typeof DocsMicroservicesRedisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/microservices/rabbitmq': {
+      id: '/docs/microservices/rabbitmq'
+      path: '/docs/microservices/rabbitmq'
+      fullPath: '/docs/microservices/rabbitmq'
+      preLoaderRoute: typeof DocsMicroservicesRabbitmqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/microservices/pipes': {
+      id: '/docs/microservices/pipes'
+      path: '/docs/microservices/pipes'
+      fullPath: '/docs/microservices/pipes'
+      preLoaderRoute: typeof DocsMicroservicesPipesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/microservices/overview': {
+      id: '/docs/microservices/overview'
+      path: '/docs/microservices/overview'
+      fullPath: '/docs/microservices/overview'
+      preLoaderRoute: typeof DocsMicroservicesOverviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/microservices/nats': {
+      id: '/docs/microservices/nats'
+      path: '/docs/microservices/nats'
+      fullPath: '/docs/microservices/nats'
+      preLoaderRoute: typeof DocsMicroservicesNatsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/microservices/mqtt': {
+      id: '/docs/microservices/mqtt'
+      path: '/docs/microservices/mqtt'
+      fullPath: '/docs/microservices/mqtt'
+      preLoaderRoute: typeof DocsMicroservicesMqttRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/microservices/kafka': {
+      id: '/docs/microservices/kafka'
+      path: '/docs/microservices/kafka'
+      fullPath: '/docs/microservices/kafka'
+      preLoaderRoute: typeof DocsMicroservicesKafkaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/microservices/interceptors': {
+      id: '/docs/microservices/interceptors'
+      path: '/docs/microservices/interceptors'
+      fullPath: '/docs/microservices/interceptors'
+      preLoaderRoute: typeof DocsMicroservicesInterceptorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/microservices/guards': {
+      id: '/docs/microservices/guards'
+      path: '/docs/microservices/guards'
+      fullPath: '/docs/microservices/guards'
+      preLoaderRoute: typeof DocsMicroservicesGuardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/microservices/grpc': {
+      id: '/docs/microservices/grpc'
+      path: '/docs/microservices/grpc'
+      fullPath: '/docs/microservices/grpc'
+      preLoaderRoute: typeof DocsMicroservicesGrpcRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/microservices/exception-filters': {
+      id: '/docs/microservices/exception-filters'
+      path: '/docs/microservices/exception-filters'
+      fullPath: '/docs/microservices/exception-filters'
+      preLoaderRoute: typeof DocsMicroservicesExceptionFiltersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/microservices/custom-transporters': {
+      id: '/docs/microservices/custom-transporters'
+      path: '/docs/microservices/custom-transporters'
+      fullPath: '/docs/microservices/custom-transporters'
+      preLoaderRoute: typeof DocsMicroservicesCustomTransportersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/introduction/first-steps': {
+      id: '/docs/introduction/first-steps'
+      path: '/docs/introduction/first-steps'
+      fullPath: '/docs/introduction/first-steps'
+      preLoaderRoute: typeof DocsIntroductionFirstStepsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/graphql/unions-and-enums': {
+      id: '/docs/graphql/unions-and-enums'
+      path: '/docs/graphql/unions-and-enums'
+      fullPath: '/docs/graphql/unions-and-enums'
+      preLoaderRoute: typeof DocsGraphqlUnionsAndEnumsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/graphql/subscriptions': {
+      id: '/docs/graphql/subscriptions'
+      path: '/docs/graphql/subscriptions'
+      fullPath: '/docs/graphql/subscriptions'
+      preLoaderRoute: typeof DocsGraphqlSubscriptionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/graphql/sharing-models': {
+      id: '/docs/graphql/sharing-models'
+      path: '/docs/graphql/sharing-models'
+      fullPath: '/docs/graphql/sharing-models'
+      preLoaderRoute: typeof DocsGraphqlSharingModelsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/graphql/scalars': {
+      id: '/docs/graphql/scalars'
+      path: '/docs/graphql/scalars'
+      fullPath: '/docs/graphql/scalars'
+      preLoaderRoute: typeof DocsGraphqlScalarsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/graphql/resolvers': {
+      id: '/docs/graphql/resolvers'
+      path: '/docs/graphql/resolvers'
+      fullPath: '/docs/graphql/resolvers'
+      preLoaderRoute: typeof DocsGraphqlResolversRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/graphql/quick-start': {
+      id: '/docs/graphql/quick-start'
+      path: '/docs/graphql/quick-start'
+      fullPath: '/docs/graphql/quick-start'
+      preLoaderRoute: typeof DocsGraphqlQuickStartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/graphql/plugins': {
+      id: '/docs/graphql/plugins'
+      path: '/docs/graphql/plugins'
+      fullPath: '/docs/graphql/plugins'
+      preLoaderRoute: typeof DocsGraphqlPluginsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/graphql/other-features': {
+      id: '/docs/graphql/other-features'
+      path: '/docs/graphql/other-features'
+      fullPath: '/docs/graphql/other-features'
+      preLoaderRoute: typeof DocsGraphqlOtherFeaturesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/graphql/mutations': {
+      id: '/docs/graphql/mutations'
+      path: '/docs/graphql/mutations'
+      fullPath: '/docs/graphql/mutations'
+      preLoaderRoute: typeof DocsGraphqlMutationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/graphql/mapped-types': {
+      id: '/docs/graphql/mapped-types'
+      path: '/docs/graphql/mapped-types'
+      fullPath: '/docs/graphql/mapped-types'
+      preLoaderRoute: typeof DocsGraphqlMappedTypesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/graphql/interfaces': {
+      id: '/docs/graphql/interfaces'
+      path: '/docs/graphql/interfaces'
+      fullPath: '/docs/graphql/interfaces'
+      preLoaderRoute: typeof DocsGraphqlInterfacesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/graphql/generating-sdl': {
+      id: '/docs/graphql/generating-sdl'
+      path: '/docs/graphql/generating-sdl'
+      fullPath: '/docs/graphql/generating-sdl'
+      preLoaderRoute: typeof DocsGraphqlGeneratingSdlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/graphql/field-middleware': {
+      id: '/docs/graphql/field-middleware'
+      path: '/docs/graphql/field-middleware'
+      fullPath: '/docs/graphql/field-middleware'
+      preLoaderRoute: typeof DocsGraphqlFieldMiddlewareRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/graphql/federation': {
+      id: '/docs/graphql/federation'
+      path: '/docs/graphql/federation'
+      fullPath: '/docs/graphql/federation'
+      preLoaderRoute: typeof DocsGraphqlFederationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/graphql/extensions': {
+      id: '/docs/graphql/extensions'
+      path: '/docs/graphql/extensions'
+      fullPath: '/docs/graphql/extensions'
+      preLoaderRoute: typeof DocsGraphqlExtensionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/graphql/directives': {
+      id: '/docs/graphql/directives'
+      path: '/docs/graphql/directives'
+      fullPath: '/docs/graphql/directives'
+      preLoaderRoute: typeof DocsGraphqlDirectivesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/graphql/complexity': {
+      id: '/docs/graphql/complexity'
+      path: '/docs/graphql/complexity'
+      fullPath: '/docs/graphql/complexity'
+      preLoaderRoute: typeof DocsGraphqlComplexityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/graphql/cli-plugin': {
+      id: '/docs/graphql/cli-plugin'
+      path: '/docs/graphql/cli-plugin'
+      fullPath: '/docs/graphql/cli-plugin'
+      preLoaderRoute: typeof DocsGraphqlCliPluginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/fundamentals/testing': {
+      id: '/docs/fundamentals/testing'
+      path: '/docs/fundamentals/testing'
+      fullPath: '/docs/fundamentals/testing'
+      preLoaderRoute: typeof DocsFundamentalsTestingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/fundamentals/platform-agnosticism': {
+      id: '/docs/fundamentals/platform-agnosticism'
+      path: '/docs/fundamentals/platform-agnosticism'
+      fullPath: '/docs/fundamentals/platform-agnosticism'
+      preLoaderRoute: typeof DocsFundamentalsPlatformAgnosticismRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/fundamentals/module-reference': {
+      id: '/docs/fundamentals/module-reference'
+      path: '/docs/fundamentals/module-reference'
+      fullPath: '/docs/fundamentals/module-reference'
+      preLoaderRoute: typeof DocsFundamentalsModuleReferenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/fundamentals/lifecycle-events': {
+      id: '/docs/fundamentals/lifecycle-events'
+      path: '/docs/fundamentals/lifecycle-events'
+      fullPath: '/docs/fundamentals/lifecycle-events'
+      preLoaderRoute: typeof DocsFundamentalsLifecycleEventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/fundamentals/lazy-loading-modules': {
+      id: '/docs/fundamentals/lazy-loading-modules'
+      path: '/docs/fundamentals/lazy-loading-modules'
+      fullPath: '/docs/fundamentals/lazy-loading-modules'
+      preLoaderRoute: typeof DocsFundamentalsLazyLoadingModulesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/fundamentals/injection-scopes': {
+      id: '/docs/fundamentals/injection-scopes'
+      path: '/docs/fundamentals/injection-scopes'
+      fullPath: '/docs/fundamentals/injection-scopes'
+      preLoaderRoute: typeof DocsFundamentalsInjectionScopesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/fundamentals/execution-context': {
+      id: '/docs/fundamentals/execution-context'
+      path: '/docs/fundamentals/execution-context'
+      fullPath: '/docs/fundamentals/execution-context'
+      preLoaderRoute: typeof DocsFundamentalsExecutionContextRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/fundamentals/dynamic-modules': {
+      id: '/docs/fundamentals/dynamic-modules'
+      path: '/docs/fundamentals/dynamic-modules'
+      fullPath: '/docs/fundamentals/dynamic-modules'
+      preLoaderRoute: typeof DocsFundamentalsDynamicModulesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/fundamentals/discovery-service': {
+      id: '/docs/fundamentals/discovery-service'
+      path: '/docs/fundamentals/discovery-service'
+      fullPath: '/docs/fundamentals/discovery-service'
+      preLoaderRoute: typeof DocsFundamentalsDiscoveryServiceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/fundamentals/custom-providers': {
+      id: '/docs/fundamentals/custom-providers'
+      path: '/docs/fundamentals/custom-providers'
+      fullPath: '/docs/fundamentals/custom-providers'
+      preLoaderRoute: typeof DocsFundamentalsCustomProvidersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/fundamentals/circular-dependency': {
+      id: '/docs/fundamentals/circular-dependency'
+      path: '/docs/fundamentals/circular-dependency'
+      fullPath: '/docs/fundamentals/circular-dependency'
+      preLoaderRoute: typeof DocsFundamentalsCircularDependencyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/fundamentals/asynchronous-providers': {
+      id: '/docs/fundamentals/asynchronous-providers'
+      path: '/docs/fundamentals/asynchronous-providers'
+      fullPath: '/docs/fundamentals/asynchronous-providers'
+      preLoaderRoute: typeof DocsFundamentalsAsynchronousProvidersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/faq/serverless': {
+      id: '/docs/faq/serverless'
+      path: '/docs/faq/serverless'
+      fullPath: '/docs/faq/serverless'
+      preLoaderRoute: typeof DocsFaqServerlessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/faq/request-lifecycle': {
+      id: '/docs/faq/request-lifecycle'
+      path: '/docs/faq/request-lifecycle'
+      fullPath: '/docs/faq/request-lifecycle'
+      preLoaderRoute: typeof DocsFaqRequestLifecycleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/faq/raw-body': {
+      id: '/docs/faq/raw-body'
+      path: '/docs/faq/raw-body'
+      fullPath: '/docs/faq/raw-body'
+      preLoaderRoute: typeof DocsFaqRawBodyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/faq/keep-alive': {
+      id: '/docs/faq/keep-alive'
+      path: '/docs/faq/keep-alive'
+      fullPath: '/docs/faq/keep-alive'
+      preLoaderRoute: typeof DocsFaqKeepAliveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/faq/hybrid-application': {
+      id: '/docs/faq/hybrid-application'
+      path: '/docs/faq/hybrid-application'
+      fullPath: '/docs/faq/hybrid-application'
+      preLoaderRoute: typeof DocsFaqHybridApplicationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/faq/https-and-multiple-servers': {
+      id: '/docs/faq/https-and-multiple-servers'
+      path: '/docs/faq/https-and-multiple-servers'
+      fullPath: '/docs/faq/https-and-multiple-servers'
+      preLoaderRoute: typeof DocsFaqHttpsAndMultipleServersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/faq/http-adapter': {
+      id: '/docs/faq/http-adapter'
+      path: '/docs/faq/http-adapter'
+      fullPath: '/docs/faq/http-adapter'
+      preLoaderRoute: typeof DocsFaqHttpAdapterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/faq/global-path-prefix': {
+      id: '/docs/faq/global-path-prefix'
+      path: '/docs/faq/global-path-prefix'
+      fullPath: '/docs/faq/global-path-prefix'
+      preLoaderRoute: typeof DocsFaqGlobalPathPrefixRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/faq/examples': {
+      id: '/docs/faq/examples'
+      path: '/docs/faq/examples'
+      fullPath: '/docs/faq/examples'
+      preLoaderRoute: typeof DocsFaqExamplesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/faq/common-errors': {
+      id: '/docs/faq/common-errors'
+      path: '/docs/faq/common-errors'
+      fullPath: '/docs/faq/common-errors'
+      preLoaderRoute: typeof DocsFaqCommonErrorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/devtools/overview': {
+      id: '/docs/devtools/overview'
+      path: '/docs/devtools/overview'
+      fullPath: '/docs/devtools/overview'
+      preLoaderRoute: typeof DocsDevtoolsOverviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/devtools/ci-cd-integration': {
+      id: '/docs/devtools/ci-cd-integration'
+      path: '/docs/devtools/ci-cd-integration'
+      fullPath: '/docs/devtools/ci-cd-integration'
+      preLoaderRoute: typeof DocsDevtoolsCiCdIntegrationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/deployment/standalone-apps': {
+      id: '/docs/deployment/standalone-apps'
+      path: '/docs/deployment/standalone-apps'
+      fullPath: '/docs/deployment/standalone-apps'
+      preLoaderRoute: typeof DocsDeploymentStandaloneAppsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/deployment/request-lifecycle': {
+      id: '/docs/deployment/request-lifecycle'
+      path: '/docs/deployment/request-lifecycle'
+      fullPath: '/docs/deployment/request-lifecycle'
+      preLoaderRoute: typeof DocsDeploymentRequestLifecycleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/deployment/raw-body': {
+      id: '/docs/deployment/raw-body'
+      path: '/docs/deployment/raw-body'
+      fullPath: '/docs/deployment/raw-body'
+      preLoaderRoute: typeof DocsDeploymentRawBodyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/deployment/keep-alive': {
+      id: '/docs/deployment/keep-alive'
+      path: '/docs/deployment/keep-alive'
+      fullPath: '/docs/deployment/keep-alive'
+      preLoaderRoute: typeof DocsDeploymentKeepAliveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/deployment/hybrid': {
+      id: '/docs/deployment/hybrid'
+      path: '/docs/deployment/hybrid'
+      fullPath: '/docs/deployment/hybrid'
+      preLoaderRoute: typeof DocsDeploymentHybridRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/deployment/https-and-multiple-servers': {
+      id: '/docs/deployment/https-and-multiple-servers'
+      path: '/docs/deployment/https-and-multiple-servers'
+      fullPath: '/docs/deployment/https-and-multiple-servers'
+      preLoaderRoute: typeof DocsDeploymentHttpsAndMultipleServersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/deployment/hot-reload': {
+      id: '/docs/deployment/hot-reload'
+      path: '/docs/deployment/hot-reload'
+      fullPath: '/docs/deployment/hot-reload'
+      preLoaderRoute: typeof DocsDeploymentHotReloadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/deployment/edge': {
+      id: '/docs/deployment/edge'
+      path: '/docs/deployment/edge'
+      fullPath: '/docs/deployment/edge'
+      preLoaderRoute: typeof DocsDeploymentEdgeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/deployment/common-errors': {
+      id: '/docs/deployment/common-errors'
+      path: '/docs/deployment/common-errors'
+      fullPath: '/docs/deployment/common-errors'
+      preLoaderRoute: typeof DocsDeploymentCommonErrorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/cli/workspaces': {
+      id: '/docs/cli/workspaces'
+      path: '/docs/cli/workspaces'
+      fullPath: '/docs/cli/workspaces'
+      preLoaderRoute: typeof DocsCliWorkspacesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/cli/usage': {
+      id: '/docs/cli/usage'
+      path: '/docs/cli/usage'
+      fullPath: '/docs/cli/usage'
+      preLoaderRoute: typeof DocsCliUsageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/cli/scripts': {
+      id: '/docs/cli/scripts'
+      path: '/docs/cli/scripts'
+      fullPath: '/docs/cli/scripts'
+      preLoaderRoute: typeof DocsCliScriptsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/cli/overview': {
+      id: '/docs/cli/overview'
+      path: '/docs/cli/overview'
+      fullPath: '/docs/cli/overview'
+      preLoaderRoute: typeof DocsCliOverviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/cli/libraries': {
+      id: '/docs/cli/libraries'
+      path: '/docs/cli/libraries'
+      fullPath: '/docs/cli/libraries'
+      preLoaderRoute: typeof DocsCliLibrariesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/bun-native/native-websocket': {
+      id: '/docs/bun-native/native-websocket'
+      path: '/docs/bun-native/native-websocket'
+      fullPath: '/docs/bun-native/native-websocket'
+      preLoaderRoute: typeof DocsBunNativeNativeWebsocketRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/bun-native/native-formdata': {
+      id: '/docs/bun-native/native-formdata'
+      path: '/docs/bun-native/native-formdata'
+      fullPath: '/docs/bun-native/native-formdata'
+      preLoaderRoute: typeof DocsBunNativeNativeFormdataRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/bun-native/bun-sqlite': {
+      id: '/docs/bun-native/bun-sqlite'
+      path: '/docs/bun-native/bun-sqlite'
+      fullPath: '/docs/bun-native/bun-sqlite'
+      preLoaderRoute: typeof DocsBunNativeBunSqliteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/bun-native/bun-sql': {
+      id: '/docs/bun-native/bun-sql'
+      path: '/docs/bun-native/bun-sql'
+      fullPath: '/docs/bun-native/bun-sql'
+      preLoaderRoute: typeof DocsBunNativeBunSqlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/bun-native/bun-serve': {
+      id: '/docs/bun-native/bun-serve'
+      path: '/docs/bun-native/bun-serve'
+      fullPath: '/docs/bun-native/bun-serve'
+      preLoaderRoute: typeof DocsBunNativeBunServeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/bun-native/bun-s3': {
+      id: '/docs/bun-native/bun-s3'
+      path: '/docs/bun-native/bun-s3'
+      fullPath: '/docs/bun-native/bun-s3'
+      preLoaderRoute: typeof DocsBunNativeBunS3RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/bun-native/bun-password': {
+      id: '/docs/bun-native/bun-password'
+      path: '/docs/bun-native/bun-password'
+      fullPath: '/docs/bun-native/bun-password'
+      preLoaderRoute: typeof DocsBunNativeBunPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/bun-native/bun-compression': {
+      id: '/docs/bun-native/bun-compression'
+      path: '/docs/bun-native/bun-compression'
+      fullPath: '/docs/bun-native/bun-compression'
+      preLoaderRoute: typeof DocsBunNativeBunCompressionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/built-ins/validators': {
+      id: '/docs/built-ins/validators'
+      path: '/docs/built-ins/validators'
+      fullPath: '/docs/built-ins/validators'
+      preLoaderRoute: typeof DocsBuiltInsValidatorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/built-ins/transformers': {
+      id: '/docs/built-ins/transformers'
+      path: '/docs/built-ins/transformers'
+      fullPath: '/docs/built-ins/transformers'
+      preLoaderRoute: typeof DocsBuiltInsTransformersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/built-ins/pipes': {
+      id: '/docs/built-ins/pipes'
+      path: '/docs/built-ins/pipes'
+      fullPath: '/docs/built-ins/pipes'
+      preLoaderRoute: typeof DocsBuiltInsPipesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/built-ins/interceptors': {
+      id: '/docs/built-ins/interceptors'
+      path: '/docs/built-ins/interceptors'
+      fullPath: '/docs/built-ins/interceptors'
+      preLoaderRoute: typeof DocsBuiltInsInterceptorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/built-ins/exceptions': {
+      id: '/docs/built-ins/exceptions'
+      path: '/docs/built-ins/exceptions'
+      fullPath: '/docs/built-ins/exceptions'
+      preLoaderRoute: typeof DocsBuiltInsExceptionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DocsBuiltInsExceptionsRoute: DocsBuiltInsExceptionsRoute,
+  DocsBuiltInsInterceptorsRoute: DocsBuiltInsInterceptorsRoute,
+  DocsBuiltInsPipesRoute: DocsBuiltInsPipesRoute,
+  DocsBuiltInsTransformersRoute: DocsBuiltInsTransformersRoute,
+  DocsBuiltInsValidatorsRoute: DocsBuiltInsValidatorsRoute,
+  DocsBunNativeBunCompressionRoute: DocsBunNativeBunCompressionRoute,
+  DocsBunNativeBunPasswordRoute: DocsBunNativeBunPasswordRoute,
+  DocsBunNativeBunS3Route: DocsBunNativeBunS3Route,
+  DocsBunNativeBunServeRoute: DocsBunNativeBunServeRoute,
+  DocsBunNativeBunSqlRoute: DocsBunNativeBunSqlRoute,
+  DocsBunNativeBunSqliteRoute: DocsBunNativeBunSqliteRoute,
+  DocsBunNativeNativeFormdataRoute: DocsBunNativeNativeFormdataRoute,
+  DocsBunNativeNativeWebsocketRoute: DocsBunNativeNativeWebsocketRoute,
+  DocsCliLibrariesRoute: DocsCliLibrariesRoute,
+  DocsCliOverviewRoute: DocsCliOverviewRoute,
+  DocsCliScriptsRoute: DocsCliScriptsRoute,
+  DocsCliUsageRoute: DocsCliUsageRoute,
+  DocsCliWorkspacesRoute: DocsCliWorkspacesRoute,
+  DocsDeploymentCommonErrorsRoute: DocsDeploymentCommonErrorsRoute,
+  DocsDeploymentEdgeRoute: DocsDeploymentEdgeRoute,
+  DocsDeploymentHotReloadRoute: DocsDeploymentHotReloadRoute,
+  DocsDeploymentHttpsAndMultipleServersRoute:
+    DocsDeploymentHttpsAndMultipleServersRoute,
+  DocsDeploymentHybridRoute: DocsDeploymentHybridRoute,
+  DocsDeploymentKeepAliveRoute: DocsDeploymentKeepAliveRoute,
+  DocsDeploymentRawBodyRoute: DocsDeploymentRawBodyRoute,
+  DocsDeploymentRequestLifecycleRoute: DocsDeploymentRequestLifecycleRoute,
+  DocsDeploymentStandaloneAppsRoute: DocsDeploymentStandaloneAppsRoute,
+  DocsDevtoolsCiCdIntegrationRoute: DocsDevtoolsCiCdIntegrationRoute,
+  DocsDevtoolsOverviewRoute: DocsDevtoolsOverviewRoute,
+  DocsFaqCommonErrorsRoute: DocsFaqCommonErrorsRoute,
+  DocsFaqExamplesRoute: DocsFaqExamplesRoute,
+  DocsFaqGlobalPathPrefixRoute: DocsFaqGlobalPathPrefixRoute,
+  DocsFaqHttpAdapterRoute: DocsFaqHttpAdapterRoute,
+  DocsFaqHttpsAndMultipleServersRoute: DocsFaqHttpsAndMultipleServersRoute,
+  DocsFaqHybridApplicationRoute: DocsFaqHybridApplicationRoute,
+  DocsFaqKeepAliveRoute: DocsFaqKeepAliveRoute,
+  DocsFaqRawBodyRoute: DocsFaqRawBodyRoute,
+  DocsFaqRequestLifecycleRoute: DocsFaqRequestLifecycleRoute,
+  DocsFaqServerlessRoute: DocsFaqServerlessRoute,
+  DocsFundamentalsAsynchronousProvidersRoute:
+    DocsFundamentalsAsynchronousProvidersRoute,
+  DocsFundamentalsCircularDependencyRoute:
+    DocsFundamentalsCircularDependencyRoute,
+  DocsFundamentalsCustomProvidersRoute: DocsFundamentalsCustomProvidersRoute,
+  DocsFundamentalsDiscoveryServiceRoute: DocsFundamentalsDiscoveryServiceRoute,
+  DocsFundamentalsDynamicModulesRoute: DocsFundamentalsDynamicModulesRoute,
+  DocsFundamentalsExecutionContextRoute: DocsFundamentalsExecutionContextRoute,
+  DocsFundamentalsInjectionScopesRoute: DocsFundamentalsInjectionScopesRoute,
+  DocsFundamentalsLazyLoadingModulesRoute:
+    DocsFundamentalsLazyLoadingModulesRoute,
+  DocsFundamentalsLifecycleEventsRoute: DocsFundamentalsLifecycleEventsRoute,
+  DocsFundamentalsModuleReferenceRoute: DocsFundamentalsModuleReferenceRoute,
+  DocsFundamentalsPlatformAgnosticismRoute:
+    DocsFundamentalsPlatformAgnosticismRoute,
+  DocsFundamentalsTestingRoute: DocsFundamentalsTestingRoute,
+  DocsGraphqlCliPluginRoute: DocsGraphqlCliPluginRoute,
+  DocsGraphqlComplexityRoute: DocsGraphqlComplexityRoute,
+  DocsGraphqlDirectivesRoute: DocsGraphqlDirectivesRoute,
+  DocsGraphqlExtensionsRoute: DocsGraphqlExtensionsRoute,
+  DocsGraphqlFederationRoute: DocsGraphqlFederationRoute,
+  DocsGraphqlFieldMiddlewareRoute: DocsGraphqlFieldMiddlewareRoute,
+  DocsGraphqlGeneratingSdlRoute: DocsGraphqlGeneratingSdlRoute,
+  DocsGraphqlInterfacesRoute: DocsGraphqlInterfacesRoute,
+  DocsGraphqlMappedTypesRoute: DocsGraphqlMappedTypesRoute,
+  DocsGraphqlMutationsRoute: DocsGraphqlMutationsRoute,
+  DocsGraphqlOtherFeaturesRoute: DocsGraphqlOtherFeaturesRoute,
+  DocsGraphqlPluginsRoute: DocsGraphqlPluginsRoute,
+  DocsGraphqlQuickStartRoute: DocsGraphqlQuickStartRoute,
+  DocsGraphqlResolversRoute: DocsGraphqlResolversRoute,
+  DocsGraphqlScalarsRoute: DocsGraphqlScalarsRoute,
+  DocsGraphqlSharingModelsRoute: DocsGraphqlSharingModelsRoute,
+  DocsGraphqlSubscriptionsRoute: DocsGraphqlSubscriptionsRoute,
+  DocsGraphqlUnionsAndEnumsRoute: DocsGraphqlUnionsAndEnumsRoute,
+  DocsIntroductionFirstStepsRoute: DocsIntroductionFirstStepsRoute,
+  DocsMicroservicesCustomTransportersRoute:
+    DocsMicroservicesCustomTransportersRoute,
+  DocsMicroservicesExceptionFiltersRoute:
+    DocsMicroservicesExceptionFiltersRoute,
+  DocsMicroservicesGrpcRoute: DocsMicroservicesGrpcRoute,
+  DocsMicroservicesGuardsRoute: DocsMicroservicesGuardsRoute,
+  DocsMicroservicesInterceptorsRoute: DocsMicroservicesInterceptorsRoute,
+  DocsMicroservicesKafkaRoute: DocsMicroservicesKafkaRoute,
+  DocsMicroservicesMqttRoute: DocsMicroservicesMqttRoute,
+  DocsMicroservicesNatsRoute: DocsMicroservicesNatsRoute,
+  DocsMicroservicesOverviewRoute: DocsMicroservicesOverviewRoute,
+  DocsMicroservicesPipesRoute: DocsMicroservicesPipesRoute,
+  DocsMicroservicesRabbitmqRoute: DocsMicroservicesRabbitmqRoute,
+  DocsMicroservicesRedisRoute: DocsMicroservicesRedisRoute,
+  DocsMigrationCodemodsRoute: DocsMigrationCodemodsRoute,
+  DocsMigrationCompatRoute: DocsMigrationCompatRoute,
+  DocsMigrationConceptsRoute: DocsMigrationConceptsRoute,
+  DocsOpenapiCliPluginRoute: DocsOpenapiCliPluginRoute,
+  DocsOpenapiDecoratorsRoute: DocsOpenapiDecoratorsRoute,
+  DocsOpenapiIntroductionRoute: DocsOpenapiIntroductionRoute,
+  DocsOpenapiMappedTypesRoute: DocsOpenapiMappedTypesRoute,
+  DocsOpenapiOperationsRoute: DocsOpenapiOperationsRoute,
+  DocsOpenapiOtherFeaturesRoute: DocsOpenapiOtherFeaturesRoute,
+  DocsOpenapiScalarRoute: DocsOpenapiScalarRoute,
+  DocsOpenapiSecurityRoute: DocsOpenapiSecurityRoute,
+  DocsOpenapiTypesAndParametersRoute: DocsOpenapiTypesAndParametersRoute,
+  DocsOverviewControllersRoute: DocsOverviewControllersRoute,
+  DocsOverviewCustomDecoratorsRoute: DocsOverviewCustomDecoratorsRoute,
+  DocsOverviewExceptionFiltersRoute: DocsOverviewExceptionFiltersRoute,
+  DocsOverviewGuardsRoute: DocsOverviewGuardsRoute,
+  DocsOverviewInterceptorsRoute: DocsOverviewInterceptorsRoute,
+  DocsOverviewMiddlewareRoute: DocsOverviewMiddlewareRoute,
+  DocsOverviewModulesRoute: DocsOverviewModulesRoute,
+  DocsOverviewPipesRoute: DocsOverviewPipesRoute,
+  DocsOverviewProvidersRoute: DocsOverviewProvidersRoute,
+  DocsPerformanceMethodologyRoute: DocsPerformanceMethodologyRoute,
+  DocsPerformanceResultsRoute: DocsPerformanceResultsRoute,
+  DocsPerformanceTuningRoute: DocsPerformanceTuningRoute,
+  DocsRecipesAsyncLocalStorageRoute: DocsRecipesAsyncLocalStorageRoute,
+  DocsRecipesCommanderRoute: DocsRecipesCommanderRoute,
+  DocsRecipesCompodocRoute: DocsRecipesCompodocRoute,
+  DocsRecipesCqrsRoute: DocsRecipesCqrsRoute,
+  DocsRecipesCrudGeneratorRoute: DocsRecipesCrudGeneratorRoute,
+  DocsRecipesHealthChecksRoute: DocsRecipesHealthChecksRoute,
+  DocsRecipesHotReloadRoute: DocsRecipesHotReloadRoute,
+  DocsRecipesMikroormRoute: DocsRecipesMikroormRoute,
+  DocsRecipesMongooseRoute: DocsRecipesMongooseRoute,
+  DocsRecipesNecordRoute: DocsRecipesNecordRoute,
+  DocsRecipesPassportRoute: DocsRecipesPassportRoute,
+  DocsRecipesPrismaRoute: DocsRecipesPrismaRoute,
+  DocsRecipesReplRoute: DocsRecipesReplRoute,
+  DocsRecipesRouterModuleRoute: DocsRecipesRouterModuleRoute,
+  DocsRecipesSentryRoute: DocsRecipesSentryRoute,
+  DocsRecipesSequelizeRoute: DocsRecipesSequelizeRoute,
+  DocsRecipesServeStaticRoute: DocsRecipesServeStaticRoute,
+  DocsRecipesSuitesRoute: DocsRecipesSuitesRoute,
+  DocsRecipesSwaggerRoute: DocsRecipesSwaggerRoute,
+  DocsRecipesSwcRoute: DocsRecipesSwcRoute,
+  DocsRecipesTypeormRoute: DocsRecipesTypeormRoute,
+  DocsSecurityAuthenticationRoute: DocsSecurityAuthenticationRoute,
+  DocsSecurityAuthorizationRoute: DocsSecurityAuthorizationRoute,
+  DocsSecurityCorsRoute: DocsSecurityCorsRoute,
+  DocsSecurityCsrfRoute: DocsSecurityCsrfRoute,
+  DocsSecurityEncryptionAndHashingRoute: DocsSecurityEncryptionAndHashingRoute,
+  DocsSecurityHelmetRoute: DocsSecurityHelmetRoute,
+  DocsSecurityRateLimitingRoute: DocsSecurityRateLimitingRoute,
+  DocsTechniquesCachingRoute: DocsTechniquesCachingRoute,
+  DocsTechniquesCompressionRoute: DocsTechniquesCompressionRoute,
+  DocsTechniquesConfigurationRoute: DocsTechniquesConfigurationRoute,
+  DocsTechniquesCookiesRoute: DocsTechniquesCookiesRoute,
+  DocsTechniquesDatabaseRoute: DocsTechniquesDatabaseRoute,
+  DocsTechniquesEventsRoute: DocsTechniquesEventsRoute,
+  DocsTechniquesFileUploadRoute: DocsTechniquesFileUploadRoute,
+  DocsTechniquesHttpModuleRoute: DocsTechniquesHttpModuleRoute,
+  DocsTechniquesLoggingRoute: DocsTechniquesLoggingRoute,
+  DocsTechniquesMongoRoute: DocsTechniquesMongoRoute,
+  DocsTechniquesMvcRoute: DocsTechniquesMvcRoute,
+  DocsTechniquesPerformanceRoute: DocsTechniquesPerformanceRoute,
+  DocsTechniquesQueuesRoute: DocsTechniquesQueuesRoute,
+  DocsTechniquesSerializationRoute: DocsTechniquesSerializationRoute,
+  DocsTechniquesSessionRoute: DocsTechniquesSessionRoute,
+  DocsTechniquesSseRoute: DocsTechniquesSseRoute,
+  DocsTechniquesStreamingFilesRoute: DocsTechniquesStreamingFilesRoute,
+  DocsTechniquesTaskSchedulingRoute: DocsTechniquesTaskSchedulingRoute,
+  DocsTechniquesValidationRoute: DocsTechniquesValidationRoute,
+  DocsTechniquesVersioningRoute: DocsTechniquesVersioningRoute,
+  DocsWebsocketsAdaptersRoute: DocsWebsocketsAdaptersRoute,
+  DocsWebsocketsExceptionFiltersRoute: DocsWebsocketsExceptionFiltersRoute,
+  DocsWebsocketsGatewaysRoute: DocsWebsocketsGatewaysRoute,
+  DocsWebsocketsGuardsRoute: DocsWebsocketsGuardsRoute,
+  DocsWebsocketsInterceptorsRoute: DocsWebsocketsInterceptorsRoute,
+  DocsWebsocketsPipesRoute: DocsWebsocketsPipesRoute,
+  DocsExamplesIndexRoute: DocsExamplesIndexRoute,
+  DocsProductionIndexRoute: DocsProductionIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

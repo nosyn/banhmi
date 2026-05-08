@@ -1,4 +1,4 @@
-import { test, expect } from 'bun:test'
+import { expect, test } from 'bun:test'
 import { generateRouteEntries } from './generate-doc-routes'
 
 test('generator emits one entry per item', () => {

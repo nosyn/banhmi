@@ -3,9 +3,7 @@
     {
       "slug": "introduction",
       "title": "Introduction",
-      "items": [
-        { "slug": "first-steps", "title": "First Steps" }
-      ]
+      "items": [{ "slug": "first-steps", "title": "First Steps" }]
     },
     {
       "slug": "overview",
@@ -163,7 +161,10 @@
       "title": "Deployment",
       "items": [
         { "slug": "standalone-apps", "title": "Standalone Apps" },
-        { "slug": "https-and-multiple-servers", "title": "HTTPS & Multiple Servers" },
+        {
+          "slug": "https-and-multiple-servers",
+          "title": "HTTPS & Multiple Servers"
+        },
         { "slug": "hybrid", "title": "Hybrid Application" },
         { "slug": "edge", "title": "Edge / Serverless" },
         { "slug": "hot-reload", "title": "Hot Reload" },
@@ -272,7 +273,10 @@
         { "slug": "global-path-prefix", "title": "Global path prefix" },
         { "slug": "raw-body", "title": "Raw body" },
         { "slug": "hybrid-application", "title": "Hybrid application" },
-        { "slug": "https-and-multiple-servers", "title": "HTTPS & multiple servers" },
+        {
+          "slug": "https-and-multiple-servers",
+          "title": "HTTPS & multiple servers"
+        },
         { "slug": "request-lifecycle", "title": "Request lifecycle" },
         { "slug": "common-errors", "title": "Common errors" },
         { "slug": "examples", "title": "Examples" }

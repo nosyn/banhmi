@@ -1,4 +1,4 @@
-import { test, expect } from 'bun:test'
+import { expect, test } from 'bun:test'
 import { resolveExamplePath } from './code-from-example'
 
 test('resolveExamplePath maps slug to examples/features path', () => {

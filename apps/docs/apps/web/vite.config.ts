@@ -1,11 +1,11 @@
-import { defineConfig } from 'vite'
+import mdx from '@mdx-js/rollup'
+import tailwindcss from '@tailwindcss/vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteReact from '@vitejs/plugin-react'
-import viteTsConfigPaths from 'vite-tsconfig-paths'
-import tailwindcss from '@tailwindcss/vite'
 import { nitro } from 'nitro/vite'
-import mdx from '@mdx-js/rollup'
 import remarkGfm from 'remark-gfm'
+import { defineConfig } from 'vite'
+import viteTsConfigPaths from 'vite-tsconfig-paths'
 
 const config = defineConfig({
   plugins: [

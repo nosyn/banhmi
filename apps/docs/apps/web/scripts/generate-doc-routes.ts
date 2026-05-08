@@ -79,7 +79,13 @@ export const Route = createFileRoute('/docs/${entry.sectionSlug}/${entry.itemSlu
 `
 
 async function main(): Promise<void> {
-  const cfgPath = join(import.meta.dir, '..', 'src', 'content', 'doc-routes.json')
+  const cfgPath = join(
+    import.meta.dir,
+    '..',
+    'src',
+    'content',
+    'doc-routes.json',
+  )
   const cfg = JSON.parse(await Bun.file(cfgPath).text()) as DocConfig
   const entries = generateRouteEntries(cfg)
   for (const entry of entries) {

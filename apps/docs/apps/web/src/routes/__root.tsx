@@ -1,16 +1,14 @@
 import {
+  createRootRoute,
   HeadContent,
   Outlet,
   Scripts,
-  createRootRoute,
 } from '@tanstack/react-router'
 import { SidebarInset, SidebarProvider } from '@workspace/ui/components/sidebar'
 import { TooltipProvider } from '@workspace/ui/components/tooltip'
-
+import appCss from '@workspace/ui/globals.css?url'
 import { AppSidebar } from '@/components/app-sidebar'
 import { DocsMdxProvider } from '@/components/mdx-provider'
-
-import appCss from '@workspace/ui/globals.css?url'
 
 export const Route = createRootRoute({
   head: () => ({

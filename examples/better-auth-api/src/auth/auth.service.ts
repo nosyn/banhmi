@@ -1,5 +1,5 @@
-import { Injectable } from 'banhmi'
 import { Database } from 'bun:sqlite'
+import { Injectable } from 'banhmi'
 import { betterAuth } from 'better-auth'
 
 @Injectable()

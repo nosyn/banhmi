@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { RowsIcon } from '@phosphor-icons/react'
 import { Link, useRouterState } from '@tanstack/react-router'
 import {
   Sidebar,
@@ -13,7 +13,7 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from '@workspace/ui/components/sidebar'
-import { RowsIcon } from '@phosphor-icons/react'
+import type * as React from 'react'
 import docRoutes from '../content/doc-routes.json'
 
 type Item = { slug: string; title: string }
@@ -61,7 +61,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     {items.map((item) => {
                       const href = itemHref(section.slug, item.slug)
                       return (
-                        <SidebarMenuSubItem key={`${section.slug}/${item.slug}`}>
+                        <SidebarMenuSubItem
+                          key={`${section.slug}/${item.slug}`}
+                        >
                           <SidebarMenuSubButton
                             isActive={currentPath === href}
                             render={<Link to={href} />}

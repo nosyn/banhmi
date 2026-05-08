@@ -32,7 +32,9 @@ type Props = { slug: string; lang?: string }
 export function CodeFromExample({ lang = 'ts', slug }: Props) {
   const [code, setCode] = useState<string | null>(null)
   useEffect(() => {
-    const key = Object.keys(examples).find((k) => k.endsWith(`/${slug}/index.ts`))
+    const key = Object.keys(examples).find((k) =>
+      k.endsWith(`/${slug}/index.ts`),
+    )
     if (!key) {
       setCode(`// example "${slug}" not found`)
       return

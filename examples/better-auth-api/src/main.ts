@@ -1,6 +1,6 @@
 import { BanhmiFactory } from 'banhmi'
-import { AuthService } from './auth/auth.service'
 import { AppModule } from './app.module'
+import { AuthService } from './auth/auth.service'
 
 const app = await BanhmiFactory.create(AppModule)
 const auth = app.container.resolve(AuthService)
