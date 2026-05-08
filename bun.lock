@@ -428,6 +428,7 @@
         "@banhmi/devtools": "workspace:*",
         "@banhmi/drizzle": "workspace:*",
         "@banhmi/events": "workspace:*",
+        "@banhmi/health": "workspace:*",
         "@banhmi/jwt": "workspace:*",
         "@banhmi/logger": "workspace:*",
         "@banhmi/middleware": "workspace:*",
@@ -554,6 +555,16 @@
         "@banhmi/common": "workspace:*",
         "@banhmi/core": "workspace:*",
         "@banhmi/platform-bun": "workspace:*",
+      },
+    },
+    "packages/health": {
+      "name": "@banhmi/health",
+      "version": "0.1.0",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/core": "workspace:*",
+        "@banhmi/platform-bun": "workspace:*",
+        "banhmi": "workspace:*",
       },
     },
     "packages/jwt": {
@@ -912,6 +923,8 @@
     "@banhmi/drizzle": ["@banhmi/drizzle@workspace:packages/drizzle"],
 
     "@banhmi/events": ["@banhmi/events@workspace:packages/events"],
+
+    "@banhmi/health": ["@banhmi/health@workspace:packages/health"],
 
     "@banhmi/jwt": ["@banhmi/jwt@workspace:packages/jwt"],
 

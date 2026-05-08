@@ -1,23 +1,124 @@
-# Health checks
+# Health Checks
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
-
-## When to use
-
-TBD
+`@banhmi/health` mounts a `GET /health` endpoint that runs all configured health indicators in parallel and returns a JSON summary. It integrates with `BanhmiFactory` via `OnApplicationBootstrap`.
 
 ## Setup
 
-TBD
+```bash
+bun add @banhmi/health
+```
 
-## Usage
+```ts
+import { Module } from 'banhmi'
+import { HealthModule, memoryIndicator, diskIndicator } from '@banhmi/health'
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+@Module({
+  imports: [
+    HealthModule.forRoot({
+      path: '/health',
+      indicators: {
+        memory: memoryIndicator({ heapUsedThresholdMb: 512 }),
+        disk: diskIndicator({ path: '/', freeBytesThreshold: 1_000_000_000 }),
+      },
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+## Response format
+
+### All indicators up — HTTP 200
+
+```json
+{
+  "status": "up",
+  "details": {
+    "memory": { "status": "up", "heapUsedMb": 42, "thresholdMb": 512 },
+    "disk": { "status": "up", "freeMb": 100000, "thresholdMb": 953 }
+  }
+}
+```
+
+### Any indicator down — HTTP 503
+
+```json
+{
+  "status": "down",
+  "details": {
+    "memory": { "status": "up", "heapUsedMb": 42, "thresholdMb": 512 },
+    "db": { "status": "down", "error": "Connection refused" }
+  }
+}
+```
+
+## Built-in indicators
+
+### `memoryIndicator(opts)`
+
+Checks `process.memoryUsage().heapUsed` against a threshold.
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `heapUsedThresholdMb` | `512` | Heap threshold in MB |
+
+### `diskIndicator(opts)`
+
+Uses `fs.statfs` to check available disk space.
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `path` | `'/'` | Filesystem path to check |
+| `freeBytesThreshold` | `100MB` | Minimum free bytes required |
+
+### `dbIndicator(sql)`
+
+Runs `SELECT 1` via a `Bun.sql`-compatible connection.
+
+```ts
+import { sql } from 'bun'
+dbIndicator(sql)
+```
+
+### `redisIndicator(client)`
+
+Calls `client.ping()` on any Redis client with that method.
+
+```ts
+redisIndicator(redisClient)
+```
+
+### `customIndicator(fn)`
+
+Wraps any async function that returns `{ status: 'up' | 'down', details? }`.
+
+```ts
+customIndicator(async () => {
+  const ok = await checkExternalApi()
+  return { status: ok ? 'up' : 'down', details: { latencyMs: 12 } }
+})
+```
+
+Thrown errors are caught and reported as `down` with the error message.
 
 ## API reference
 
-TBD
+### `HealthModule.forRoot(opts: HealthOptions)`
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `path` | `string` | `'/health'` | Endpoint URL path |
+| `indicators` | `Record<string, HealthIndicator>` | `{}` | Named indicators to run |
+
+### `HealthIndicator`
+
+```ts
+type HealthIndicator = () => Promise<{
+  status: 'up' | 'down'
+  details?: Record<string, unknown>
+}>
+```
 
 ## See also
 
-TBD
+- [Terminus (NestJS equivalent)](https://docs.nestjs.com/recipes/terminus)

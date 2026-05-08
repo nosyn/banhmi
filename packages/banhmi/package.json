@@ -24,6 +24,7 @@
     "@banhmi/cookies": "workspace:*",
     "@banhmi/config": "workspace:*",
     "@banhmi/core": "workspace:*",
+    "@banhmi/health": "workspace:*",
     "@banhmi/jwt": "workspace:*",
     "@banhmi/logger": "workspace:*",
     "@banhmi/platform-bun": "workspace:*",
