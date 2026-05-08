@@ -197,17 +197,17 @@ return new Response(stream, { headers: { 'Content-Type': 'text/event-stream' } }
 | **Testing module** | `@nestjs/testing` | v1.0 |
 | **CLI** | `@nestjs/cli` | v1.0 |
 | **Docs site** | docs.nestjs.com (separate) | `apps/docs/` (monorepo) — v1.0 |
-| **Microservices** | `@nestjs/microservices` | Not planned |
-| **GraphQL** | `@nestjs/graphql` | Not planned |
+| **Microservices** | `@nestjs/microservices` | v0.13 (Wave 8) |
+| **GraphQL** | `@nestjs/graphql` | v0.12 (Wave 7) |
 | **Cold start** | ~300–800ms (Node) | ~10–50ms (Bun) |
 | **Bundle size** | ~120KB+ (with Express) | ~0 external deps |
 | **reflect-metadata** | Required | Not used |
 
 ### What Banhmi Intentionally Omits
 
-- **Microservices** — use Bun's native TCP/UDP directly or a dedicated message broker
-- **GraphQL** — orthogonal concern; use a standalone GraphQL library
-- **Platform-agnostic adapters** — Bun-only by design; no Express/Fastify shim
+- **Platform-agnostic adapters** — Bun-only by design; no Express/Fastify shim.
+
+> Microservices and GraphQL were originally listed as omitted. As of 2026-05-08 the Banhmi Supremacy programme adds first-class `@banhmi/microservices` (Wave 8) and `@banhmi/graphql` (Wave 7) packages. See `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`.
 
 ---
 
