@@ -40,3 +40,26 @@ test('markDone removes the task', () => {
     rmSync(dir, { force: true, recursive: true })
   }
 })
+
+test('markDone is a no-op on unknown id', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'codex-'))
+  try {
+    const path = join(dir, 'queue.json')
+    const q = new CodexQueue(path)
+    q.enqueue({ id: 't1', kind: 'scaffold', prompt: 'do thing' })
+    q.markDone('does-not-exist')
+    expect(q.list()).toHaveLength(1)
+  } finally {
+    rmSync(dir, { force: true, recursive: true })
+  }
+})
+
+test('list returns [] on a fresh path', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'codex-'))
+  try {
+    const q = new CodexQueue(join(dir, 'never-written.json'))
+    expect(q.list()).toEqual([])
+  } finally {
+    rmSync(dir, { force: true, recursive: true })
+  }
+})
