@@ -20,6 +20,11 @@
  * }
  */
 
+export type { ComplexityConfig, ComplexityResult } from './complexity'
+export {
+  calculateQueryComplexity,
+  createComplexityValidator,
+} from './complexity'
 export type {
   CreateUnionTypeOptions,
   RegisterEnumOptions,
@@ -47,6 +52,12 @@ export {
 } from './decorators'
 export { Directive } from './decorators/directive'
 export { Extensions } from './decorators/extensions'
+export { ExtendsType, Key } from './decorators/federation'
+export type { SubgraphSchemaResult } from './federation'
+export {
+  buildEntityResolvers,
+  buildFederationSubgraphSchema,
+} from './federation'
 export { GraphQLModule } from './graphql.module'
 export {
   IntersectionType,
@@ -54,10 +65,36 @@ export {
   PartialType,
   PickType,
 } from './mapped-types'
+export type {
+  FieldMiddlewareContext,
+  FieldMiddlewareFn,
+} from './middleware'
+export {
+  addFieldMiddleware,
+  applyFieldMiddlewares,
+  clearFieldMiddlewares,
+  getFieldMiddlewares,
+} from './middleware'
+export type {
+  GraphQLPlugin,
+  PluginLifecycleContext,
+  PluginResponseContext,
+} from './plugin'
+export {
+  clearPlugins,
+  getPlugins,
+  registerPlugin,
+  runRequestDidStart,
+  runWillSendResponse,
+} from './plugin'
 export type { PubSub } from './pubsub'
 export { InMemoryPubSub } from './pubsub'
 export { DateScalar, JsonScalar, UuidScalar } from './scalars'
 export { SchemaBuilder } from './schema-builder'
+export type { SdlEmitOptions } from './sdl'
+export { emitSdl } from './sdl'
+export type { LiftedGraphQLType } from './sharing'
+export { withGraphQLFromOpenApi } from './sharing'
 export type {
   FieldOptions,
   GraphQLOptions,

@@ -41,7 +41,10 @@ describe('DateScalar', () => {
 // ---------------------------------------------------------------------------
 describe('JsonScalar', () => {
   test('serializes any JSON-compatible value', () => {
-    expect(JsonScalar.serialize({ a: 1, b: [2, 3] })).toEqual({ a: 1, b: [2, 3] })
+    expect(JsonScalar.serialize({ a: 1, b: [2, 3] })).toEqual({
+      a: 1,
+      b: [2, 3],
+    })
     expect(JsonScalar.serialize(42)).toBe(42)
     expect(JsonScalar.serialize('hello')).toBe('hello')
     expect(JsonScalar.serialize(null)).toBeNull()
