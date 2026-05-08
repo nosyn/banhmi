@@ -1,28 +1,34 @@
-import { HeadContent, Outlet, Scripts, createRootRoute } from "@tanstack/react-router"
-import { SidebarInset, SidebarProvider } from "@workspace/ui/components/sidebar"
-import { TooltipProvider } from "@workspace/ui/components/tooltip"
+import {
+  HeadContent,
+  Outlet,
+  Scripts,
+  createRootRoute,
+} from '@tanstack/react-router'
+import { SidebarInset, SidebarProvider } from '@workspace/ui/components/sidebar'
+import { TooltipProvider } from '@workspace/ui/components/tooltip'
 
-import { AppSidebar } from "@/components/app-sidebar"
+import { AppSidebar } from '@/components/app-sidebar'
+import { DocsMdxProvider } from '@/components/mdx-provider'
 
-import appCss from "@workspace/ui/globals.css?url"
+import appCss from '@workspace/ui/globals.css?url'
 
 export const Route = createRootRoute({
   head: () => ({
     meta: [
       {
-        charSet: "utf-8",
+        charSet: 'utf-8',
       },
       {
-        name: "viewport",
-        content: "width=device-width, initial-scale=1",
+        name: 'viewport',
+        content: 'width=device-width, initial-scale=1',
       },
       {
-        title: "Banhmi — Docs",
+        title: 'Banhmi — Docs',
       },
     ],
     links: [
       {
-        rel: "stylesheet",
+        rel: 'stylesheet',
         href: appCss,
       },
     ],
@@ -57,7 +63,9 @@ function RootLayout() {
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset>
-          <Outlet />
+          <DocsMdxProvider>
+            <Outlet />
+          </DocsMdxProvider>
         </SidebarInset>
       </SidebarProvider>
     </TooltipProvider>
