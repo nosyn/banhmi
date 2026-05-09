@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import type { HttpAdapter, MicroserviceOptions } from '../src/application'
+import type { HttpAdapter, HybridMicroserviceOptions } from '../src/application'
 import { BanhmiApplication } from '../src/application'
 import { Container } from '../src/container'
 import type { ModuleNode } from '../src/module-graph'
@@ -63,7 +63,7 @@ describe('BanhmiApplication hybrid app', () => {
     const adapter = new StubAdapter()
     const app = makeApp(adapter)
     const transport = new StubTransport()
-    const ms: MicroserviceOptions = { transport }
+    const ms: HybridMicroserviceOptions = { transport }
     const result = app.connectMicroservice(ms)
     expect(result).toBe(app)
   })

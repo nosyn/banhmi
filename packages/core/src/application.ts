@@ -17,7 +17,7 @@ import { flattenModuleProviders, type ModuleNode } from './module-graph'
  * const transport = new InMemoryTransport()
  * app.connectMicroservice({ transport })
  */
-export interface MicroserviceOptions {
+export interface HybridMicroserviceOptions {
   /** The transport instance to start when `startAllMicroservices()` is called. */
   transport: {
     listen(handler: (msg: unknown) => Promise<unknown>): Promise<void>
@@ -56,7 +56,7 @@ export class BanhmiApplication {
   private lifecycleRunner: LifecycleRunner
   private allProviders: ProviderDef[]
   private shutdownHooksEnabled = false
-  private microservices: MicroserviceOptions[] = []
+  private microservices: HybridMicroserviceOptions[] = []
 
   constructor(
     readonly container: Container,
@@ -82,7 +82,7 @@ export class BanhmiApplication {
    * await app.startAllMicroservices()
    * await app.listen(3000)
    */
-  connectMicroservice(opts: MicroserviceOptions): this {
+  connectMicroservice(opts: HybridMicroserviceOptions): this {
     this.microservices.push(opts)
     return this
   }
