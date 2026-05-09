@@ -15,7 +15,6 @@
     "@banhmi/core": "workspace:*"
   },
   "peerDependencies": {
-    "ioredis": ">=5",
     "nats": ">=2",
     "mqtt": ">=5",
     "amqplib": ">=0.10",
@@ -23,9 +22,6 @@
     "@grpc/grpc-js": ">=1"
   },
   "peerDependenciesMeta": {
-    "ioredis": {
-      "optional": true
-    },
     "nats": {
       "optional": true
     },

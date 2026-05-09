@@ -26,18 +26,18 @@ type InboundHandler = (
 /**
  * Redis pub/sub transport for `@banhmi/microservices`.
  *
- * Uses `ioredis` as a peer dependency. Two Redis connections are created: one
- * for subscribing (inbound) and one for publishing (outbound).
+ * Uses `Bun.RedisClient` (built-in — no extra dependency). Two Redis
+ * connections are created: one for subscribing (inbound) and one for
+ * publishing (outbound).
  *
- * NOTE: `Bun.RedisClient` cannot replace `ioredis` here because this transport
- * uses `psubscribe` (pattern-based pub/sub) with an `on('pmessage', ...)` event
- * emitter. `Bun.RedisClient.subscribe` uses a callback API for exact-channel
- * subscriptions only; there is no native pattern-subscribe callback as of
- * Bun 1.3.x. If Bun adds `psubscribe` callback support in a future release,
- * this transport can be migrated.
+ * **Wire protocol:**
+ * All inbound messages are published to a single channel:
+ * `${prefix}:inbound`. This replaces the previous `psubscribe('prefix:*')`
+ * approach because `Bun.RedisClient.subscribe` delivers messages via a
+ * callback (exact channels only) while `psubscribe` lacks a callback
+ * delivery mechanism in Bun 1.3.x.
  *
- * Pattern channels are prefixed by `options.prefix` (default `'banhmi_ms'`).
- * Reply channels use the format `{prefix}:reply:{correlationId}`.
+ * Reply channels still use the format `{prefix}:reply:{correlationId}`.
  *
  * @example
  * const transport = redisTransport({ url: 'redis://localhost:6379' })
@@ -46,89 +46,69 @@ type InboundHandler = (
 export class RedisTransport implements Transport {
   private readonly url: string
   private readonly prefix: string
-  private subClient: import('ioredis').Redis | null = null
-  private pubClient: import('ioredis').Redis | null = null
+  private subClient: InstanceType<typeof Bun.RedisClient> | null = null
+  private pubClient: InstanceType<typeof Bun.RedisClient> | null = null
 
   constructor(opts: RedisTransportOptions = {}) {
     this.url = opts.url ?? 'redis://localhost:6379'
     this.prefix = opts.prefix ?? 'banhmi_ms'
   }
 
-  private channel(pattern: string): string {
-    return `${this.prefix}:${pattern}`
+  private get inboundChannel(): string {
+    return `${this.prefix}:inbound`
   }
 
   private replyChannel(correlationId: string): string {
     return `${this.prefix}:reply:${correlationId}`
   }
 
-  private loadIORedis(): typeof import('ioredis').default {
-    try {
-      return require('ioredis') as typeof import('ioredis').default
-    } catch {
-      throw new Error(
-        '[RedisTransport] ioredis is a required peer dependency. ' +
-          'Install it with: bun add ioredis',
-      )
-    }
-  }
-
   async listen(handler: InboundHandler): Promise<void> {
-    const IORedis = this.loadIORedis()
-    this.subClient = new IORedis(this.url)
-    this.pubClient = new IORedis(this.url)
+    this.subClient = new Bun.RedisClient(this.url)
+    this.pubClient = new Bun.RedisClient(this.url)
 
-    const subClient = this.subClient
     const pubClient = this.pubClient
     const prefix = this.prefix
 
-    // Subscribe to all microservice channels using a pattern
-    await subClient.psubscribe(`${prefix}:*`)
+    // Subscribe to the single inbound channel.
+    // The message envelope's `pattern` field is used for handler dispatch.
+    this.subClient.subscribe(this.inboundChannel, (rawMsg: string) => {
+      let inbound: MicroserviceMessage
+      try {
+        inbound = JSON.parse(rawMsg) as MicroserviceMessage
+      } catch {
+        return
+      }
 
-    subClient.on(
-      'pmessage',
-      (_pattern: string, channel: string, rawMsg: string) => {
-        // Skip reply channels
-        if (channel.startsWith(`${prefix}:reply:`)) return
-
-        let inbound: MicroserviceMessage
-        try {
-          inbound = JSON.parse(rawMsg) as MicroserviceMessage
-        } catch {
-          return
-        }
-
-        handler(inbound)
-          .then((response) => {
-            if (response !== undefined && inbound.correlationId) {
-              pubClient.publish(
-                `${prefix}:reply:${inbound.correlationId}`,
-                JSON.stringify(response),
-              )
+      handler(inbound)
+        .then((response) => {
+          if (response !== undefined && inbound.correlationId) {
+            pubClient.publish(
+              `${prefix}:reply:${inbound.correlationId}`,
+              JSON.stringify(response),
+            )
+          }
+        })
+        .catch(() => {
+          if (inbound.correlationId) {
+            const errReply = {
+              error: { message: 'Internal server error', status: 500 },
             }
-          })
-          .catch(() => {
-            if (inbound.correlationId) {
-              const errReply = {
-                error: { message: 'Internal server error', status: 500 },
-              }
-              pubClient.publish(
-                `${prefix}:reply:${inbound.correlationId}`,
-                JSON.stringify(errReply),
-              )
-            }
-          })
-      },
-    )
+            pubClient.publish(
+              `${prefix}:reply:${inbound.correlationId}`,
+              JSON.stringify(errReply),
+            )
+          }
+        })
+    })
   }
 
   async close(): Promise<void> {
     if (this.subClient) {
-      await this.subClient.quit()
+      this.subClient.close()
       this.subClient = null
     }
     if (this.pubClient) {
-      await this.pubClient.quit()
+      this.pubClient.close()
       this.pubClient = null
     }
   }
@@ -137,14 +117,12 @@ export class RedisTransport implements Transport {
     pattern: string,
     data: unknown,
   ): Promise<MicroserviceResponse<T>> {
-    const IORedis = this.loadIORedis()
     const correlationId = crypto.randomUUID()
-    const channel = this.channel(pattern)
     const replyChannel = this.replyChannel(correlationId)
 
-    const pubClient = this.pubClient ?? new IORedis(this.url)
+    const pubClient = this.pubClient ?? new Bun.RedisClient(this.url)
     const needsOwnPub = this.pubClient === null
-    const tempSub = new IORedis(this.url)
+    const tempSub = new Bun.RedisClient(this.url)
 
     try {
       const response = await new Promise<MicroserviceResponse<T>>(
@@ -157,22 +135,8 @@ export class RedisTransport implements Transport {
             )
           }, 30_000)
 
-          tempSub.subscribe(replyChannel, (err) => {
-            if (err) {
-              clearTimeout(timeoutId)
-              reject(err)
-              return
-            }
-
-            const msg: MicroserviceMessage = {
-              pattern,
-              data,
-              correlationId,
-            }
-            pubClient.publish(channel, JSON.stringify(msg))
-          })
-
-          tempSub.on('message', (_ch: string, raw: string) => {
+          // Subscribe to the reply channel first, then publish the request.
+          tempSub.subscribe(replyChannel, (raw: string) => {
             clearTimeout(timeoutId)
             try {
               const res = JSON.parse(raw) as MicroserviceResponse<T>
@@ -181,34 +145,45 @@ export class RedisTransport implements Transport {
               reject(new Error('[RedisTransport] Failed to parse reply'))
             }
           })
+
+          const msg: MicroserviceMessage = {
+            pattern,
+            data,
+            correlationId,
+          }
+          // Publish to the inbound channel (server is subscribed there).
+          pubClient.publish(this.inboundChannel, JSON.stringify(msg))
         },
       )
 
       return response
     } finally {
-      await tempSub.quit()
-      if (needsOwnPub) await pubClient.quit()
+      tempSub.close()
+      if (needsOwnPub) pubClient.close()
     }
   }
 
   async emit(pattern: string, data: unknown): Promise<void> {
-    const IORedis = this.loadIORedis()
-    const pubClient = this.pubClient ?? new IORedis(this.url)
+    const pubClient = this.pubClient ?? new Bun.RedisClient(this.url)
     const needsOwnPub = this.pubClient === null
 
     const msg: MicroserviceMessage = { pattern, data }
     try {
-      await pubClient.publish(this.channel(pattern), JSON.stringify(msg))
+      await pubClient.publish(this.inboundChannel, JSON.stringify(msg))
     } finally {
-      if (needsOwnPub) await pubClient.quit()
+      if (needsOwnPub) pubClient.close()
     }
   }
 }
 
 /**
- * Create a Redis pub/sub transport instance.
+ * Create a Redis pub/sub transport instance backed by `Bun.RedisClient`.
  *
- * Requires `ioredis` to be installed as a peer dependency.
+ * No extra dependencies required — `Bun.RedisClient` is built in.
+ *
+ * All messages flow through a single inbound channel (`${prefix}:inbound`).
+ * The message envelope's `pattern` field is used for server-side dispatch.
+ * Reply channels use the format `${prefix}:reply:{correlationId}`.
  *
  * @param opts - {@link RedisTransportOptions}
  * @returns A new {@link RedisTransport}.
