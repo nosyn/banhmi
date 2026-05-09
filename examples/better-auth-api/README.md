@@ -1,43 +1,38 @@
-# better-auth-api
+# Better Auth API
 
-A banhmi example demonstrating [Better Auth](https://better-auth.com) email/password authentication with `bun:sqlite`.
+A Banhmi HTTP API demonstrating [Better Auth](https://better-auth.com)
+email/password authentication backed by `bun:sqlite`. Covers sign-up,
+sign-in, session-cookie-based auth, and protecting routes with an
+`AuthGuard` — all without Passport.js or JWT library dependencies.
 
-## What it shows
+## Prerequisites
+
+- [Bun](https://bun.sh) ≥ 1.1.0
+- No external services required (`bun:sqlite` is built-in)
+
+## Quickstart
+
+```bash
+# From the repo root
+bun install
+
+export BETTER_AUTH_SECRET="$(openssl rand -base64 32)"
+export BETTER_AUTH_URL="http://localhost:3001"
+
+cd examples/better-auth-api
+bunx --bun auth@latest migrate   # create SQLite tables
+bun run dev
+```
+
+Server starts at `http://localhost:3001`.
+
+## Key concepts demonstrated
 
 - Better Auth mounted as banhmi middleware — all `/api/auth/**` requests are forwarded to `auth.handler`
 - `AuthGuard` using `auth.api.getSession` to protect individual routes
 - Public vs protected endpoints on the same controller
 - Zero-config SQLite database via `bun:sqlite`
 
-## Setup
-
-```bash
-# From repo root
-bun install
-
-# Set required env vars (create a .env or export in shell)
-export BETTER_AUTH_SECRET="$(openssl rand -base64 32)"
-export BETTER_AUTH_URL="http://localhost:3001"
-```
-
-## Run migrations
-
-Creates the `better-auth.sqlite` database with `user`, `session`, `account`, and `verification` tables:
-
-```bash
-cd examples/better-auth-api
-bunx --bun auth@latest migrate
-```
-
-## Start dev server
-
-```bash
-bun run dev
-# or from repo root:
-bun run --cwd examples/better-auth-api dev
-```
-
-Server runs on `http://localhost:3001`.
 
 ## Endpoints
 
@@ -72,3 +67,10 @@ curl http://localhost:3001/users/me
 # Public route — always 200
 curl http://localhost:3001/users/ping
 ```
+
+## Related docs
+
+- [Authentication](/security/authentication)
+- [Guards](/overview/guards)
+- [bun:sqlite](/bun-native/bun-sqlite)
+- [Middleware](/techniques/middleware)
