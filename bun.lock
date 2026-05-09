@@ -855,7 +855,6 @@
         "@banhmi/platform-bun": "workspace:*",
         "@banhmi/redis": "workspace:*",
         "banhmi": "workspace:*",
-        "ioredis": "^5.10.1",
       },
     },
     "packages/redis": {
@@ -865,7 +864,6 @@
         "@banhmi/cache": "workspace:*",
         "@banhmi/common": "workspace:*",
         "@banhmi/core": "workspace:*",
-        "ioredis": "^5.10.1",
       },
     },
     "packages/s3": {

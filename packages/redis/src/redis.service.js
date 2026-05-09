@@ -11,11 +11,7 @@ export class RedisService {
     return this.redis.get(key)
   }
   async set(key, value, ttlSeconds) {
-    if (ttlSeconds !== undefined) {
-      await this.redis.set(key, value, 'EX', ttlSeconds)
-    } else {
-      await this.redis.set(key, value)
-    }
+    await this.redis.set(key, value, ttlSeconds)
   }
   async del(key) {
     await this.redis.del(key)
@@ -27,12 +23,9 @@ export class RedisService {
     await this.redis.publish(channel, message)
   }
   subscribe(channel, callback) {
-    this.redis.subscribe(channel)
-    this.redis.on('message', (_ch, msg) => {
-      if (_ch === channel) callback(msg)
-    })
+    this.redis.subscribe(channel, callback)
   }
-  async quit() {
-    await this.redis.quit()
+  close() {
+    this.redis.close()
   }
 }

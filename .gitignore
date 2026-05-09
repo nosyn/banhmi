@@ -7,3 +7,4 @@ coverage/
 .vscode/
 scripts/codex/codex.queue.json
 .claude/worktrees/
+.turbo
