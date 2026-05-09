@@ -52,7 +52,7 @@ class CatsController {
 
   @Get('/:id')
   findOne(ctx: { params: Record<string, string> }): Cat {
-    return this.svc.findOne(Number(ctx.params['id']))
+    return this.svc.findOne(Number(ctx.params.id))
   }
 
   @Post('/')

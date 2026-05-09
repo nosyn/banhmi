@@ -1,18 +1,53 @@
-import { Link } from '@tanstack/react-router'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/')({ component: Home })
 
 const FEATURES = [
-  { icon: '⚡', title: 'HTTP & Routing', desc: 'Raw Bun.serve, Radix-tree router, middleware, versioning, cookies, SSE.' },
-  { icon: '✅', title: 'Validation', desc: 'Zod ValidationPipe, ParseInt/UUID/Bool pipes, class-transformer serialisation.' },
-  { icon: '🔒', title: 'Security', desc: 'Helmet, CORS, CSRF, throttler, JWT, HMAC/AES, Better Auth.' },
-  { icon: '📊', title: 'Observability', desc: 'Structured logger, OpenTelemetry, Sentry, events, devtools.' },
-  { icon: '🗄️', title: 'Data', desc: 'Postgres, MySQL, Drizzle ORM, MongoDB, SQLite, Redis, S3, cache.' },
-  { icon: '📄', title: 'OpenAPI', desc: 'Auto-generated OpenAPI 3.1, Scalar UI, CLI plugin, SDL export.' },
-  { icon: '🔷', title: 'GraphQL', desc: 'Code-first types, resolvers, subscriptions, federation, mapped types.' },
-  { icon: '🔌', title: 'Microservices', desc: 'TCP, Redis, NATS, MQTT, RabbitMQ, ClientProxy.' },
-  { icon: '🌐', title: 'Edge & Serverless', desc: 'Cloudflare Workers, AWS Lambda, raw-body, HTTPS, keep-alive.' },
+  {
+    icon: '⚡',
+    title: 'HTTP & Routing',
+    desc: 'Raw Bun.serve, Radix-tree router, middleware, versioning, cookies, SSE.',
+  },
+  {
+    icon: '✅',
+    title: 'Validation',
+    desc: 'Zod ValidationPipe, ParseInt/UUID/Bool pipes, class-transformer serialisation.',
+  },
+  {
+    icon: '🔒',
+    title: 'Security',
+    desc: 'Helmet, CORS, CSRF, throttler, JWT, HMAC/AES, Better Auth.',
+  },
+  {
+    icon: '📊',
+    title: 'Observability',
+    desc: 'Structured logger, OpenTelemetry, Sentry, events, devtools.',
+  },
+  {
+    icon: '🗄️',
+    title: 'Data',
+    desc: 'Postgres, MySQL, Drizzle ORM, MongoDB, SQLite, Redis, S3, cache.',
+  },
+  {
+    icon: '📄',
+    title: 'OpenAPI',
+    desc: 'Auto-generated OpenAPI 3.1, Scalar UI, CLI plugin, SDL export.',
+  },
+  {
+    icon: '🔷',
+    title: 'GraphQL',
+    desc: 'Code-first types, resolvers, subscriptions, federation, mapped types.',
+  },
+  {
+    icon: '🔌',
+    title: 'Microservices',
+    desc: 'TCP, Redis, NATS, MQTT, RabbitMQ, ClientProxy.',
+  },
+  {
+    icon: '🌐',
+    title: 'Edge & Serverless',
+    desc: 'Cloudflare Workers, AWS Lambda, raw-body, HTTPS, keep-alive.',
+  },
 ] as const
 
 const QUICKSTART = `bun create banhmi my-app
@@ -26,7 +61,8 @@ function Home() {
       <section className="text-center space-y-4">
         <h1 className="text-5xl font-bold tracking-tight">Banhmi</h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Bun-first, NestJS-inspired TypeScript web framework. Full feature parity with NestJS
+          Bun-first, NestJS-inspired TypeScript web framework. Full feature
+          parity with NestJS
           {' — '} plus Bun-native superpowers.
         </p>
 
@@ -95,7 +131,10 @@ function Home() {
       <footer className="flex flex-col items-center justify-between gap-4 border-t border-border pt-8 text-sm text-muted-foreground sm:flex-row">
         <p>{'© 2026 Banhmi contributors. MIT licence.'}</p>
         <div className="flex gap-6">
-          <Link className="transition-colors hover:text-foreground" to="/docs/introduction/first-steps">
+          <Link
+            className="transition-colors hover:text-foreground"
+            to="/docs/introduction/first-steps"
+          >
             Docs
           </Link>
           <a

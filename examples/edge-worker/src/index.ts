@@ -19,8 +19,8 @@ const fetch = await createEdgeHandler(AppModule)
 export default { fetch }
 
 // Local dev server — only starts when run directly with Bun
-if (process.env['BUN_ENV'] !== 'test') {
-  const port = Number(process.env['PORT'] ?? 4200)
+if (process.env.BUN_ENV !== 'test') {
+  const port = Number(process.env.PORT ?? 4200)
   Bun.serve({ port, fetch })
   console.log(`Edge worker running at http://localhost:${port}`)
 }

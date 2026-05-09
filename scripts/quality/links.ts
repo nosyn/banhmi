@@ -7,8 +7,8 @@
  *
  * Exits 0 if clean, 1 if broken links are found.
  */
+
 import { Glob } from 'bun'
-import { join } from 'node:path'
 
 const CONTENT_DIR = 'apps/docs/apps/web/src/content'
 const ROUTES_JSON = `${CONTENT_DIR}/doc-routes.json`
@@ -114,7 +114,9 @@ async function main(): Promise<number> {
   }
 
   if (fileCount === 0) {
-    console.error('links: no MDX files found — are you running from the repo root?')
+    console.error(
+      'links: no MDX files found — are you running from the repo root?',
+    )
     return 1
   }
 
@@ -126,7 +128,9 @@ async function main(): Promise<number> {
   for (const { file, line, link } of broken) {
     console.log(`${file}:${line}: broken link → ${link}`)
   }
-  console.log(`\nlinks: ${broken.length} broken link(s) across ${fileCount} files`)
+  console.log(
+    `\nlinks: ${broken.length} broken link(s) across ${fileCount} files`,
+  )
   return 1
 }
 

@@ -210,10 +210,7 @@ async function ensureResultsDir(date: string): Promise<string> {
   return dir
 }
 
-async function writeResult(
-  dir: string,
-  result: BenchResult,
-): Promise<void> {
+async function writeResult(dir: string, result: BenchResult): Promise<void> {
   const filename = `${result.scenario}-${result.competitor}.json`
   await writeFile(resolve(dir, filename), JSON.stringify(result, null, 2))
 }
@@ -237,10 +234,14 @@ function placeholder(
 // ---------------------------------------------------------------------------
 
 async function main(): Promise<void> {
-  const date = (process.env.BENCH_DATE ?? new Date().toISOString().slice(0, 10))
+  const date = process.env.BENCH_DATE ?? new Date().toISOString().slice(0, 10)
   const seconds = Number(process.env.BENCH_SECONDS ?? 10)
-  const scenarioFilter = (process.env.BENCH_SCENARIOS ?? '').split(',').filter(Boolean)
-  const targetFilter = (process.env.BENCH_TARGETS ?? '').split(',').filter(Boolean)
+  const scenarioFilter = (process.env.BENCH_SCENARIOS ?? '')
+    .split(',')
+    .filter(Boolean)
+  const targetFilter = (process.env.BENCH_TARGETS ?? '')
+    .split(',')
+    .filter(Boolean)
 
   const competitors = ensureSubset(ALL_COMPETITORS, targetFilter, 'name')
   const scenarios = ensureSubset(ALL_SCENARIOS, scenarioFilter, 'name')

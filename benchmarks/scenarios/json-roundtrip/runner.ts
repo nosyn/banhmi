@@ -16,7 +16,8 @@ export type ScenarioConfig = {
 const PAYLOAD: Record<string, unknown> = {
   id: 'bench-roundtrip-001',
   name: 'benchmark payload',
-  description: 'A payload used to test JSON round-trip performance in various frameworks.',
+  description:
+    'A payload used to test JSON round-trip performance in various frameworks.',
   tags: ['performance', 'benchmark', 'json'],
   nested: {
     level1: {
@@ -45,8 +46,8 @@ export const scenario: ScenarioConfig = {
 export async function assertResponse(res: Response): Promise<true> {
   if (!res.ok) throw new Error(`Unexpected status ${res.status}`)
   const body = (await res.json()) as Record<string, unknown>
-  if (body['id'] !== PAYLOAD['id']) {
-    throw new Error(`Body id mismatch: got ${body['id']}`)
+  if (body.id !== PAYLOAD.id) {
+    throw new Error(`Body id mismatch: got ${body.id}`)
   }
   return true
 }

@@ -72,7 +72,8 @@
       "!**/node_modules",
       "!**/bun.lock",
       "!**/routeTree.gen.ts",
-      "!apps/docs/packages/ui/src/styles/globals.css"
+      "!apps/docs/packages/ui/src/styles/globals.css",
+      "!.claude"
     ]
   }
 }

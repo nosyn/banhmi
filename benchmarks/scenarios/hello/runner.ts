@@ -29,7 +29,7 @@ export const scenario: ScenarioConfig = {
 export async function assertResponse(res: Response): Promise<true> {
   if (!res.ok) throw new Error(`Unexpected status ${res.status}`)
   const body = (await res.json()) as Record<string, unknown>
-  if (body['hello'] !== 'world') {
+  if (body.hello !== 'world') {
     throw new Error(`Unexpected body: ${JSON.stringify(body)}`)
   }
   return true

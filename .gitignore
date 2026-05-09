@@ -6,3 +6,4 @@ coverage/
 .worktrees/
 .vscode/
 scripts/codex/codex.queue.json
+.claude/worktrees/

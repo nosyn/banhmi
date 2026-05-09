@@ -43,7 +43,7 @@ export function buildUploadBody(): FormData {
 export async function assertResponse(res: Response): Promise<true> {
   if (!res.ok) throw new Error(`Unexpected status ${res.status}`)
   const body = (await res.json()) as Record<string, unknown>
-  if (typeof body['size'] !== 'number') {
+  if (typeof body.size !== 'number') {
     throw new Error(`Missing size in upload response: ${JSON.stringify(body)}`)
   }
   return true

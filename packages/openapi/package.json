@@ -1,6 +1,6 @@
 {
   "name": "@banhmi/openapi",
-  "version": "0.0.2",
+  "version": "1.0.0-rc.1",
   "type": "module",
   "main": "./src/index.ts",
   "exports": {
