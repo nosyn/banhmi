@@ -6,7 +6,7 @@
  * Register defaults via `SessionModule.forRoot()`.
  *
  * Import the Redis store from the subpath `@banhmi/session/redis` to avoid
- * pulling in the ioredis peer dependency unless needed.
+ * pulling in the `@banhmi/redis` peer dependency unless needed.
  *
  * @example
  * import { SessionModule, Session, getSession } from '@banhmi/session'

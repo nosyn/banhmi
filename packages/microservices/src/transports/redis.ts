@@ -26,8 +26,15 @@ type InboundHandler = (
 /**
  * Redis pub/sub transport for `@banhmi/microservices`.
  *
- * Uses `ioredis` as a peer dependency.  Two Redis connections are created: one
+ * Uses `ioredis` as a peer dependency. Two Redis connections are created: one
  * for subscribing (inbound) and one for publishing (outbound).
+ *
+ * NOTE: `Bun.RedisClient` cannot replace `ioredis` here because this transport
+ * uses `psubscribe` (pattern-based pub/sub) with an `on('pmessage', ...)` event
+ * emitter. `Bun.RedisClient.subscribe` uses a callback API for exact-channel
+ * subscriptions only; there is no native pattern-subscribe callback as of
+ * Bun 1.3.x. If Bun adds `psubscribe` callback support in a future release,
+ * this transport can be migrated.
  *
  * Pattern channels are prefixed by `options.prefix` (default `'banhmi_ms'`).
  * Reply channels use the format `{prefix}:reply:{correlationId}`.
