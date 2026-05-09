@@ -1,23 +1,34 @@
 # Sequelize
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Sequelize requires `reflect-metadata` and Node.js native addons that are
+incompatible with Bun's module system. Use Drizzle ORM or `@banhmi/postgres`
+for Banhmi applications.
 
-## When to use
+## Recommended alternatives
 
-TBD
+See [TypeORM](/recipes/typeorm) for the full alternatives table.
 
-## Setup
+## Drizzle ORM (recommended)
 
-TBD
+```bash
+bun add @banhmi/drizzle drizzle-orm
+```
 
-## Usage
+See [Drizzle ORM](/techniques/drizzle) for setup.
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+## Direct SQL
 
-## API reference
+```ts
+import { PostgresModule } from '@banhmi/postgres'
 
-TBD
+@Module({
+  imports: [PostgresModule.forRoot({ connectionString: Bun.env['DATABASE_URL']! })],
+})
+export class AppModule {}
+```
 
 ## See also
 
-TBD
+- [Drizzle ORM](/techniques/drizzle) — recommended type-safe ORM
+- [Postgres](/techniques/postgres) — raw PostgreSQL access
+- [Migration Guide](/migration/nestjs) — NestJS to Banhmi migration

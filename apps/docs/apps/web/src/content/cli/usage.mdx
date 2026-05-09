@@ -1,23 +1,80 @@
 # Usage
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+## `banhmi new`
 
-## When to use
+Scaffold a new Banhmi application:
 
-TBD
+```bash
+banhmi new my-app
+# interactive prompt for package manager, strictTS, etc.
 
-## Setup
+# Skip prompts
+banhmi new my-app --package-manager bun --strict
+```
 
-TBD
+## `banhmi generate` (alias: `g`)
 
-## Usage
+Generate application building blocks:
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```bash
+# Resource (full CRUD — controller + service + module + DTOs)
+banhmi g resource cats
 
-## API reference
+# Individual files
+banhmi g controller cats
+banhmi g service cats
+banhmi g module cats
+banhmi g guard auth
+banhmi g interceptor logging
+banhmi g pipe validation
+banhmi g filter http-exception
 
-TBD
+# Specify output path
+banhmi g controller admin/users
+```
+
+Generated files follow the project's naming convention and are
+automatically registered in the nearest parent module.
+
+## `banhmi build`
+
+Compiles the project using `bun build` with the settings from `bunfig.toml`:
+
+```bash
+banhmi build
+banhmi build --outdir dist --target bun
+```
+
+## `banhmi start`
+
+Start the compiled application:
+
+```bash
+banhmi start               # run once
+banhmi start --watch       # watch mode (restarts on file change)
+banhmi start --debug       # attach Bun inspector
+```
+
+## `banhmi info`
+
+Print environment metadata:
+
+```bash
+banhmi info
+# Bun version: 1.1.38
+# banhmi: 1.0.0-rc.1
+# Platform: darwin arm64
+```
+
+## Global flags
+
+| Flag | Description |
+|------|-------------|
+| `--dry-run` | Preview changes without writing files |
+| `--flat` | Place generated files in the current directory |
+| `--no-spec` | Skip test file generation |
 
 ## See also
 
-TBD
+- [CLI Overview](/cli/overview) — full command table
+- [Scripts](/cli/scripts) — workspace-level script conventions

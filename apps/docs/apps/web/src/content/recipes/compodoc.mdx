@@ -1,23 +1,37 @@
 # Compodoc
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Compodoc is a documentation tool for Angular/NestJS projects. It is not
+directly compatible with Banhmi's TC39 Stage 3 decorators, but TSDoc comments
+in your code are supported by most TypeScript documentation generators.
 
-## When to use
+## Recommended alternatives
 
-TBD
+- **OpenAPI / Scalar** — live, interactive API documentation from `@banhmi/openapi`.
+- **TypeDoc** — generates static HTML docs from TSDoc comments. Works with Bun.
 
-## Setup
+## TypeDoc setup
 
-TBD
+```bash
+bun add -d typedoc
+```
 
-## Usage
+`typedoc.json`:
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```json
+{
+  "entryPoints": ["src/index.ts"],
+  "out": "docs-output",
+  "exclude": ["**/*.test.ts"]
+}
+```
 
-## API reference
+Run:
 
-TBD
+```bash
+bunx typedoc
+```
 
 ## See also
 
-TBD
+- [OpenAPI Overview](/openapi/overview) — live API docs with Scalar UI
+- [CLI Usage](/cli/usage) — `banhmi build` and type-check integration

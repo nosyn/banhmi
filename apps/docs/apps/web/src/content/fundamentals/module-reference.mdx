@@ -1,23 +1,60 @@
 # Module Reference
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+`ModuleRef` gives you programmatic access to the DI container at runtime —
+useful for on-demand provider resolution, dynamic instantiation, and
+integration-testing helpers.
 
 ## When to use
 
-TBD
-
-## Setup
-
-TBD
+- Resolve providers that aren't available at class instantiation time.
+- Dynamically instantiate transient or request-scoped providers.
+- Access providers across module boundaries in tests without re-wiring imports.
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import { Injectable, ModuleRef } from 'banhmi'
+
+@Injectable()
+export class CatsService {
+  static inject = [ModuleRef] as const
+  constructor(private moduleRef: ModuleRef) {}
+
+  async getPlugin(name: string) {
+    // Resolve a provider registered in the same module context
+    return this.moduleRef.get(PluginRegistry).get(name)
+  }
+
+  async createTransient() {
+    // Explicitly instantiate a TRANSIENT-scoped provider
+    return this.moduleRef.resolve(TransientService)
+  }
+}
+```
+
+## Introspecting the module graph
+
+```ts
+@Injectable()
+export class AppInspector {
+  static inject = [ModuleRef] as const
+  constructor(private moduleRef: ModuleRef) {}
+
+  listModules() {
+    return this.moduleRef.introspect()
+  }
+}
+```
 
 ## API reference
 
-TBD
+- `ModuleRef.get<T>(token, options?)` — retrieve a singleton provider.
+- `ModuleRef.resolve<T>(token, contextId?)` — create a new transient/request instance.
+- `ModuleRef.create<T>(ClassRef)` — instantiate outside the DI container.
+- `ModuleRef.introspect()` — list modules and tokens in the current context.
 
 ## See also
 
-TBD
+- [Lazy-loading Modules](/fundamentals/lazy-loading-modules) — load modules on demand via `ModuleRef`
+- [Circular Dependency](/fundamentals/circular-dependency) — when to avoid programmatic access
+- [Injection Scopes](/fundamentals/injection-scopes) — how `resolve` creates new instances

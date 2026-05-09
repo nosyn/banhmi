@@ -1,23 +1,68 @@
 # Interceptors
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Interceptors wrap handler execution. They run before and after the handler,
+giving you a hook to transform responses, measure timing, or add cross-cutting logic.
 
 ## When to use
 
-TBD
+- Log request timing and response status uniformly.
+- Transform handler return values (e.g. wrap in `{ data, meta }` envelope).
+- Cache responses and short-circuit the handler on a cache hit.
+- Catch and rethrow exceptions in a standardised shape.
 
 ## Setup
 
-TBD
+```ts
+// Global
+app.useGlobalInterceptors(new LoggingInterceptor())
 
-## Usage
+// Controller-level
+@Controller('cats')
+@UseInterceptors(CacheInterceptor)
+export class CatsController {}
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+// Handler-level
+@Get()
+@UseInterceptors(TransformInterceptor)
+findAll() {}
+```
+
+## Usage — timing interceptor
+
+```ts
+import type { CallHandler, ExecutionContext, NestInterceptor } from 'banhmi'
+
+export class TimingInterceptor implements NestInterceptor {
+  async intercept(context: ExecutionContext, next: CallHandler) {
+    const start = Date.now()
+    const result = await next.handle()
+    const ms = Date.now() - start
+    console.log(`[${context.getHandler().name}] ${ms}ms`)
+    return result
+  }
+}
+```
+
+## Transform response
+
+```ts
+export class WrapInterceptor implements NestInterceptor {
+  async intercept(_ctx: ExecutionContext, next: CallHandler) {
+    const data = await next.handle()
+    return { data, success: true }
+  }
+}
+```
 
 ## API reference
 
-TBD
+- `NestInterceptor` — interface: `intercept(context, next): Promise<unknown>`.
+- `CallHandler.handle()` — invokes the actual handler; returns the response value.
+- `@UseInterceptors(...interceptors)` — apply to controller or handler.
+- `app.useGlobalInterceptors(...interceptors)` — apply application-wide.
 
 ## See also
 
-TBD
+- [Guards](/overview/guards) — pre-handler access control
+- [Pipes](/overview/pipes) — input transformation and validation
+- [Exception Filters](/overview/exception-filters) — error handling

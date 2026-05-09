@@ -1,23 +1,79 @@
 # Built-in Pipes
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Banhmi ships a set of built-in pipes that cover the most common transformation
+and validation scenarios. All built-in pipes are exported from `banhmi`.
 
-## When to use
+## ParseIntPipe
 
-TBD
+Converts a string param to a JavaScript integer. Throws `BadRequestException`
+if the value is not a valid integer.
 
-## Setup
+```ts
+@Get(':id')
+findOne(@Param('id', ParseIntPipe) id: number) {
+  return this.catsService.findOne(id)
+}
+```
 
-TBD
+## ParseFloatPipe
 
-## Usage
+Same as `ParseIntPipe` but allows decimal values.
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+## ParseBoolPipe
+
+Accepts `'true'` / `'false'` and coerces to `boolean`.
+
+## ParseUUIDPipe
+
+Validates that the value is a canonical UUID (v1–v5). Throws on invalid format.
+
+```ts
+@Get(':id')
+findOne(@Param('id', ParseUUIDPipe) id: string) {}
+```
+
+## DefaultValuePipe
+
+Returns a fallback value when the incoming value is `undefined` or `null`.
+
+```ts
+@Get()
+findAll(
+  @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+) {}
+```
+
+## ValidationPipe
+
+Validates the body or query object against a Zod schema (or a class with
+class-validator decorators when configured). Throws `UnprocessableEntityException`
+on failure.
+
+```ts
+import { z } from 'zod'
+
+const CreateCatSchema = z.object({
+  name: z.string().min(1),
+  age: z.number().int().min(0),
+})
+
+@Post()
+create(@Body(new ValidationPipe(CreateCatSchema)) dto: CreateCatDto) {}
+```
 
 ## API reference
 
-TBD
+| Pipe | Input | Output | Error |
+|------|-------|--------|-------|
+| `ParseIntPipe` | `string` | `number` (integer) | `BadRequestException` |
+| `ParseFloatPipe` | `string` | `number` | `BadRequestException` |
+| `ParseBoolPipe` | `'true'|'false'` | `boolean` | `BadRequestException` |
+| `ParseUUIDPipe` | `string` | `string` (UUID) | `BadRequestException` |
+| `DefaultValuePipe(d)` | `T | undefined` | `T` | — |
+| `ValidationPipe(schema?)` | `unknown` | validated `T` | `UnprocessableEntityException` |
 
 ## See also
 
-TBD
+- [Pipes overview](/overview/pipes) — pipes lifecycle and `@UsePipes`
+- [Validation](/techniques/validation) — Zod-based validation setup
+- [Built-in Exceptions](/built-ins/exceptions) — exception classes thrown by pipes

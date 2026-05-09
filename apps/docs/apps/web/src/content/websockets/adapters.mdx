@@ -1,23 +1,60 @@
 # Adapters
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+The `BunWebSocketAdapter` (from `@banhmi/platform-bun`) implements the
+`WebSocketAdapter` interface using Bun's native WebSocket support. It is
+wired automatically when you use `BanhmiFactory.create`.
 
 ## When to use
 
-TBD
+- You need to customise WebSocket upgrade behaviour (headers, protocols, path matching).
+- You want to swap the underlying WebSocket implementation in tests.
 
-## Setup
+## Default behaviour
 
-TBD
+By default `BanhmiFactory.create` creates a `BunWebSocketAdapter` that serves
+WebSocket upgrades on the same port as HTTP. No configuration is required unless
+you want to override defaults.
 
-## Usage
+## Custom options
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import { BunWebSocketAdapter } from '@banhmi/platform-bun'
+
+const adapter = new BunWebSocketAdapter({
+  pingInterval: 30_000,   // ms
+  maxPayloadLength: 16 * 1024 * 1024,  // 16 MB
+  backpressureLimit: 1024 * 1024,
+})
+
+const app = await BanhmiFactory.create(AppModule)
+app.useWebSocketAdapter(adapter)
+await app.listen(3000)
+```
+
+## Custom adapter
+
+Implement the `WebSocketAdapter` interface to plug in a fully custom WS backend:
+
+```ts
+import type { WebSocketAdapter } from 'banhmi'
+
+class MyWsAdapter implements WebSocketAdapter {
+  create(port: number, options?: Record<string, unknown>) { /* ... */ }
+  bindClientConnect(server: unknown, callback: (socket: unknown) => void) { /* ... */ }
+  bindClientDisconnect(client: unknown, callback: () => void) { /* ... */ }
+  bindMessageHandlers(client: unknown, handlers: MessageMappingProperties[], transform: (data: unknown) => Observable<unknown>) { /* ... */ }
+  close(server: unknown) { /* ... */ }
+}
+```
 
 ## API reference
 
-TBD
+- `BunWebSocketAdapter(options?)` — the built-in Bun adapter.
+- `app.useWebSocketAdapter(adapter)` — swap the adapter before calling `listen`.
+- `WebSocketAdapter` — the interface all adapters must implement.
 
 ## See also
 
-TBD
+- [Gateways](/websockets/gateways) — building WebSocket message handlers
+- [Native WebSocket](/bun-native/native-websocket) — raw Bun WebSocket API
+- [Platform Agnosticism](/fundamentals/platform-agnosticism) — HTTP adapter pattern

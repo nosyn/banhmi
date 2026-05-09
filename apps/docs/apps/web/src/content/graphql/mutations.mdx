@@ -1,23 +1,64 @@
 # Mutations
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
-
-## When to use
-
-TBD
-
-## Setup
-
-TBD
+GraphQL mutations follow the same decorator pattern as queries but use
+the `@Mutation()` decorator.
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import { Args, Mutation, Resolver } from '@banhmi/graphql'
+import { CreateCatInput } from './dto/create-cat.input'
+import { Cat } from './models/cat.model'
+
+@Resolver(() => Cat)
+export class CatsResolver {
+  @Mutation(() => Cat)
+  createCat(@Args('input') input: CreateCatInput): Cat {
+    return this.catsService.create(input)
+  }
+
+  @Mutation(() => Boolean)
+  deleteCat(@Args('id') id: string): boolean {
+    return this.catsService.delete(id)
+  }
+}
+```
+
+## Input types
+
+Define input types with `@InputType()`:
+
+```ts
+import { Field, InputType } from '@banhmi/graphql'
+
+@InputType()
+export class CreateCatInput {
+  @Field()
+  name: string
+
+  @Field(() => Number)
+  age: number
+}
+```
+
+## Nullable return
+
+```ts
+@Mutation(() => Cat, { nullable: true })
+updateCat(@Args('id') id: string, @Args('input') input: UpdateCatInput) {
+  return this.catsService.update(id, input)
+}
+```
 
 ## API reference
 
-TBD
+- `@Mutation(() => Type, options?)` — declares a GraphQL mutation field.
+- `@InputType()` — marks a class as a GraphQL input type.
+- `@Field()` on an `@InputType` class — declares a writable input field.
+- `{ nullable: true }` — makes the mutation return value optional.
 
 ## See also
 
-TBD
+- [Resolvers](/graphql/resolvers) — query resolvers and context access
+- [Mapped Types](/graphql/mapped-types) — `PartialType`, `PickType` for input DTOs
+- [Quick Start](/graphql/quick-start) — full GraphQL module setup

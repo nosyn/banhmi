@@ -1,23 +1,43 @@
 # CRUD Generator
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
-
-## When to use
-
-TBD
-
-## Setup
-
-TBD
+The `banhmi generate resource` command scaffolds a complete CRUD resource
+in one step — controller, service, module, and DTOs with OpenAPI decorators.
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```bash
+banhmi g resource cats
+```
 
-## API reference
+Generates:
 
-TBD
+```
+src/cats/
+  cats.controller.ts   # GET/POST/GET:id/PATCH:id/DELETE:id
+  cats.service.ts      # findAll/findOne/create/update/remove
+  cats.module.ts
+  dto/
+    create-cat.dto.ts  # @ApiProperty decorated input
+    update-cat.dto.ts  # PartialType(CreateCatDto)
+```
+
+## Transport selection
+
+```bash
+banhmi g resource cats --transport http       # default — REST controller
+banhmi g resource cats --transport graphql    # GraphQL resolver
+banhmi g resource cats --transport microservice  # @MessagePattern handler
+banhmi g resource cats --transport websocket  # @SubscribeMessage handler
+```
+
+## Skip spec file
+
+```bash
+banhmi g resource cats --no-spec
+```
 
 ## See also
 
-TBD
+- [CLI Usage](/cli/usage) — all `banhmi generate` options
+- [Controllers](/overview/controllers) — generated controller structure
+- [OpenAPI Overview](/openapi/overview) — decorators added by the generator

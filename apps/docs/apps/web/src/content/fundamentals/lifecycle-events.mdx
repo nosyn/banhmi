@@ -1,23 +1,62 @@
 # Lifecycle Events
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Banhmi fires a sequence of lifecycle hooks when the application boots and shuts
+down. Implement these interfaces in any provider or controller to tap into
+the appropriate phase.
 
-## When to use
+## Boot sequence
 
-TBD
+1. `onModuleInit()` — called after all providers in the module are resolved.
+2. `onApplicationBootstrap()` — called after all modules have initialised, before the server starts.
+3. (server starts listening)
 
-## Setup
+## Shutdown sequence
 
-TBD
+1. `onModuleDestroy()` — called when `app.close()` is invoked.
+2. `beforeApplicationShutdown(signal?)` — called with the OS signal (SIGTERM, etc.) before destroy.
+3. (server stops accepting new connections)
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import { Injectable, OnModuleInit, OnModuleDestroy, OnApplicationBootstrap } from 'banhmi'
+
+@Injectable()
+export class DatabaseService implements OnModuleInit, OnModuleDestroy {
+  async onModuleInit() {
+    await this.db.connect()
+    console.log('Database connected')
+  }
+
+  async onModuleDestroy() {
+    await this.db.close()
+    console.log('Database disconnected')
+  }
+}
+```
+
+## Enable shutdown hooks
+
+For graceful shutdown on SIGTERM/SIGINT, enable shutdown hooks:
+
+```ts
+const app = await BanhmiFactory.create(AppModule)
+app.enableShutdownHooks()
+await app.listen(3000)
+```
 
 ## API reference
 
-TBD
+| Interface | Method | When called |
+|-----------|--------|-------------|
+| `OnModuleInit` | `onModuleInit()` | After module providers resolve |
+| `OnApplicationBootstrap` | `onApplicationBootstrap()` | After all modules init |
+| `OnModuleDestroy` | `onModuleDestroy()` | On `app.close()` |
+| `BeforeApplicationShutdown` | `beforeApplicationShutdown(signal?)` | Before destroy, after signal |
+| `OnApplicationShutdown` | `onApplicationShutdown(signal?)` | After destroy |
 
 ## See also
 
-TBD
+- [Providers](/overview/providers) — where hooks are implemented
+- [Modules](/overview/modules) — module composition that triggers init order
+- [Asynchronous Providers](/fundamentals/asynchronous-providers) — async onModuleInit patterns

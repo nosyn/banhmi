@@ -1,23 +1,60 @@
 # Scalars
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+GraphQL scalars represent leaf values. `@banhmi/graphql` ships the standard
+scalars (`String`, `Int`, `Float`, `Boolean`, `ID`) and supports custom scalars.
 
-## When to use
+## Built-in scalars
 
-TBD
+```ts
+import { Field, Float, ID, Int, ObjectType } from '@banhmi/graphql'
 
-## Setup
+@ObjectType()
+export class Cat {
+  @Field(() => ID)      id: string
+  @Field()              name: string    // String is the default
+  @Field(() => Int)     age: number
+  @Field(() => Float)   weight: number
+  @Field()              active: boolean
+}
+```
 
-TBD
+## Custom scalar
 
-## Usage
+```ts
+import { GraphQLScalarType, Kind } from 'graphql'
+import { Scalar } from '@banhmi/graphql'
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+@Scalar('Date', () => Date)
+export class DateScalar {
+  description = 'Date custom scalar type'
+
+  parseValue(value: unknown): Date {
+    return new Date(value as string)
+  }
+
+  serialize(value: unknown): string {
+    return (value as Date).toISOString()
+  }
+
+  parseLiteral(ast: unknown): Date {
+    if ((ast as { kind: string }).kind === Kind.STRING) {
+      return new Date((ast as { value: string }).value)
+    }
+    throw new Error('Invalid date literal')
+  }
+}
+```
+
+Register it as a provider and reference it in field types.
 
 ## API reference
 
-TBD
+- `@Scalar(name, typeFunc)` — register a custom scalar class.
+- `parseValue(value)` — deserialise from JSON variable.
+- `serialize(value)` — serialise to JSON response.
+- `parseLiteral(ast)` — deserialise from inline SDL literal.
 
 ## See also
 
-TBD
+- [Quick Start](/graphql/quick-start) — GraphQL module setup
+- [Resolvers](/graphql/resolvers) — using scalars in resolver return types

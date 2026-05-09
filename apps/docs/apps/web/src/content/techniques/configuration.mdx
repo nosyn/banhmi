@@ -1,23 +1,78 @@
 # Configuration
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+`@banhmi/config` provides a `ConfigModule` and `ConfigService` for typed,
+validated environment configuration using Zod (or plain `Bun.env` access).
 
 ## When to use
 
-TBD
+- Centralise all `Bun.env` access behind a typed, validated service.
+- Provide environment-specific overrides via `.env` files.
+- Validate required env vars at startup and fail fast with a clear error.
 
 ## Setup
 
-TBD
+```bash
+bun add @banhmi/config
+```
+
+```ts
+import { ConfigModule } from '@banhmi/config'
+import { z } from 'zod'
+
+const EnvSchema = z.object({
+  PORT: z.coerce.number().default(3000),
+  DATABASE_URL: z.string().url(),
+  JWT_SECRET: z.string().min(32),
+})
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({ schema: EnvSchema, envFile: '.env' }),
+  ],
+})
+export class AppModule {}
+```
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import { Injectable } from 'banhmi'
+import { ConfigService } from '@banhmi/config'
+
+@Injectable()
+export class DatabaseService {
+  static inject = [ConfigService] as const
+  constructor(private config: ConfigService) {}
+
+  connect() {
+    const url = this.config.get('DATABASE_URL')
+    return new Database(url)
+  }
+}
+```
+
+## Namespace configs
+
+```ts
+export const databaseConfig = registerAs('database', () => ({
+  host: Bun.env['DB_HOST'] ?? 'localhost',
+  port: Number(Bun.env['DB_PORT'] ?? 5432),
+}))
+
+@Module({
+  imports: [ConfigModule.forRoot({ load: [databaseConfig] })],
+})
+export class AppModule {}
+```
 
 ## API reference
 
-TBD
+- `ConfigModule.forRoot({ schema?, envFile?, load?, isGlobal? })` — configure module.
+- `ConfigService.get<K>(key)` — retrieve a typed env value.
+- `ConfigService.getOrThrow<K>(key)` — throw if key is missing.
+- `registerAs(namespace, factory)` — define a namespaced config factory.
 
 ## See also
 
-TBD
+- [Asynchronous Providers](/fundamentals/asynchronous-providers) — async config loading
+- [Security](/security/overview) — storing secrets safely

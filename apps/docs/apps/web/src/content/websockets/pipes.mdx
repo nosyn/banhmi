@@ -1,23 +1,49 @@
 # Pipes
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Pipes in WebSocket gateways work exactly like HTTP pipes. They transform or
+validate the `@MessageBody()` before the handler is invoked.
 
 ## When to use
 
-TBD
-
-## Setup
-
-TBD
+- Validate the shape of incoming WebSocket payloads.
+- Parse numeric or UUID fields from message data.
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import { ZodValidationPipe } from '@banhmi/validation'
+import { z } from 'zod'
+
+const SendMessageSchema = z.object({
+  room: z.string().min(1),
+  text: z.string().min(1).max(500),
+})
+
+@SubscribeMessage('message')
+handleMessage(
+  @MessageBody(new ZodValidationPipe(SendMessageSchema))
+  payload: z.infer<typeof SendMessageSchema>,
+) {
+  this.server.to(payload.room).emit('message', payload.text)
+}
+```
+
+Apply globally to all gateway message handlers:
+
+```ts
+@WebSocketGateway({ path: '/ws' })
+@UsePipes(new ZodValidationPipe())
+export class ChatGateway {}
+```
 
 ## API reference
 
-TBD
+- `@MessageBody(pipe?)` — extract and optionally pipe the message body.
+- `@UsePipes(...pipes)` — apply pipes to all handlers in the gateway.
+- `ZodValidationPipe(schema?)` — Zod-based validation; throws `WsException` on failure.
 
 ## See also
 
-TBD
+- [Pipes](/overview/pipes) — HTTP pipe mechanics (same interface)
+- [Built-in Validators](/built-ins/validators) — `ZodValidationPipe`
+- [Gateways](/websockets/gateways) — gateway setup

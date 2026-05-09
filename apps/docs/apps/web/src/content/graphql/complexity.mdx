@@ -1,23 +1,65 @@
 # Complexity
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
-
-## When to use
-
-TBD
+Query complexity analysis prevents clients from sending deeply nested or
+expensive queries that could overload the server.
 
 ## Setup
 
-TBD
+```bash
+bun add graphql-query-complexity
+```
 
-## Usage
+```ts
+import { GraphQLModule } from '@banhmi/graphql'
+import { fieldExtensionsEstimator, simpleEstimator } from 'graphql-query-complexity'
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+GraphQLModule.forRoot({
+  autoSchemaFile: true,
+  plugins: [
+    {
+      requestDidStart: () => ({
+        didResolveOperation({ request, document }) {
+          const complexity = getComplexity({
+            schema,
+            query: document,
+            variables: request.variables,
+            estimators: [
+              fieldExtensionsEstimator(),
+              simpleEstimator({ defaultComplexity: 1 }),
+            ],
+          })
+          if (complexity > 100) {
+            throw new Error(`Query complexity ${complexity} exceeds limit of 100`)
+          }
+        },
+      }),
+    },
+  ],
+})
+```
+
+## Per-field complexity
+
+```ts
+import { Extensions, Field, ObjectType } from '@banhmi/graphql'
+
+@ObjectType()
+export class Cat {
+  @Field(() => [Toy])
+  @Extensions({ complexity: ({ childComplexity }) => 10 + childComplexity })
+  toys: Toy[]
+}
+```
 
 ## API reference
 
-TBD
+- `graphql-query-complexity` — third-party library; install separately.
+- `fieldExtensionsEstimator()` — reads complexity from `@Extensions`.
+- `simpleEstimator({ defaultComplexity })` — flat cost per field.
+- `getComplexity({ schema, query, variables, estimators })` — compute total cost.
 
 ## See also
 
-TBD
+- [Extensions](/graphql/extensions) — attaching complexity metadata to fields
+- [Plugins](/graphql/plugins) — registering Apollo Server plugins
+- [Quick Start](/graphql/quick-start) — GraphQL module setup

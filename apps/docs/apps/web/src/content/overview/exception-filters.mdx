@@ -1,23 +1,73 @@
 # Exception Filters
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Exception filters catch errors thrown inside handlers (or pipes/guards/interceptors)
+and convert them into HTTP responses. The global `HttpExceptionFilter` handles any
+`HttpException` automatically; add custom filters for domain-specific error shapes.
 
 ## When to use
 
-TBD
+- Return structured JSON errors instead of raw exception messages.
+- Map domain exceptions (e.g. `NotFoundException`) to specific HTTP status codes.
+- Centralise error logging.
 
 ## Setup
 
-TBD
+```ts
+// Global
+app.useGlobalFilters(new HttpExceptionFilter())
 
-## Usage
+// Controller-level
+@Controller('cats')
+@UseFilters(DomainExceptionFilter)
+export class CatsController {}
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+// Handler-level
+@Get(':id')
+@UseFilters(NotFoundFilter)
+findOne() {}
+```
+
+## Usage — custom filter
+
+```ts
+import { ExceptionFilter, Catch, HttpException } from 'banhmi'
+import type { ArgumentsHost } from 'banhmi'
+
+@Catch(HttpException)
+export class HttpExceptionFilter implements ExceptionFilter {
+  catch(exception: HttpException, host: ArgumentsHost) {
+    const ctx = host.switchToHttp()
+    const status = exception.getStatus()
+    return Response.json(
+      { statusCode: status, message: exception.message, timestamp: new Date().toISOString() },
+      { status },
+    )
+  }
+}
+```
+
+## Built-in HTTP exceptions
+
+| Exception | Status |
+|-----------|--------|
+| `BadRequestException` | 400 |
+| `UnauthorizedException` | 401 |
+| `ForbiddenException` | 403 |
+| `NotFoundException` | 404 |
+| `ConflictException` | 409 |
+| `UnprocessableEntityException` | 422 |
+| `InternalServerErrorException` | 500 |
 
 ## API reference
 
-TBD
+- `ExceptionFilter` — interface: `catch(exception, host): Response | void`.
+- `@Catch(...exceptionTypes)` — bind the filter to specific exception classes.
+- `ArgumentsHost.switchToHttp()` — returns HTTP-specific context with `getRequest`.
+- `@UseFilters(...filters)` — apply to controller or handler.
+- `app.useGlobalFilters(...filters)` — apply application-wide.
 
 ## See also
 
-TBD
+- [Built-in Exceptions](/built-ins/exceptions) — full list of HttpException subclasses
+- [Guards](/overview/guards) — authentication before the handler
+- [Interceptors](/overview/interceptors) — response transformation

@@ -1,23 +1,60 @@
 # Passport (auth)
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Banhmi ships `@banhmi/auth` as a first-class auth module built on
+[Better Auth](https://better-auth.com), which provides sessions, JWT, email OTP,
+OAuth providers, and 2FA without requiring Passport.js.
 
-## When to use
+## Recommended: @banhmi/auth + Better Auth
 
-TBD
+```bash
+bun add @banhmi/auth better-auth
+```
 
-## Setup
+See the [Authentication](/security/authentication) guide for full setup.
 
-TBD
+## Using Passport.js (legacy migration path)
 
-## Usage
+If you're migrating from a NestJS + Passport app, Passport strategies run
+as Banhmi middleware:
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import passport from 'passport'
+import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt'
 
-## API reference
+// Configure strategy
+passport.use(new JwtStrategy(
+  { jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), secretOrKey: 'secret' },
+  (payload, done) => done(null, payload),
+))
 
-TBD
+// Register as middleware
+const app = await BanhmiFactory.create(AppModule)
+app.use(passport.initialize())
+await app.listen(3000)
+```
+
+Then protect routes with a custom guard:
+
+```ts
+import type { CanActivate, ExecutionContext } from 'banhmi'
+import passport from 'passport'
+
+@Injectable()
+export class PassportJwtGuard implements CanActivate {
+  canActivate(ctx: ExecutionContext): Promise<boolean> {
+    const req = ctx.switchToHttp().getRequest()
+    return new Promise((resolve) =>
+      passport.authenticate('jwt', { session: false }, (err: unknown, user: unknown) => {
+        if (err || !user) resolve(false)
+        else { req.user = user; resolve(true) }
+      })(req, {}, () => {}),
+    )
+  }
+}
+```
 
 ## See also
 
-TBD
+- [Authentication](/security/authentication) — `@banhmi/auth` recommended guide
+- [Guards](/overview/guards) — building custom guards
+- [JWT](/techniques/jwt) — JWT token signing and verification

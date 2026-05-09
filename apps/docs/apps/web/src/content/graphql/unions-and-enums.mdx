@@ -1,23 +1,65 @@
 # Unions and Enums
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+## Unions
 
-## When to use
+Unions represent a field that can return one of several object types.
 
-TBD
+```ts
+import { createUnionType, ObjectType } from '@banhmi/graphql'
 
-## Setup
+@ObjectType() class Cat { /* ... */ }
+@ObjectType() class Dog { /* ... */ }
 
-TBD
+export const PetUnion = createUnionType({
+  name: 'Pet',
+  types: () => [Cat, Dog],
+  resolveType(value) {
+    return value.indoor !== undefined ? 'Cat' : 'Dog'
+  },
+})
+```
 
-## Usage
+Use in a resolver:
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+@Query(() => [PetUnion])
+pets() {
+  return this.petsService.findAll()
+}
+```
+
+## Enums
+
+```ts
+import { registerEnumType } from '@banhmi/graphql'
+
+export enum PetStatus {
+  AVAILABLE = 'AVAILABLE',
+  ADOPTED = 'ADOPTED',
+}
+
+registerEnumType(PetStatus, { name: 'PetStatus' })
+```
+
+Use as a field type:
+
+```ts
+import { Field, ObjectType } from '@banhmi/graphql'
+
+@ObjectType()
+export class Cat {
+  @Field(() => PetStatus)
+  status: PetStatus
+}
+```
 
 ## API reference
 
-TBD
+- `createUnionType({ name, types, resolveType })` — define a union type.
+- `registerEnumType(enum, { name, description? })` — register a TypeScript enum as a GraphQL enum.
 
 ## See also
 
-TBD
+- [Interfaces](/graphql/interfaces) — shared fields across types
+- [Resolvers](/graphql/resolvers) — resolver patterns
+- [Quick Start](/graphql/quick-start) — module setup

@@ -1,23 +1,74 @@
 # Federation
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Apollo Federation allows multiple GraphQL services to compose into a single
+supergraph. `@banhmi/graphql` ships federation decorators for subgraph services.
 
 ## When to use
 
-TBD
+- You have multiple Banhmi microservices, each owning part of the schema.
+- You need an Apollo Gateway or Router to merge them into a unified graph.
 
 ## Setup
 
-TBD
+```ts
+GraphQLModule.forRoot({
+  autoSchemaFile: true,
+  federation: 2,  // Apollo Federation version
+})
+```
 
-## Usage
+## Defining an entity
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import { Directive, Field, ID, ObjectType } from '@banhmi/graphql'
+
+@ObjectType()
+@Directive('@key(fields: "id")')
+export class Cat {
+  @Field(() => ID)
+  id: string
+
+  @Field()
+  name: string
+}
+```
+
+## Reference resolver
+
+```ts
+@Resolver(() => Cat)
+export class CatsResolver {
+  @ResolveReference()
+  resolveReference(reference: { id: string }) {
+    return this.catsService.findOne(reference.id)
+  }
+}
+```
+
+## Extended type (from another service)
+
+```ts
+@ObjectType()
+@Directive('@extends')
+@Directive('@key(fields: "id")')
+export class User {
+  @Field(() => ID)
+  @Directive('@external')
+  id: string
+
+  @Field(() => [Cat])
+  cats: Cat[]
+}
+```
 
 ## API reference
 
-TBD
+- `federation: 1 | 2` — enable Federation in `GraphQLModule.forRoot`.
+- `@Directive(sdl)` — attach an SDL directive to a type or field.
+- `@ResolveReference()` — resolve an entity by its `@key` fields.
+- `@key` directive — mark an entity's primary key.
 
 ## See also
 
-TBD
+- [Quick Start](/graphql/quick-start) — GraphQL module setup
+- [Microservices Overview](/microservices/overview) — Banhmi microservices

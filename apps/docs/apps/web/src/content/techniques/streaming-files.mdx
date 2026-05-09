@@ -1,23 +1,78 @@
 # Streaming Files
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Streaming file responses bypass in-memory buffering and are ideal for large
+files, downloads, and video/audio content. Bun's native file API integrates
+directly with `Response`.
 
 ## When to use
 
-TBD
+- Serve large file downloads without holding them in memory.
+- Stream logs, CSV exports, or generated content to the client.
+- Proxy a file from S3 or another upstream source.
 
-## Setup
+## Serve a local file
 
-TBD
+```ts
+import { Controller, Get, Param } from 'banhmi'
 
-## Usage
+@Controller('files')
+export class FilesController {
+  @Get(':filename')
+  download(@Param('filename') filename: string) {
+    const file = Bun.file(`./uploads/${filename}`)
+    // Bun.file() is a BunFile — Response accepts it directly
+    return new Response(file, {
+      headers: {
+        'Content-Disposition': `attachment; filename="${filename}"`,
+        'Content-Type': file.type,
+      },
+    })
+  }
+}
+```
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+## Stream a ReadableStream
+
+```ts
+@Get('export')
+exportCsv() {
+  const stream = new ReadableStream({
+    start(controller) {
+      controller.enqueue('id,name\n')
+      controller.enqueue('1,Tom\n')
+      controller.enqueue('2,Jerry\n')
+      controller.close()
+    },
+  })
+
+  return new Response(stream, {
+    headers: {
+      'Content-Type': 'text/csv',
+      'Content-Disposition': 'attachment; filename="export.csv"',
+    },
+  })
+}
+```
+
+## Proxy from S3
+
+```ts
+@Get('report/:key')
+async proxyFromS3(@Param('key') key: string) {
+  const s3File = Bun.s3.file(key)           // Bun 1.1+ S3 API
+  return new Response(s3File)
+}
+```
 
 ## API reference
 
-TBD
+- `Bun.file(path)` — returns a `BunFile` usable as a `Response` body.
+- `new Response(stream | bunFile, init?)` — passes a stream or file directly.
+- `Content-Disposition: attachment` — triggers browser download.
+- `BunFile.type` — inferred MIME type from the file extension.
 
 ## See also
 
-TBD
+- [Bun S3](/bun-native/bun-s3) — Bun's native S3 client
+- [Static Files](/techniques/static) — serve a whole directory of static assets
+- [Multipart](/techniques/multipart) — receiving file uploads

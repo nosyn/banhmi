@@ -1,23 +1,93 @@
 # Custom Providers
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Beyond simple class providers, Banhmi supports value providers, factory providers,
+class-alias providers, and existing-provider aliases — all through the same
+`{ provide, use* }` object syntax.
 
 ## When to use
 
-TBD
+- Bind third-party values or instances that cannot be decorated with `@Injectable()`.
+- Build providers whose construction requires async work (use `useFactory`).
+- Alias one token to another (existing providers).
+- Replace an implementation for testing without changing imports.
 
-## Setup
+## Value provider
 
-TBD
+```ts
+const mockCatsService = { findAll: () => [] }
 
-## Usage
+@Module({
+  providers: [
+    { provide: CatsService, useValue: mockCatsService },
+  ],
+})
+export class AppModule {}
+```
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+## Class provider (alias)
+
+```ts
+@Module({
+  providers: [
+    { provide: CatsService, useClass: MockCatsService },
+  ],
+})
+export class TestModule {}
+```
+
+## Factory provider
+
+```ts
+@Module({
+  providers: [
+    {
+      provide: DATABASE_TOKEN,
+      useFactory: async (config: ConfigService) => {
+        const db = new Database(config.get('DB_URL'))
+        await db.connect()
+        return db
+      },
+      inject: [ConfigService],
+    },
+  ],
+})
+export class DatabaseModule {}
+```
+
+## Existing provider
+
+```ts
+@Module({
+  providers: [
+    LoggerService,
+    { provide: 'ALIAS_LOGGER', useExisting: LoggerService },
+  ],
+})
+export class AppModule {}
+```
+
+## Typed tokens
+
+```ts
+import { Token } from 'banhmi'
+
+export const DB_TOKEN = Token<Database>('DB_TOKEN')
+
+// Read in a constructor:
+static inject = [DB_TOKEN] as const
+constructor(private db: Database) {}
+```
 
 ## API reference
 
-TBD
+- `useValue` — a static value bound to the token at module init time.
+- `useClass` — a class instantiated by the DI container.
+- `useFactory` — an (optionally async) factory function; `inject` lists its deps.
+- `useExisting` — creates an alias pointing to an already-registered token.
+- `Token<T>(name)` — create a typed, self-documenting injection token.
 
 ## See also
 
-TBD
+- [Providers](/overview/providers) — basic provider registration
+- [Asynchronous Providers](/fundamentals/asynchronous-providers) — async factory lifecycle
+- [Dynamic Modules](/fundamentals/dynamic-modules) — configurable module providers

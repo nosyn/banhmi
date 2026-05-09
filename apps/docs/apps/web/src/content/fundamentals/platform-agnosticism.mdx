@@ -1,23 +1,58 @@
 # Platform Agnosticism
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Banhmi's core (`@banhmi/core`) is transport-agnostic. It defines the
+`HttpAdapter` interface; `@banhmi/platform-bun` ships the default implementation
+using raw `Bun.serve`. You can substitute your own adapter.
 
-## When to use
+## Adapter interface
 
-TBD
+```ts
+export interface HttpAdapter {
+  listen(port: number): Promise<void>
+  close(): Promise<void>
+  getRequestMethod(request: unknown): string
+  getRequestUrl(request: unknown): string
+  reply(response: unknown, body: unknown, statusCode: number): void
+  // ... other lifecycle hooks
+}
+```
 
-## Setup
+## Default adapter — `BunAdapter`
 
-TBD
+`@banhmi/platform-bun` wires `Bun.serve` into the adapter interface and uses
+the Radix-tree router for sub-millisecond route lookup.
 
-## Usage
+## Custom adapter
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import type { HttpAdapter } from 'banhmi'
+
+class MyAdapter implements HttpAdapter {
+  async listen(port: number) { /* ... */ }
+  async close() { /* ... */ }
+  // implement remaining methods
+}
+
+const app = await BanhmiFactory.create(AppModule, new MyAdapter())
+await app.listen(3000)
+```
+
+## Why this matters
+
+- Unit-testing: swap the adapter for an in-process stub without binding a port.
+- Alternative runtimes: a Deno adapter or a Node.js adapter can be plugged in
+  without touching application code.
+- Edge workers: `@banhmi/edge` ships a fetch-based adapter for Cloudflare Workers
+  and Bun edge deployments.
 
 ## API reference
 
-TBD
+- `HttpAdapter` — the interface all adapters must implement.
+- `BunAdapter` — shipped by `@banhmi/platform-bun`; used by default.
+- `BanhmiFactory.create(AppModule, adapter?)` — pass a custom adapter as the second argument.
 
 ## See also
 
-TBD
+- [First Steps](/introduction/first-steps) — default `BunAdapter` setup
+- [Edge](/techniques/edge) — fetch-based adapter for edge runtimes
+- [Performance](/techniques/performance) — Radix-tree router and benchmark numbers

@@ -1,23 +1,71 @@
 # Bun.sql
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+`Bun.sql` is Bun's native PostgreSQL client (available from Bun 1.2+). It
+uses the Postgres binary wire protocol without any Node.js native addons.
 
 ## When to use
 
-TBD
+- High-throughput Postgres access without a pg/pg-native dependency.
+- Cloud-native deployments where you want minimal startup overhead.
+- Bun-native alternatives to `pg` or `postgres.js`.
 
 ## Setup
 
-TBD
+No package install needed — `Bun.sql` is built into Bun.
 
-## Usage
+```ts
+import { Injectable, OnModuleDestroy, OnModuleInit } from 'banhmi'
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+@Injectable()
+export class DatabaseService implements OnModuleInit, OnModuleDestroy {
+  private sql = new Bun.SQL(Bun.env['DATABASE_URL']!)
+
+  async onModuleInit() {
+    // Warm the connection pool
+    await this.sql`SELECT 1`
+    console.log('Postgres connected via Bun.sql')
+  }
+
+  async onModuleDestroy() {
+    await this.sql.end()
+  }
+
+  async findCats() {
+    return this.sql<{ id: string; name: string }[]>`SELECT id, name FROM cats`
+  }
+}
+```
+
+## Tagged template queries
+
+`Bun.sql` uses tagged template literals for safe parameterised queries:
+
+```ts
+const id = '42'
+const cats = await this.sql`SELECT * FROM cats WHERE id = ${id}`
+```
+
+Parameters are **never** interpolated as raw SQL — they are passed separately
+to the Postgres server.
+
+## Transactions
+
+```ts
+await this.sql.begin((tx) => [
+  tx`INSERT INTO cats (name) VALUES ('Tom')`,
+  tx`INSERT INTO cats (name) VALUES ('Jerry')`,
+])
+```
 
 ## API reference
 
-TBD
+- `new Bun.SQL(url)` — create a connection pool.
+- `sql\`query ${param}\`` — execute a parameterised query; returns rows.
+- `sql.begin(callback)` — wrap multiple statements in a transaction.
+- `sql.end()` — close the connection pool gracefully.
 
 ## See also
 
-TBD
+- [Postgres](/techniques/postgres) — `@banhmi/postgres` module with full ORM support
+- [Drizzle ORM](/techniques/drizzle) — type-safe query builder with Bun.sql support
+- [bun:sqlite](/bun-native/bun-sqlite) — embedded SQLite for lighter workloads

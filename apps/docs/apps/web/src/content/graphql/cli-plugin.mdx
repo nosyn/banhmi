@@ -1,23 +1,74 @@
 # CLI Plugin
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+The `@banhmi/graphql` CLI plugin hooks into `banhmi build` to automatically
+generate TypeScript type declarations and field descriptions from TSDoc comments,
+eliminating the need to duplicate documentation as `@Field({ description })`.
 
 ## When to use
 
-TBD
+- You want field descriptions in the generated SDL to come from TSDoc comments.
+- You need automatic `@Field` type inference without explicit `() => Type` annotations.
 
 ## Setup
 
-TBD
+Enable in `banhmi.config.ts`:
 
-## Usage
+```ts
+import { defineConfig } from 'banhmi'
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+export default defineConfig({
+  compilerPlugins: [
+    { name: '@banhmi/graphql/plugin' },
+  ],
+})
+```
+
+Or in the CLI build flags:
+
+```bash
+banhmi build --graphql-plugin
+```
+
+## What it does
+
+The plugin runs during `bun build` / `tsc`:
+
+1. Reads TSDoc `/** @remarks */` comments from `@ObjectType` and `@InputType` classes.
+2. Injects them as `description` arguments to the corresponding `@Field()` calls.
+3. Infers `() => ReturnType` for `@Query` / `@Mutation` methods from the TypeScript return type.
+
+## Example
+
+```ts
+@ObjectType()
+export class Cat {
+  /** The cat's unique identifier. */
+  @Field()
+  id: string
+
+  /** The cat's given name. */
+  @Field()
+  name: string
+}
+```
+
+After build the generated schema includes:
+
+```graphql
+type Cat {
+  "The cat's unique identifier."
+  id: String!
+  "The cat's given name."
+  name: String!
+}
+```
 
 ## API reference
 
-TBD
+- `@banhmi/graphql/plugin` — the Bun/TypeScript compiler plugin identifier.
+- `compilerPlugins` in `banhmi.config.ts` — where to register it.
 
 ## See also
 
-TBD
+- [Generating SDL](/graphql/generating-sdl) — schema file output
+- [Resolvers](/graphql/resolvers) — resolver type inference

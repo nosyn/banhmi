@@ -1,23 +1,70 @@
 # Workspaces
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Banhmi's CLI supports Bun workspaces out of the box. A workspace contains
+multiple apps and libraries that share a single `bun.lock`.
 
 ## When to use
 
-TBD
+- Large teams building several services that share common utilities.
+- Monorepo layouts where multiple Banhmi applications deploy independently.
 
 ## Setup
 
-TBD
+Root `package.json`:
 
-## Usage
+```json
+{
+  "workspaces": ["apps/*", "packages/*"]
+}
+```
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+Then install all workspace deps from the root:
 
-## API reference
+```bash
+bun install
+```
 
-TBD
+## Running workspace scripts
+
+```bash
+# Run in a specific workspace
+bun run --filter apps/api dev
+
+# Run in all workspaces that have the script
+bun run --filter '*' test
+```
+
+## Cross-workspace imports
+
+Workspace packages reference each other via `workspace:*`:
+
+```json
+{
+  "dependencies": {
+    "@myorg/shared": "workspace:*"
+  }
+}
+```
+
+## Banhmi workspace conventions
+
+| Directory | Purpose |
+|-----------|---------|
+| `apps/` | Deployable Banhmi applications |
+| `packages/` | Shared library packages |
+| `tools/` | Build scripts, generators |
+
+## bunfig.toml per workspace
+
+Each package that uses decorators needs its own `bunfig.toml` preloading
+the `Symbol.metadata` polyfill:
+
+```toml
+preload = ["../../node_modules/banhmi/polyfill-symbol-metadata"]
+```
 
 ## See also
 
-TBD
+- [Libraries](/cli/libraries) — generating library packages in a workspace
+- [Scripts](/cli/scripts) — workspace-level script execution
+- [CLI Overview](/cli/overview) — full command reference

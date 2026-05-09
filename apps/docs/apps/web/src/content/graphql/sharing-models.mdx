@@ -1,23 +1,38 @@
 # Sharing Models
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+A class decorated with both `@ObjectType()` and `@InputType()` can serve as
+both a GraphQL output type and an input type, reducing duplication.
 
-## When to use
+## Shared class
 
-TBD
+```ts
+import { Field, InputType, ObjectType } from '@banhmi/graphql'
 
-## Setup
+@ObjectType()
+@InputType('CatInput')
+export class Cat {
+  @Field(() => String, { nullable: true })
+  id?: string
 
-TBD
+  @Field()
+  name: string
 
-## Usage
+  @Field(() => Number)
+  age: number
+}
+```
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+The `@InputType('CatInput')` argument provides a distinct name for the input
+type in the schema (required because GraphQL object and input types can't share names).
 
-## API reference
+## Best practice
 
-TBD
+Prefer separate `@ObjectType()` and `@InputType()` classes for non-trivial
+schemas. Shared models are convenient for simple cases but can lead to
+schema fields (like `id`) accidentally being exposed as writeable inputs.
 
 ## See also
 
-TBD
+- [Mapped Types](/graphql/mapped-types) — `PartialType`, `OmitType`
+- [Mutations](/graphql/mutations) — `@InputType` usage
+- [Quick Start](/graphql/quick-start) — module setup

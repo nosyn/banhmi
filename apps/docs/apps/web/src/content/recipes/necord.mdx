@@ -1,23 +1,31 @@
 # Necord
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Necord is a Discord bot framework built on NestJS. A Banhmi-compatible port
+is on the roadmap; in the meantime you can run a Necord-based NestJS service
+as a microservice that communicates with your Banhmi API.
 
-## When to use
+## Status
 
-TBD
+Necord requires NestJS core and is not yet compatible with Banhmi's TC39
+Stage 3 decorator model. Track progress in the
+[Banhmi GitHub issues](https://github.com/banhmi/banhmi/issues).
 
-## Setup
+## Workaround — microservice pattern
 
-TBD
+Run a NestJS + Necord Discord bot as a separate process and connect it to
+your Banhmi API via TCP microservices:
 
-## Usage
+```ts
+// In the Necord bot (NestJS)
+@Injectable()
+export class BotService {
+  constructor(@InjectClient() private readonly client: NecordClient) {}
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
-
-## API reference
-
-TBD
+  // Call Banhmi API via HTTP or microservice transport
+}
+```
 
 ## See also
 
-TBD
+- [Microservices Overview](/microservices/overview) — TCP and Redis transports
+- [GraphQL Subscriptions](/graphql/subscriptions) — real-time event delivery

@@ -1,23 +1,25 @@
 # TypeORM
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+TypeORM requires `reflect-metadata` and `emitDecoratorMetadata` which are
+incompatible with Banhmi's TC39 Stage 3 decorator model. For Banhmi apps,
+use Drizzle ORM or `@banhmi/postgres` instead.
 
-## When to use
+## Recommended alternatives
 
-TBD
+| Use case | Banhmi module |
+|----------|--------------|
+| PostgreSQL (type-safe) | [`@banhmi/drizzle`](/techniques/drizzle) |
+| PostgreSQL (raw) | [`@banhmi/postgres`](/techniques/postgres) |
+| MySQL | [`@banhmi/mysql`](/techniques/mysql) |
+| SQLite | [`@banhmi/sqlite`](/bun-native/bun-sqlite) |
+| MongoDB | [`@banhmi/mongo`](/techniques/mongo) |
 
-## Setup
+## Migrating from NestJS + TypeORM
 
-TBD
-
-## Usage
-
-{/* <CodeFromExample slug="<feature-slug>" /> */}
-
-## API reference
-
-TBD
+See the [NestJS Migration Guide](/migration/nestjs) for a step-by-step
+mapping from TypeORM entities to Drizzle schemas.
 
 ## See also
 
-TBD
+- [Drizzle ORM](/techniques/drizzle) — recommended ORM for Banhmi
+- [Migration Guide](/migration/nestjs) — NestJS to Banhmi migration

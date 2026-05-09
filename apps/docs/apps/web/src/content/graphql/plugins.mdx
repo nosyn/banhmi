@@ -1,23 +1,53 @@
 # Plugins
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Banhmi's GraphQL engine accepts any Apollo Server plugin. Plugins hook into
+the request lifecycle to add logging, tracing, error reporting, and more.
 
 ## When to use
 
-TBD
+- Send GraphQL operation telemetry to Sentry, Datadog, or Apollo Studio.
+- Enforce query depth limits or complexity budgets at the request level.
+- Log all operations in development for debugging.
 
-## Setup
+## Built-in plugins
 
-TBD
+`@banhmi/graphql` ships an `IntrospectionPlugin` (disables introspection
+in production) and a `LoggingPlugin` (logs every operation and its duration).
 
-## Usage
+## Custom plugin
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import type { ApolloServerPlugin, GraphQLRequestContext } from '@apollo/server'
+
+export const myPlugin: ApolloServerPlugin = {
+  async requestDidStart(ctx: GraphQLRequestContext<Record<string, unknown>>) {
+    const start = Date.now()
+    return {
+      async willSendResponse() {
+        console.log(`[GQL] ${ctx.request.operationName} → ${Date.now() - start}ms`)
+      },
+    }
+  },
+}
+```
+
+Register in `GraphQLModule`:
+
+```ts
+GraphQLModule.forRoot({
+  autoSchemaFile: true,
+  plugins: [myPlugin],
+})
+```
 
 ## API reference
 
-TBD
+- `plugins` option — array of `ApolloServerPlugin` instances.
+- `ApolloServerPlugin` — interface from `@apollo/server`.
+- Key lifecycle hooks: `requestDidStart`, `executionDidStart`, `willSendResponse`.
 
 ## See also
 
-TBD
+- [Field Middleware](/graphql/field-middleware) — field-level logic
+- [Complexity](/graphql/complexity) — per-query cost analysis
+- [Extensions](/graphql/extensions) — schema-level metadata

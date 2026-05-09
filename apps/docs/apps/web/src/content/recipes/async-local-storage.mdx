@@ -1,23 +1,69 @@
 # Async local storage
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Node.js/Bun `AsyncLocalStorage` carries per-request context (request ID,
+tenant, user) through async call chains without passing it explicitly.
 
 ## When to use
 
-TBD
+- Propagate a request ID through service call chains for distributed tracing.
+- Carry tenant information without threading it through every function signature.
+- Implement "current user" context available anywhere in the call tree.
 
 ## Setup
 
-TBD
+```ts
+import { AsyncLocalStorage } from 'node:async_hooks'
+import { Injectable, NestMiddleware } from 'banhmi'
 
-## Usage
+interface RequestContext {
+  requestId: string
+  userId?: string
+}
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+const requestContext = new AsyncLocalStorage<RequestContext>()
+
+export const getContext = () => requestContext.getStore()
+
+@Injectable()
+export class RequestContextMiddleware implements NestMiddleware {
+  use(req: Request, _res: unknown, next: () => void) {
+    const context: RequestContext = {
+      requestId: req.headers.get('x-request-id') ?? crypto.randomUUID(),
+    }
+    requestContext.run(context, next)
+  }
+}
+```
+
+Register the middleware globally:
+
+```ts
+@Module({})
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RequestContextMiddleware).forRoutes('*')
+  }
+}
+```
+
+## Usage anywhere in the call tree
+
+```ts
+import { getContext } from './request-context.middleware'
+
+export function logWithContext(message: string) {
+  const ctx = getContext()
+  console.log(`[${ctx?.requestId}] ${message}`)
+}
+```
 
 ## API reference
 
-TBD
+- `new AsyncLocalStorage<T>()` — create a store with typed context.
+- `store.run(value, callback)` — run `callback` with `value` as the current context.
+- `store.getStore()` — retrieve the current context; `undefined` if called outside a `run`.
 
 ## See also
 
-TBD
+- [Injection Scopes](/fundamentals/injection-scopes) — per-request providers
+- [Logger](/techniques/logger) — structured logging with request IDs

@@ -1,23 +1,61 @@
 # Field Middleware
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
-
-## When to use
-
-TBD
-
-## Setup
-
-TBD
+Field middleware runs around individual field resolver calls, similar to how
+HTTP interceptors wrap handler calls. Use them for field-level logging,
+authentication, or transformation.
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import type { FieldMiddleware, MiddlewareContext, NextFn } from '@banhmi/graphql'
+
+export const logMiddleware: FieldMiddleware = async (
+  ctx: MiddlewareContext,
+  next: NextFn,
+) => {
+  const start = Date.now()
+  const result = await next()
+  console.log(`[GQL] ${ctx.info.fieldName} → ${Date.now() - start}ms`)
+  return result
+}
+```
+
+Register globally in `GraphQLModule`:
+
+```ts
+GraphQLModule.forRoot({
+  autoSchemaFile: true,
+  fieldMiddleware: [logMiddleware],
+})
+```
+
+Or per-field:
+
+```ts
+@Field({ middleware: [logMiddleware] })
+name: string
+```
+
+## Guard-like field middleware
+
+```ts
+export const authMiddleware: FieldMiddleware = async (ctx, next) => {
+  const user = ctx.context.user
+  if (!user) throw new ForbiddenError('Not authenticated')
+  return next()
+}
+```
 
 ## API reference
 
-TBD
+- `FieldMiddleware` — type: `(ctx: MiddlewareContext, next: NextFn) => Promise<unknown>`.
+- `MiddlewareContext` — `{ source, args, context, info }`.
+- `NextFn` — `() => Promise<unknown>` — calls the next middleware or resolver.
+- `fieldMiddleware` option — global list applied to every resolved field.
+- `@Field({ middleware: [...] })` — field-specific middleware list.
 
 ## See also
 
-TBD
+- [Interceptors](/overview/interceptors) — HTTP-level interceptors
+- [Guards](/graphql/guards) — query-level access control via plugins
+- [Resolvers](/graphql/resolvers) — resolver composition

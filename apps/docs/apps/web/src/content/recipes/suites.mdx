@@ -1,23 +1,53 @@
 # Suites (Automock)
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
-
-## When to use
-
-TBD
+Suites (formerly Automock) is a unit-testing library that automatically
+mocks all DI dependencies. It is a third-party library that works with Banhmi.
 
 ## Setup
 
-TBD
+```bash
+bun add -d @suites/unit @suites/doubles
+```
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import { TestBed } from '@suites/unit'
+import { CatsService } from './cats.service'
+import { CatsRepository } from './cats.repository'
 
-## API reference
+describe('CatsService', () => {
+  let service: CatsService
+  let repository: jest.Mocked<CatsRepository>
 
-TBD
+  beforeAll(async () => {
+    const { unit, unitRef } = await TestBed.solitary(CatsService).compile()
+    service = unit
+    repository = unitRef.get(CatsRepository)
+  })
+
+  test('findAll returns cats', async () => {
+    repository.findAll.mockResolvedValue([{ id: '1', name: 'Tom' }])
+    expect(await service.findAll()).toHaveLength(1)
+  })
+})
+```
+
+## Note
+
+Suites is designed for the Jest/Vitest ecosystem. For Bun's test runner,
+use `@banhmi/testing` with `useValue` mock providers instead:
+
+```ts
+const module = await TestingModule.createTestingModule({
+  providers: [
+    CatsService,
+    { provide: CatsRepository, useValue: { findAll: () => [] } },
+  ],
+}).compile()
+```
 
 ## See also
 
-TBD
+- [Testing](/fundamentals/testing) — `@banhmi/testing` unit test setup
+- [Custom Providers](/fundamentals/custom-providers) — `useValue` mocking

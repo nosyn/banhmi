@@ -1,23 +1,78 @@
 # Testing
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
-
-## When to use
-
-TBD
+Banhmi tests run under the Bun test runner (`bun test`). The `@banhmi/testing`
+package provides a `TestingModule` builder that wires the DI container without
+starting an HTTP server.
 
 ## Setup
 
-TBD
+```bash
+bun add -d @banhmi/testing
+```
 
-## Usage
+## Unit test
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import { describe, expect, test } from 'bun:test'
+import { TestingModule } from '@banhmi/testing'
+import { CatsService } from './cats.service'
+
+describe('CatsService', () => {
+  let service: CatsService
+
+  test('should be defined', async () => {
+    const module = await TestingModule.createTestingModule({
+      providers: [CatsService],
+    }).compile()
+
+    service = module.get(CatsService)
+    expect(service).toBeDefined()
+  })
+})
+```
+
+## Mock providers
+
+```ts
+const mockCatsService = { findAll: () => [{ id: '1', name: 'Tom' }] }
+
+const module = await TestingModule.createTestingModule({
+  controllers: [CatsController],
+  providers: [
+    { provide: CatsService, useValue: mockCatsService },
+  ],
+}).compile()
+
+const controller = module.get(CatsController)
+expect(await controller.findAll()).toHaveLength(1)
+```
+
+## Integration test (HTTP)
+
+```ts
+import { BanhmiFactory } from 'banhmi'
+
+test('GET /cats returns 200', async () => {
+  const app = await BanhmiFactory.create(AppModule)
+  const server = await app.listen(0)  // random port
+
+  const res = await fetch(`http://localhost:${server.port}/cats`)
+  expect(res.status).toBe(200)
+
+  await app.close()
+})
+```
 
 ## API reference
 
-TBD
+- `TestingModule.createTestingModule(metadata)` — mirror of `@Module()` metadata.
+- `.compile()` — builds the DI container; returns a `TestingModule` instance.
+- `module.get(Token)` — retrieve a provider by class or token.
+- `module.resolve(Token)` — create a new request-scoped or transient instance.
+- `module.createNestApplication()` — wrap in a full application for e2e tests.
 
 ## See also
 
-TBD
+- [Providers](/overview/providers) — what you're testing
+- [First Steps](/introduction/first-steps) — application structure
+- [Mocking with useValue / useClass](/fundamentals/custom-providers) — provider substitution

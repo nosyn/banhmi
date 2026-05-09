@@ -1,23 +1,89 @@
 # Modules
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+A module is a class decorated with `@Module()` that groups related controllers,
+providers, and sub-modules. Every Banhmi application has at least one root module.
 
 ## When to use
 
-TBD
+- Group a feature's controllers, services, and sub-modules into a single cohesive unit.
+- Re-export providers to make them available to other importing modules.
+- Organise large applications into a dependency graph.
 
-## Setup
+## Basic module
 
-TBD
+```ts
+import { Module } from 'banhmi'
+import { CatsController } from './cats.controller'
+import { CatsService } from './cats.service'
 
-## Usage
+@Module({
+  controllers: [CatsController],
+  providers: [CatsService],
+  exports: [CatsService],  // visible to importing modules
+})
+export class CatsModule {}
+```
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+## Root module
+
+```ts
+import { Module } from 'banhmi'
+import { CatsModule } from './cats/cats.module'
+
+@Module({
+  imports: [CatsModule],
+})
+export class AppModule {}
+```
+
+## Global modules
+
+A module decorated with `@Global()` is registered once and its exports are
+available everywhere without explicit import:
+
+```ts
+import { Global, Module } from 'banhmi'
+
+@Global()
+@Module({
+  providers: [ConfigService],
+  exports: [ConfigService],
+})
+export class ConfigModule {}
+```
+
+## Dynamic modules
+
+Modules can be configured at registration time via `forRoot` / `forFeature`
+static factory methods:
+
+```ts
+@Module({})
+export class DatabaseModule {
+  static forRoot(options: DbOptions) {
+    return {
+      module: DatabaseModule,
+      providers: [
+        { provide: DB_OPTIONS_TOKEN, useValue: options },
+        DatabaseService,
+      ],
+      exports: [DatabaseService],
+    }
+  }
+}
+```
 
 ## API reference
 
-TBD
+- `@Module({ imports, controllers, providers, exports })` — declares a module.
+- `@Global()` — makes a module's exports globally available.
+- `imports` — other modules whose exports this module needs.
+- `controllers` — HTTP controller classes scoped to this module.
+- `providers` — injectable services scoped to this module.
+- `exports` — providers to re-expose to importing modules.
 
 ## See also
 
-TBD
+- [Providers](/overview/providers) — services inside modules
+- [Dynamic Modules](/fundamentals/dynamic-modules) — configurable modules
+- [Circular Dependency](/fundamentals/circular-dependency) — resolving cycles

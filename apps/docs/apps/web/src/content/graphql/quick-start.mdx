@@ -1,23 +1,92 @@
 # Quick Start
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+`@banhmi/graphql` provides a code-first GraphQL engine built on top of GraphQL.js.
+Define your schema using TypeScript decorators — Banhmi generates the SDL automatically.
 
 ## When to use
 
-TBD
+- Build a GraphQL API alongside or instead of a REST API.
+- Use code-first schema definition with TypeScript type safety.
+- Need subscriptions, federation, or a full resolver pipeline.
 
 ## Setup
 
-TBD
+```bash
+bun add @banhmi/graphql graphql
+```
 
-## Usage
+```ts
+import { GraphQLModule } from '@banhmi/graphql'
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+@Module({
+  imports: [
+    GraphQLModule.forRoot({
+      autoSchemaFile: true,  // generate schema in memory
+      playground: true,
+    }),
+    CatsModule,
+  ],
+})
+export class AppModule {}
+```
+
+## Define a type
+
+```ts
+import { Field, Int, ObjectType } from '@banhmi/graphql'
+
+@ObjectType()
+export class Cat {
+  @Field(() => String)
+  id: string
+
+  @Field(() => String)
+  name: string
+
+  @Field(() => Int)
+  age: number
+}
+```
+
+## Define a resolver
+
+```ts
+import { Args, Query, Resolver } from '@banhmi/graphql'
+import { CatsService } from './cats.service'
+import { Cat } from './models/cat.model'
+
+@Resolver(() => Cat)
+export class CatsResolver {
+  static inject = [CatsService] as const
+  constructor(private catsService: CatsService) {}
+
+  @Query(() => [Cat])
+  cats(): Cat[] {
+    return this.catsService.findAll()
+  }
+
+  @Query(() => Cat, { nullable: true })
+  cat(@Args('id') id: string): Cat | undefined {
+    return this.catsService.findOne(id)
+  }
+}
+```
+
+Register the resolver as a provider in its module.
 
 ## API reference
 
-TBD
+- `GraphQLModule.forRoot(options)` — configure the GraphQL engine.
+- `@ObjectType()` — mark a class as a GraphQL object type.
+- `@Field(() => Type, options?)` — declare a field on an object type.
+- `@Resolver(() => Type)` — mark a class as a resolver for a given type.
+- `@Query(() => Type)` — declare a top-level query field.
+- `@Mutation(() => Type)` — declare a top-level mutation field.
+- `@Args(name, options?)` — extract a resolver argument.
 
 ## See also
 
-TBD
+- [Resolvers](/graphql/resolvers) — field resolvers and resolver composition
+- [Mutations](/graphql/mutations) — writing data
+- [Subscriptions](/graphql/subscriptions) — real-time updates
+- [Generating SDL](/graphql/generating-sdl) — export the schema as a `.graphql` file

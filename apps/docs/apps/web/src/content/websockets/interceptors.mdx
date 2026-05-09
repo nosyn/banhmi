@@ -1,23 +1,47 @@
 # Interceptors
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+WebSocket interceptors wrap `@SubscribeMessage` handlers using the same
+`NestInterceptor` interface as HTTP interceptors. They run before and after
+the handler, giving you access to both the inbound message and the emitted reply.
 
 ## When to use
 
-TBD
-
-## Setup
-
-TBD
+- Log every incoming WebSocket message and its handler latency.
+- Enrich or transform the response event before it is sent back to the client.
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import type { CallHandler, ExecutionContext, NestInterceptor } from 'banhmi'
+
+export class WsLoggingInterceptor implements NestInterceptor {
+  async intercept(context: ExecutionContext, next: CallHandler) {
+    const data = context.switchToWs().getData()
+    console.log('[WS in]', data)
+    const result = await next.handle()
+    console.log('[WS out]', result)
+    return result
+  }
+}
+```
+
+Apply at the gateway or handler level:
+
+```ts
+@UseInterceptors(WsLoggingInterceptor)
+@WebSocketGateway({ path: '/ws' })
+export class ChatGateway {}
+```
 
 ## API reference
 
-TBD
+- `NestInterceptor` — same interface as HTTP interceptors.
+- `context.switchToWs().getClient()` — the raw `BunWebSocket`.
+- `context.switchToWs().getData()` — the parsed message payload.
+- `next.handle()` — invokes the `@SubscribeMessage` handler; returns the reply value.
 
 ## See also
 
-TBD
+- [Interceptors](/overview/interceptors) — HTTP interceptor mechanics (same interface)
+- [Gateways](/websockets/gateways) — gateway setup
+- [Guards (WebSocket)](/websockets/guards) — access control

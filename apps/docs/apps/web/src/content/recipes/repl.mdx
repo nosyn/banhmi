@@ -1,23 +1,50 @@
 # REPL
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
-
-## When to use
-
-TBD
+The Banhmi REPL (Read-Eval-Print Loop) lets you interact with your
+application's DI container from a terminal — call service methods, inspect
+provider state, and run ad-hoc queries without writing scripts.
 
 ## Setup
 
-TBD
+Add a `repl.ts` entrypoint:
 
-## Usage
+```ts
+// src/repl.ts
+import { repl } from 'banhmi'
+import { AppModule } from './app.module'
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+await repl(AppModule)
+```
 
-## API reference
+Run it:
 
-TBD
+```bash
+bun run src/repl.ts
+```
+
+## Usage in the REPL
+
+```js
+// Retrieve a provider
+const catsService = await get(CatsService)
+
+// Call a method
+await catsService.findAll()
+
+// Inspect available providers
+debug()
+```
+
+## REPL helpers
+
+| Command | Description |
+|---------|-------------|
+| `get(Token)` | Retrieve a provider from the DI container |
+| `resolve(Token)` | Create a new transient/request-scoped instance |
+| `debug()` | List all registered modules and providers |
+| `methods(instance)` | List available methods on an instance |
 
 ## See also
 
-TBD
+- [Testing](/fundamentals/testing) — unit testing without the REPL
+- [Module Reference](/fundamentals/module-reference) — programmatic access to providers

@@ -1,23 +1,75 @@
 # Built-in Transformers
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+The `@banhmi/transform` package provides `plainToInstance` and `instanceToPlain`
+wrappers plus the `@Transform` / `@Type` / `@Exclude` / `@Expose` decorator set
+used by `ClassSerializerInterceptor`.
 
-## When to use
+## @Exclude / @Expose
 
-TBD
+Strip sensitive fields or restrict which fields are serialised:
 
-## Setup
+```ts
+import { Exclude, Expose } from '@banhmi/transform'
 
-TBD
+export class UserEntity {
+  @Expose() id: string
+  @Expose() email: string
+  @Exclude() passwordHash: string   // never sent to clients
 
-## Usage
+  constructor(partial: Partial<UserEntity>) {
+    Object.assign(this, partial)
+  }
+}
+```
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+Add `ClassSerializerInterceptor` globally to automatically run `instanceToPlain`:
+
+```ts
+app.useGlobalInterceptors(new ClassSerializerInterceptor())
+```
+
+## @Type (nested transformation)
+
+```ts
+import { Type } from '@banhmi/transform'
+
+export class CreateOrderDto {
+  @Type(() => OrderItemDto)
+  items: OrderItemDto[]
+}
+```
+
+## @Transform (custom transformation)
+
+```ts
+import { Transform } from '@banhmi/transform'
+
+export class CreateCatDto {
+  @Transform(({ value }) => value.trim())
+  name: string
+}
+```
+
+## plainToInstance / instanceToPlain
+
+```ts
+import { instanceToPlain, plainToInstance } from '@banhmi/transform'
+
+const entity = plainToInstance(UserEntity, rawObject)
+const plain = instanceToPlain(entity)  // applies @Exclude / @Expose
+```
 
 ## API reference
 
-TBD
+- `@Exclude()` — skip field during serialisation.
+- `@Expose()` — include field when `excludeExtraneousValues: true`.
+- `@Type(() => Class)` — specify the class for nested deserialization.
+- `@Transform(fn)` — apply a custom transformation function.
+- `plainToInstance(cls, plain)` — convert a plain object to a class instance.
+- `instanceToPlain(instance)` — convert a class instance to a plain object.
 
 ## See also
 
-TBD
+- [Built-in Interceptors](/built-ins/interceptors) — `ClassSerializerInterceptor`
+- [Serialization](/techniques/serialization) — full serialization guide
+- [Pipes](/overview/pipes) — transformation at the input boundary

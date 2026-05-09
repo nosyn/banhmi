@@ -1,23 +1,69 @@
 # bun:sqlite
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+`bun:sqlite` is Bun's built-in synchronous SQLite driver — no native addon
+required. `@banhmi/sqlite` wraps it as a DI-managed provider.
 
 ## When to use
 
-TBD
+- Embedded SQLite database for small apps, CLIs, and edge workers.
+- Fast in-memory database for tests without a running Postgres/MySQL server.
+- Local-first applications and offline-capable APIs.
 
 ## Setup
 
-TBD
+```bash
+bun add @banhmi/sqlite
+```
+
+```ts
+import { SqliteModule } from '@banhmi/sqlite'
+
+@Module({
+  imports: [
+    SqliteModule.forRoot({ filename: './data.db' }),
+  ],
+})
+export class AppModule {}
+```
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import { Injectable } from 'banhmi'
+import { InjectDatabase } from '@banhmi/sqlite'
+import type { Database } from 'bun:sqlite'
+
+@Injectable()
+export class CatsRepository {
+  static inject = [InjectDatabase()] as const
+  constructor(private db: Database) {}
+
+  findAll() {
+    return this.db.query('SELECT * FROM cats').all()
+  }
+
+  insert(name: string, age: number) {
+    this.db.run('INSERT INTO cats (name, age) VALUES (?, ?)', [name, age])
+  }
+}
+```
+
+## In-memory database for tests
+
+```ts
+SqliteModule.forRoot({ filename: ':memory:' })
+```
 
 ## API reference
 
-TBD
+- `SqliteModule.forRoot({ filename, readonly? })` — registers the SQLite provider.
+- `InjectDatabase(name?)` — inject token for the `bun:sqlite` `Database` instance.
+- `Database.query(sql)` — prepare and execute a query; returns `Query<T>`.
+- `Query.all()` — return all rows as an array.
+- `Query.get()` — return the first row or `null`.
+- `Database.run(sql, params?)` — execute a non-query statement.
 
 ## See also
 
-TBD
+- [Drizzle ORM](/techniques/drizzle) — type-safe query builder over SQLite/Postgres
+- [Bun.sql](/bun-native/bun-sql) — Bun's native PostgreSQL client

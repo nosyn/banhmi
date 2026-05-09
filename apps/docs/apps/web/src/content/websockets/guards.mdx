@@ -1,23 +1,59 @@
 # Guards
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Guards work identically in WebSocket gateways as in HTTP controllers. They
+receive a `WsContext` execution context and decide whether the message handler
+should be invoked.
 
 ## When to use
 
-TBD
-
-## Setup
-
-TBD
+- Reject unauthenticated WebSocket connections before the handler runs.
+- Enforce per-message permissions in a gateway.
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import { CanActivate, ExecutionContext, Injectable } from 'banhmi'
+
+@Injectable()
+export class WsAuthGuard implements CanActivate {
+  canActivate(context: ExecutionContext): boolean {
+    const client = context.switchToWs().getClient()
+    const token = client.data?.token as string | undefined
+    return verifyJwt(token)
+  }
+}
+```
+
+Apply at gateway class or per-message-handler level:
+
+```ts
+@UseGuards(WsAuthGuard)
+@WebSocketGateway({ path: '/ws' })
+export class ChatGateway {}
+```
+
+## Connection-phase guard
+
+To reject a WebSocket during the initial HTTP upgrade (before the socket opens),
+implement `handleConnection` and throw `WsException`:
+
+```ts
+handleConnection(client: BunWebSocket) {
+  if (!verifyJwt(client.data?.token)) {
+    client.close(4001, 'Unauthorized')
+  }
+}
+```
 
 ## API reference
 
-TBD
+- `CanActivate` — same interface as HTTP guards; switch with `ctx.switchToWs()`.
+- `ctx.switchToWs().getClient()` — the raw `BunWebSocket` instance.
+- `ctx.switchToWs().getData()` — the parsed message payload.
+- `WsException(message)` — the WebSocket-specific exception class.
 
 ## See also
 
-TBD
+- [Guards](/overview/guards) — HTTP guard mechanics (same interface)
+- [Gateways](/websockets/gateways) — gateway setup and message handling
+- [Exception Filters (WebSocket)](/websockets/exception-filters) — handling `WsException`

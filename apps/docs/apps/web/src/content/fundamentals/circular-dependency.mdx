@@ -1,23 +1,51 @@
 # Circular Dependency
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+A circular dependency occurs when module A imports module B and module B imports
+module A, or when provider A depends on provider B and vice versa. Banhmi detects
+these at startup and throws a descriptive error.
 
-## When to use
+## When this happens
 
-TBD
+- Two feature modules mutually import each other.
+- Two services each list the other in their `static inject`.
 
-## Setup
+## Resolution — `forwardRef`
 
-TBD
+Use `forwardRef()` to break the cycle by deferring resolution:
 
-## Usage
+```ts
+// Module level
+@Module({
+  imports: [forwardRef(() => CatsModule)],
+})
+export class DogsModule {}
+```
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+// Provider level
+@Injectable()
+export class CatsService {
+  static inject = [forwardRef(() => DogsService)] as const
+  constructor(private dogsService: DogsService) {}
+}
+```
+
+## Better approach — refactoring
+
+Forward references are a code smell. Prefer extracting shared logic into a
+third `SharedModule` that both modules import:
+
+```
+CatsModule ──imports──► SharedModule
+DogsModule ──imports──► SharedModule
+```
 
 ## API reference
 
-TBD
+- `forwardRef(() => Token)` — defers token resolution until after both sides initialise.
 
 ## See also
 
-TBD
+- [Modules](/overview/modules) — module imports and exports
+- [Custom Providers](/fundamentals/custom-providers) — provider-level `forwardRef`
+- [Module Reference](/fundamentals/module-reference) — programmatic module access

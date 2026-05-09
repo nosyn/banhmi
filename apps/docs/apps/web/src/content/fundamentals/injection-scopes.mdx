@@ -1,23 +1,74 @@
 # Injection Scopes
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Banhmi providers are **singleton** by default: one instance is shared across the
+entire application. The `scope` option lets you opt into per-request or
+transient instantiation.
+
+## Scope options
+
+| Scope | Description |
+|-------|-------------|
+| `Scope.DEFAULT` (singleton) | One instance shared across all consumers. |
+| `Scope.REQUEST` | A fresh instance per incoming HTTP request. |
+| `Scope.TRANSIENT` | A fresh instance per injection site. |
 
 ## When to use
 
-TBD
+- **Singleton (default)** — stateless services, database connections, caches.
+- **Request** — services that must carry per-request state (e.g. request context, tenant info).
+- **Transient** — lightweight stateful helpers where isolation is needed but request identity is not.
 
 ## Setup
 
-TBD
+```ts
+import { Injectable, Scope } from 'banhmi'
 
-## Usage
+@Injectable({ scope: Scope.REQUEST })
+export class RequestContextService {
+  private readonly requestId = crypto.randomUUID()
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+  getId(): string {
+    return this.requestId
+  }
+}
+```
+
+Inject as usual — the container creates a new instance automatically for each request.
+
+## Request provider
+
+Access the raw request inside a request-scoped provider:
+
+```ts
+import { Injectable, Scope, REQUEST } from 'banhmi'
+import type { Request } from 'banhmi'
+
+@Injectable({ scope: Scope.REQUEST })
+export class TenantService {
+  static inject = [REQUEST] as const
+  constructor(private readonly request: Request) {}
+
+  getTenant(): string {
+    return this.request.headers.get('x-tenant-id') ?? 'default'
+  }
+}
+```
+
+## Performance note
+
+Request-scoped providers add instantiation overhead per request. Prefer
+singletons whenever possible and pass request data as method arguments.
 
 ## API reference
 
-TBD
+- `Scope.DEFAULT` — singleton (default).
+- `Scope.REQUEST` — new instance per request.
+- `Scope.TRANSIENT` — new instance per injection.
+- `REQUEST` token — injects the current `Request` object into a request-scoped provider.
+- `@Injectable({ scope })` — set the scope on the provider class.
 
 ## See also
 
-TBD
+- [Providers](/overview/providers) — provider basics
+- [Custom Providers](/fundamentals/custom-providers) — factory and value providers
+- [Execution Context](/fundamentals/execution-context) — accessing request data from any context

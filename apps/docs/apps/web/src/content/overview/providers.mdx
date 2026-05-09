@@ -1,23 +1,106 @@
 # Providers
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Providers are the primary building blocks for business logic. Any class decorated
+with `@Injectable()` can be injected into a controller or another provider through
+Banhmi's static-`inject` DI container.
 
 ## When to use
 
-TBD
+- Encapsulate business logic that controllers should delegate to.
+- Share stateful or stateless services across multiple controllers and modules.
+- Wrap third-party clients (databases, HTTP clients, etc.).
 
 ## Setup
 
-TBD
+```ts
+import { Module } from 'banhmi'
+import { CatsController } from './cats.controller'
+import { CatsService } from './cats.service'
+
+@Module({
+  controllers: [CatsController],
+  providers: [CatsService],
+})
+export class CatsModule {}
+```
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import { Injectable } from 'banhmi'
+
+@Injectable()
+export class CatsService {
+  private readonly cats: Cat[] = []
+
+  findAll(): Cat[] {
+    return this.cats
+  }
+
+  create(dto: CreateCatDto): Cat {
+    const cat: Cat = { id: crypto.randomUUID(), ...dto }
+    this.cats.push(cat)
+    return cat
+  }
+}
+```
+
+Inject into a controller using `static inject`:
+
+```ts
+@Controller('cats')
+export class CatsController {
+  static inject = [CatsService] as const
+  constructor(private readonly catsService: CatsService) {}
+}
+```
+
+## Value providers
+
+```ts
+@Module({
+  providers: [{ provide: APP_NAME_TOKEN, useValue: 'My App' }],
+})
+export class AppModule {}
+```
+
+## Factory providers
+
+```ts
+@Module({
+  providers: [
+    {
+      provide: DATABASE_TOKEN,
+      useFactory: (config: ConfigService) => new Database(config.get('DB_URL')),
+      inject: [ConfigService],
+    },
+  ],
+})
+export class AppModule {}
+```
+
+## Tokens
+
+Use `Token<T>('NAME')` to create typed DI tokens:
+
+```ts
+import { Token } from 'banhmi'
+
+export const DATABASE_TOKEN = Token<Database>('DATABASE_TOKEN')
+```
 
 ## API reference
 
-TBD
+- `@Injectable()` — marks a class as a DI-managed provider.
+- `static inject = [Dep, TOKEN] as const` — declare constructor dependencies.
+- `Token<T>(name)` — create a typed injection token.
+- `useValue` — bind a static value to a token.
+- `useFactory` — bind the result of a factory function.
+- `useClass` — substitute a different class implementation.
 
 ## See also
 
-TBD
+- [Modules](/overview/modules) — how providers are scoped
+- [Custom Providers](/fundamentals/custom-providers) — advanced provider patterns
+- [Asynchronous Providers](/fundamentals/asynchronous-providers) — async factory setup
+- [Injection Scopes](/fundamentals/injection-scopes) — singleton vs. request scope

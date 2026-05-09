@@ -1,23 +1,38 @@
 # Swagger
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Banhmi uses `@banhmi/openapi` (renamed from `@banhmi/swagger`) which ships
+with Scalar UI instead of the legacy Swagger UI. The package generates a full
+OpenAPI 3.1 spec from your controllers and DTOs.
 
-## When to use
+## See the OpenAPI docs
 
-TBD
+See [OpenAPI Quick Start](/openapi/overview) for full setup, decorator reference,
+and Scalar UI configuration.
 
-## Setup
+## Quick reference
 
-TBD
+```bash
+bun add @banhmi/openapi
+```
 
-## Usage
+```ts
+import { OpenApiModule } from '@banhmi/openapi'
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+@Module({
+  imports: [
+    OpenApiModule.forRoot({
+      title: 'Cats API',
+      version: '1.0',
+      scalarUi: true,
+    }),
+  ],
+})
+export class AppModule {}
+```
 
-## API reference
-
-TBD
+Visit `http://localhost:3000/api` for the Scalar UI.
 
 ## See also
 
-TBD
+- [OpenAPI Overview](/openapi/overview) — complete OpenAPI guide
+- [CLI Usage](/cli/usage) — `banhmi g resource` generates OpenAPI decorators automatically

@@ -1,23 +1,53 @@
 # Commander
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
-
-## When to use
-
-TBD
+Use `commander` alongside Banhmi when you need a CLI application that shares
+services with a Banhmi HTTP application (e.g., an ingestion script and an API
+in the same codebase).
 
 ## Setup
 
-TBD
+```bash
+bun add commander
+```
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import { Command } from 'commander'
+import { BanhmiFactory } from 'banhmi'
+import { AppModule } from './app.module'
+
+const program = new Command()
+
+program
+  .command('ingest')
+  .description('Run the data ingestion pipeline')
+  .action(async () => {
+    // Bootstrap Banhmi DI without starting HTTP
+    const app = await BanhmiFactory.createApplicationContext(AppModule)
+    const ingestionService = app.get(IngestionService)
+    await ingestionService.run()
+    await app.close()
+  })
+
+program.parse()
+```
+
+Run with:
+
+```bash
+bun run src/cli.ts ingest
+```
 
 ## API reference
 
-TBD
+`commander` API is documented at [npmjs.com/package/commander](https://www.npmjs.com/package/commander).
+
+Banhmi APIs used:
+- `BanhmiFactory.createApplicationContext(Module)` — starts DI without HTTP.
+- `app.get(Token)` — retrieve providers from the DI container.
 
 ## See also
 
-TBD
+- [CLI Overview](/cli/overview) — Banhmi's own CLI for scaffolding
+- [Module Reference](/fundamentals/module-reference) — programmatic DI access

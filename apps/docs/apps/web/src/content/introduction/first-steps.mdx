@@ -1,23 +1,116 @@
 # First Steps
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Banhmi is a Bun-first, NestJS-inspired TypeScript framework that uses TC39 Stage 3
+decorators, static `inject` DI, and raw `Bun.serve` — no Node, no Express.
 
-## When to use
+## Prerequisites
 
-TBD
+- [Bun](https://bun.sh) ≥ 1.1.0
+- TypeScript ≥ 5.2
 
-## Setup
+## Scaffold a new project
 
-TBD
+```bash
+bun create banhmi my-app
+cd my-app
+bun run dev
+```
 
-## Usage
+The scaffold creates:
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```
+my-app/
+  src/
+    app.controller.ts
+    app.module.ts
+    app.service.ts
+    main.ts
+  bunfig.toml
+  package.json
+  tsconfig.json
+```
 
-## API reference
+## Manual setup
 
-TBD
+```bash
+mkdir my-app && cd my-app
+bun init -y
+bun add banhmi
+```
+
+`src/main.ts`:
+
+```ts
+import { BanhmiFactory } from 'banhmi'
+import { AppModule } from './app.module'
+
+const app = await BanhmiFactory.create(AppModule)
+await app.listen(3000)
+console.log('Listening on http://localhost:3000')
+```
+
+`src/app.module.ts`:
+
+```ts
+import { Module } from 'banhmi'
+import { AppController } from './app.controller'
+import { AppService } from './app.service'
+
+@Module({
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
+```
+
+`src/app.controller.ts`:
+
+```ts
+import { Controller, Get } from 'banhmi'
+import { AppService } from './app.service'
+
+@Controller()
+export class AppController {
+  static inject = [AppService] as const
+  constructor(private readonly appService: AppService) {}
+
+  @Get()
+  getHello(): string {
+    return this.appService.getHello()
+  }
+}
+```
+
+`src/app.service.ts`:
+
+```ts
+import { Injectable } from 'banhmi'
+
+@Injectable()
+export class AppService {
+  getHello(): string {
+    return 'Hello World!'
+  }
+}
+```
+
+## `bunfig.toml` (required)
+
+```toml
+preload = ["./node_modules/banhmi/polyfill-symbol-metadata"]
+```
+
+This polyfill wires up `Symbol.metadata` for TC39 Stage 3 decorators.
+
+## Run
+
+```bash
+bun run dev   # watch mode via bun --watch
+bun run start # production
+```
 
 ## See also
 
-TBD
+- [Controllers](/overview/controllers) — route handling
+- [Providers](/overview/providers) — dependency injection
+- [Modules](/overview/modules) — application structure

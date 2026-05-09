@@ -1,23 +1,64 @@
 # Built-in Interceptors
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Banhmi ships two production-ready built-in interceptors. Both are exported
+from `banhmi` and can be applied globally or per-route.
 
-## When to use
+## ClassSerializerInterceptor
 
-TBD
+Transforms the handler return value using the `class-transformer` `plainToInstance`
+/ `instanceToPlain` pipeline. Use it with `@Exclude()` and `@Expose()` to strip
+sensitive fields from responses.
 
-## Setup
+```ts
+import { ClassSerializerInterceptor, Exclude, Expose } from 'banhmi'
 
-TBD
+export class UserEntity {
+  @Expose() id: string
+  @Expose() email: string
+  @Exclude() passwordHash: string
 
-## Usage
+  constructor(partial: Partial<UserEntity>) {
+    Object.assign(this, partial)
+  }
+}
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+// Apply globally
+app.useGlobalInterceptors(new ClassSerializerInterceptor())
+```
+
+## CacheInterceptor
+
+Caches handler responses in memory (or a custom store) keyed by URL + method.
+Subsequent requests return the cached response without invoking the handler.
+
+```ts
+import { CacheInterceptor, CacheModule } from 'banhmi'
+
+@Module({
+  imports: [CacheModule.register({ ttl: 30 })],
+})
+export class AppModule {}
+
+// Per-route
+@Get()
+@UseInterceptors(CacheInterceptor)
+findAll() {
+  return this.catsService.findAll()
+}
+```
+
+Use `@CacheKey('custom-key')` and `@CacheTTL(60)` to override defaults per route.
 
 ## API reference
 
-TBD
+- `ClassSerializerInterceptor` — requires `class-transformer` peer dep.
+- `CacheInterceptor` — requires `CacheModule` registration.
+- `@CacheKey(key)` — override the cache key for a route.
+- `@CacheTTL(seconds)` — override the TTL for a route.
+- `@CacheEvict()` — evict a cache entry on mutation routes.
 
 ## See also
 
-TBD
+- [Interceptors](/overview/interceptors) — interceptor lifecycle
+- [Caching](/techniques/caching) — `CacheModule` configuration
+- [Serialization](/techniques/serialization) — `ClassSerializerInterceptor` deep dive

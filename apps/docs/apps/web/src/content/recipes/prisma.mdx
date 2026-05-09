@@ -1,23 +1,67 @@
 # Prisma
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
-
-## When to use
-
-TBD
+Prisma is compatible with Bun (as of Prisma 5.9+). Wrap the `PrismaClient`
+as a Banhmi provider for full DI integration.
 
 ## Setup
 
-TBD
+```bash
+bun add prisma @prisma/client
+bunx prisma init
+```
 
-## Usage
+Create a Prisma provider:
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import { Injectable, OnModuleDestroy, OnModuleInit } from 'banhmi'
+import { PrismaClient } from '@prisma/client'
+
+@Injectable()
+export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
+  async onModuleInit() {
+    await this.$connect()
+  }
+
+  async onModuleDestroy() {
+    await this.$disconnect()
+  }
+}
+```
+
+Register in a module:
+
+```ts
+@Module({
+  providers: [PrismaService],
+  exports: [PrismaService],
+})
+export class PrismaModule {}
+```
+
+Use in a service:
+
+```ts
+@Injectable()
+export class CatsService {
+  static inject = [PrismaService] as const
+  constructor(private prisma: PrismaService) {}
+
+  findAll() {
+    return this.prisma.cat.findMany()
+  }
+
+  create(data: Prisma.CatCreateInput) {
+    return this.prisma.cat.create({ data })
+  }
+}
+```
 
 ## API reference
 
-TBD
+Prisma's full API is documented at [prisma.io/docs](https://www.prisma.io/docs).
 
 ## See also
 
-TBD
+- [Lifecycle Events](/fundamentals/lifecycle-events) — `onModuleInit` / `onModuleDestroy`
+- [Drizzle ORM](/techniques/drizzle) — alternative Bun-native ORM
+- [Custom Providers](/fundamentals/custom-providers) — wrapping external clients

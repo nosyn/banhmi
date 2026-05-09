@@ -1,23 +1,66 @@
 # Built-in Exceptions
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
-
-## When to use
-
-TBD
-
-## Setup
-
-TBD
+All built-in HTTP exceptions extend the base `HttpException` class. Throw them
+from any handler, guard, pipe, or interceptor and Banhmi's default exception
+filter converts them to the correct HTTP status.
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import { NotFoundException } from 'banhmi'
+
+@Get(':id')
+findOne(@Param('id') id: string) {
+  const cat = this.catsService.findOne(id)
+  if (!cat) throw new NotFoundException(`Cat #${id} not found`)
+  return cat
+}
+```
+
+## Full exception table
+
+| Exception class | HTTP Status |
+|----------------|-------------|
+| `HttpException(message, status)` | custom |
+| `BadRequestException` | 400 |
+| `UnauthorizedException` | 401 |
+| `PaymentRequiredException` | 402 |
+| `ForbiddenException` | 403 |
+| `NotFoundException` | 404 |
+| `MethodNotAllowedException` | 405 |
+| `NotAcceptableException` | 406 |
+| `RequestTimeoutException` | 408 |
+| `ConflictException` | 409 |
+| `GoneException` | 410 |
+| `PayloadTooLargeException` | 413 |
+| `UnsupportedMediaTypeException` | 415 |
+| `UnprocessableEntityException` | 422 |
+| `TooManyRequestsException` | 429 |
+| `InternalServerErrorException` | 500 |
+| `NotImplementedException` | 501 |
+| `BadGatewayException` | 502 |
+| `ServiceUnavailableException` | 503 |
+| `GatewayTimeoutException` | 504 |
+
+## Custom exception
+
+```ts
+import { HttpException, HttpStatus } from 'banhmi'
+
+export class DomainException extends HttpException {
+  constructor(message: string, code: string) {
+    super({ message, code }, HttpStatus.UNPROCESSABLE_ENTITY)
+  }
+}
+```
 
 ## API reference
 
-TBD
+- `HttpException(response, status)` — base class; `response` can be a string or object.
+- `exception.getStatus()` — returns the HTTP status code.
+- `exception.getResponse()` — returns the response body (string or object).
 
 ## See also
 
-TBD
+- [Exception Filters](/overview/exception-filters) — customise the error response shape
+- [Pipes](/built-ins/pipes) — built-in pipes throw `BadRequestException` / `UnprocessableEntityException`

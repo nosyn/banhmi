@@ -1,23 +1,102 @@
 # Caching
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+`@banhmi/cache` provides a `CacheModule` with an in-memory store by default
+and adapters for Redis or any custom store. Use `CacheInterceptor` to cache
+handler responses automatically.
 
 ## When to use
 
-TBD
+- Cache expensive read-only handler results.
+- Reduce database load for frequently-accessed resources.
+- Implement response caching for public API endpoints.
 
 ## Setup
 
-TBD
+```bash
+bun add @banhmi/cache
+```
 
-## Usage
+```ts
+import { CacheModule } from '@banhmi/cache'
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+@Module({
+  imports: [
+    CacheModule.register({
+      ttl: 60,     // seconds
+      max: 1000,   // max items in memory store
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+## Usage — `CacheInterceptor`
+
+```ts
+import { CacheInterceptor } from '@banhmi/cache'
+
+@Controller('cats')
+@UseInterceptors(CacheInterceptor)
+export class CatsController {
+  @Get()
+  findAll() {
+    return this.catsService.findAll()
+  }
+
+  @Get(':id')
+  @CacheTTL(120)   // override TTL for this route
+  findOne(@Param('id') id: string) {
+    return this.catsService.findOne(id)
+  }
+}
+```
+
+## Manual cache access
+
+```ts
+import { CACHE_MANAGER } from '@banhmi/cache'
+import type { Cache } from 'cache-manager'
+
+@Injectable()
+export class CatsService {
+  static inject = [CACHE_MANAGER] as const
+  constructor(private cache: Cache) {}
+
+  async findOne(id: string) {
+    const cached = await this.cache.get<Cat>(`cat:${id}`)
+    if (cached) return cached
+
+    const cat = await this.db.findOne(id)
+    await this.cache.set(`cat:${id}`, cat, 60)
+    return cat
+  }
+}
+```
+
+## Redis store
+
+```ts
+CacheModule.registerAsync({
+  useFactory: (config: ConfigService) => ({
+    store: redisStore,
+    host: config.get('REDIS_HOST'),
+    port: config.get('REDIS_PORT'),
+    ttl: 60,
+  }),
+  inject: [ConfigService],
+})
+```
 
 ## API reference
 
-TBD
+- `CacheModule.register(options)` — sync configuration.
+- `CacheModule.registerAsync({ useFactory, inject })` — async configuration.
+- `CacheInterceptor` — auto-caches handler responses.
+- `@CacheKey(key)` — custom cache key for a route.
+- `@CacheTTL(seconds)` — custom TTL for a route.
+- `CACHE_MANAGER` token — inject the underlying `cache-manager` instance.
 
 ## See also
 
-TBD
+- [Redis](/techniques/redis) — Redis client and pub/sub
+- [Built-in Interceptors](/built-ins/interceptors) — `CacheInterceptor` details

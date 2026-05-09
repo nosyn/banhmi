@@ -1,23 +1,69 @@
 # Other Features
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+This page covers miscellaneous `@banhmi/graphql` features not covered
+by dedicated pages.
 
-## When to use
+## Deprecation
 
-TBD
+```ts
+@Field({ deprecationReason: 'Use `displayName` instead' })
+name: string
+```
 
-## Setup
+## Default values
 
-TBD
+```ts
+@Field(() => Int, { defaultValue: 0 })
+score: number
+```
 
-## Usage
+## Nullable fields
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+@Field(() => String, { nullable: true })
+bio?: string
 
-## API reference
+// Nullable list
+@Field(() => [String], { nullable: 'items' })
+tags: (string | null)[]
 
-TBD
+// Nullable list and items
+@Field(() => [String], { nullable: 'itemsAndList' })
+metadata?: (string | null)[]
+```
+
+## Description
+
+```ts
+@ObjectType({ description: 'Represents a cat in the system' })
+export class Cat {
+  @Field({ description: "The cat's given name" })
+  name: string
+}
+```
+
+## Context typing
+
+Type the GraphQL context for all resolvers in one place:
+
+```ts
+// graphql-context.ts
+export interface GqlContext {
+  user: User | null
+  requestId: string
+}
+
+// In module config
+GraphQLModule.forRoot<ApolloDriverConfig>({
+  context: ({ req }) => ({
+    user: req.user,
+    requestId: req.headers.get('x-request-id'),
+  }),
+})
+```
 
 ## See also
 
-TBD
+- [Quick Start](/graphql/quick-start) — module setup
+- [Resolvers](/graphql/resolvers) — `@Context` decorator
+- [Field Middleware](/graphql/field-middleware) — field-level cross-cutting logic

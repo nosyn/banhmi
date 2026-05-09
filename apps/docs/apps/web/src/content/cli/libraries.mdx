@@ -1,23 +1,67 @@
 # Libraries
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Use `banhmi generate library` to scaffold a re-usable library package inside
+a Banhmi workspace. Libraries are plain TypeScript packages without their own
+`main.ts`; they export modules, providers, and utilities consumed by apps.
 
 ## When to use
 
-TBD
+- Extract shared business logic into a versioned, independently testable package.
+- Build a plugin package (`@myorg/auth`, `@myorg/notifications`) that multiple
+  apps can import.
 
-## Setup
+## Generate a library
 
-TBD
+```bash
+# Inside a Banhmi workspace
+banhmi g library auth --prefix @myorg
+```
 
-## Usage
+Generated structure:
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```
+packages/
+  auth/
+    src/
+      auth.module.ts
+      auth.service.ts
+      index.ts
+    package.json    # name: "@myorg/auth", type: "module"
+    tsconfig.json
+    bunfig.toml
+```
 
-## API reference
+## Consume from an app
 
-TBD
+```ts
+import { AuthModule } from '@myorg/auth'
+
+@Module({
+  imports: [AuthModule.forRoot({ secret: process.env.JWT_SECRET })],
+})
+export class AppModule {}
+```
+
+## Publishing
+
+```bash
+cd packages/auth
+bun run build
+bun publish
+```
+
+Libraries should set `"exports"` in `package.json` for proper ESM resolution:
+
+```json
+{
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}
+```
 
 ## See also
 
-TBD
+- [Workspaces](/cli/workspaces) — Bun workspace configuration
+- [CLI Usage](/cli/usage) — `banhmi generate` flags
+- [Dynamic Modules](/fundamentals/dynamic-modules) — `forRoot` / `forFeature` patterns

@@ -1,23 +1,74 @@
 # Bun.S3Client
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+`Bun.S3Client` is Bun's built-in S3-compatible object storage client
+(Bun 1.1+). `@banhmi/s3` wraps it as a DI provider.
 
 ## When to use
 
-TBD
+- Upload user files, images, or documents to S3 or an S3-compatible store (R2, MinIO).
+- Stream large files directly from S3 to the client without buffering.
+- Generate pre-signed URLs for client-side direct upload.
 
 ## Setup
 
-TBD
+```bash
+bun add @banhmi/s3
+```
+
+```ts
+import { S3Module } from '@banhmi/s3'
+
+@Module({
+  imports: [
+    S3Module.forRoot({
+      bucket: 'my-bucket',
+      region: 'us-east-1',
+      accessKeyId: Bun.env['AWS_ACCESS_KEY_ID']!,
+      secretAccessKey: Bun.env['AWS_SECRET_ACCESS_KEY']!,
+    }),
+  ],
+})
+export class AppModule {}
+```
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import { Injectable } from 'banhmi'
+import { InjectS3, S3Service } from '@banhmi/s3'
+
+@Injectable()
+export class UploadService {
+  static inject = [S3Service] as const
+  constructor(private s3: S3Service) {}
+
+  async upload(key: string, data: Uint8Array, contentType: string) {
+    await this.s3.put(key, data, { type: contentType })
+    return { key }
+  }
+
+  async getUrl(key: string) {
+    return this.s3.presign(key, { expiresIn: 3600 })
+  }
+
+  stream(key: string) {
+    return new Response(this.s3.file(key))
+  }
+}
+```
 
 ## API reference
 
-TBD
+- `S3Module.forRoot(options)` — registers the S3 client provider.
+- `S3Service.put(key, data, options?)` — upload an object.
+- `S3Service.get(key)` — download an object as `ArrayBuffer`.
+- `S3Service.file(key)` — returns a `BunFile`-like stream.
+- `S3Service.delete(key)` — delete an object.
+- `S3Service.presign(key, options?)` — generate a pre-signed URL.
+- `InjectS3()` — alternative injection token.
 
 ## See also
 
-TBD
+- [Streaming Files](/techniques/streaming-files) — streaming S3 objects to clients
+- [Multipart](/techniques/multipart) — receiving file uploads
+- [Bun.S3 docs](https://bun.sh/docs/api/s3) — upstream Bun docs

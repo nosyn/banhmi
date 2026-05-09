@@ -1,23 +1,50 @@
 # Lazy-loading Modules
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Lazy-loading defers module initialisation until the first request that needs
+it. This reduces cold-start time for large applications where many code paths
+are rarely used.
 
 ## When to use
 
-TBD
-
-## Setup
-
-TBD
+- Serverless / edge functions where cold-start latency matters.
+- Large monolithic APIs where only a subset of routes are exercised in any
+  given deployment.
+- CLI-adjacent code that mounts optional feature modules on demand.
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import { LazyModuleLoader } from 'banhmi'
+
+@Injectable()
+export class CatsService {
+  static inject = [LazyModuleLoader] as const
+  constructor(private lazyLoader: LazyModuleLoader) {}
+
+  async getHeavyFeature() {
+    const { HeavyModule } = await import('./heavy/heavy.module')
+    const moduleRef = await this.lazyLoader.load(() => HeavyModule)
+    const service = moduleRef.get(HeavyService)
+    return service.compute()
+  }
+}
+```
+
+## Caveats
+
+- Lazy-loaded modules do **not** run lifecycle hooks on the boot path.
+- Guards, interceptors, and filters declared inside lazy modules only apply
+  after the first load.
+- Avoid lazy-loading modules that have side effects expected at startup.
 
 ## API reference
 
-TBD
+- `LazyModuleLoader` — injectable service; provided automatically by Banhmi core.
+- `lazyLoader.load(() => ModuleClass)` — resolves and returns a `ModuleRef`.
+- `ModuleRef.get(Token)` — retrieve a provider from the lazily loaded module.
 
 ## See also
 
-TBD
+- [Module Reference](/fundamentals/module-reference) — programmatic access to module internals
+- [Dynamic Modules](/fundamentals/dynamic-modules) — configurable module factories
+- [Edge](/techniques/edge) — serverless deployment with minimal cold start

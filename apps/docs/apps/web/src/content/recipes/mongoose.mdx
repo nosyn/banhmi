@@ -1,23 +1,70 @@
 # Mongoose
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+`@banhmi/mongo` wraps the official `mongodb` driver as a Banhmi DI module.
+For applications that need Mongoose's schema modeling, you can use Mongoose
+alongside Banhmi's DI container.
 
-## When to use
+## Recommended: @banhmi/mongo
 
-TBD
+See the [MongoDB](/techniques/mongo) guide for `@banhmi/mongo` with the
+official driver, which is lighter and Bun-compatible.
 
-## Setup
+## Mongoose integration
 
-TBD
+```bash
+bun add mongoose
+```
 
-## Usage
+Register as an async provider:
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import mongoose from 'mongoose'
+import { Token } from 'banhmi'
 
-## API reference
+export const MONGOOSE_TOKEN = Token<typeof mongoose>('MONGOOSE_TOKEN')
 
-TBD
+@Module({
+  providers: [
+    {
+      provide: MONGOOSE_TOKEN,
+      useFactory: async (config: ConfigService) => {
+        await mongoose.connect(config.get('MONGODB_URI'))
+        return mongoose
+      },
+      inject: [ConfigService],
+    },
+  ],
+  exports: [MONGOOSE_TOKEN],
+})
+export class MongooseModule {}
+```
+
+Define a model:
+
+```ts
+import { Schema, model } from 'mongoose'
+
+const CatSchema = new Schema({
+  name: String,
+  age: Number,
+})
+
+export const CatModel = model('Cat', CatSchema)
+```
+
+Inject the model:
+
+```ts
+@Injectable()
+export class CatsRepository {
+  findAll() {
+    return CatModel.find().lean()
+  }
+}
+```
 
 ## See also
 
-TBD
+- [MongoDB](/techniques/mongo) — `@banhmi/mongo` official module
+- [Drizzle ORM](/techniques/drizzle) — type-safe query builder
+- [Custom Providers](/fundamentals/custom-providers) — async factory pattern

@@ -1,23 +1,67 @@
 # Generating SDL
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Banhmi can generate and persist the GraphQL SDL (Schema Definition Language)
+file from your code-first type definitions. This is useful for tooling,
+federation registry uploads, and API documentation.
 
-## When to use
+## Auto-generate to file
 
-TBD
+```ts
+GraphQLModule.forRoot({
+  autoSchemaFile: 'schema.gql',  // write to disk at startup
+})
+```
 
-## Setup
+A `schema.gql` file is created / updated each time the app starts.
 
-TBD
+## In-memory (no file)
 
-## Usage
+```ts
+GraphQLModule.forRoot({
+  autoSchemaFile: true,  // keep schema in memory only
+})
+```
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+## Standalone script
+
+Generate the schema without starting the HTTP server:
+
+```ts
+// scripts/generate-schema.ts
+import { GraphQLSchemaFactory } from '@banhmi/graphql'
+import { printSchema } from 'graphql'
+import { writeFileSync } from 'fs'
+
+const factory = new GraphQLSchemaFactory()
+await factory.create([CatsResolver, /* ... */])
+const schema = factory.schema
+writeFileSync('schema.gql', printSchema(schema))
+```
+
+Run with:
+
+```bash
+bun run scripts/generate-schema.ts
+```
+
+## SDL-first (not recommended)
+
+Banhmi's primary approach is code-first. If you need SDL-first, pass the
+schema path via `typePaths`:
+
+```ts
+GraphQLModule.forRoot({
+  typePaths: ['./src/**/*.graphql'],
+})
+```
 
 ## API reference
 
-TBD
+- `autoSchemaFile: true | 'path.gql'` — controls schema file generation.
+- `sortSchema: true` — sort the generated SDL alphabetically.
+- `GraphQLSchemaFactory` — build the schema programmatically without a running app.
 
 ## See also
 
-TBD
+- [Quick Start](/graphql/quick-start) — GraphQL module setup
+- [CLI Plugin](/graphql/cli-plugin) — schema generation via Banhmi CLI

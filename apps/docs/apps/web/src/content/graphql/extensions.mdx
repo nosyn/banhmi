@@ -1,23 +1,51 @@
 # Extensions
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+GraphQL `extensions` are an arbitrary key-value map attached to types or
+fields in the schema. They are useful for passing metadata to Apollo Studio,
+tracing tools, or custom schema processors.
 
-## When to use
+## Type extensions
 
-TBD
+```ts
+import { Extensions, ObjectType } from '@banhmi/graphql'
 
-## Setup
+@ObjectType()
+@Extensions({ complexity: 1, role: 'admin' })
+export class Cat {
+  @Field()
+  @Extensions({ cacheControl: { maxAge: 30 } })
+  name: string
+}
+```
 
-TBD
+## Resolver extensions
 
-## Usage
+```ts
+import { Extensions, Query, Resolver } from '@banhmi/graphql'
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+@Resolver()
+export class CatsResolver {
+  @Query(() => [Cat])
+  @Extensions({ complexity: 5 })
+  cats() {
+    return this.catsService.findAll()
+  }
+}
+```
+
+## Reading extensions at runtime
+
+Extensions are accessible in plugins and middleware via `info.parentType.extensions`
+and `info.fieldNodes[0].directives`.
 
 ## API reference
 
-TBD
+- `@Extensions(record)` — attach arbitrary metadata to a type, field, or resolver.
+- Extensions are merged into the generated SDL `extensions` object.
+- Access via GraphQL-js `GraphQLObjectType.extensions` at runtime.
 
 ## See also
 
-TBD
+- [Plugins](/graphql/plugins) — consuming extensions in a plugin
+- [Complexity](/graphql/complexity) — using extensions for query cost analysis
+- [Directives](/graphql/directives) — SDL-level annotations

@@ -1,23 +1,61 @@
 # Interfaces
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
-
-## When to use
-
-TBD
-
-## Setup
-
-TBD
+GraphQL interfaces define a set of fields that multiple types must implement.
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import { Field, ID, InterfaceType, ObjectType } from '@banhmi/graphql'
+
+@InterfaceType()
+abstract class Animal {
+  @Field(() => ID) id: string
+  @Field() name: string
+}
+
+@ObjectType({ implements: () => [Animal] })
+export class Cat implements Animal {
+  @Field(() => ID) id: string
+  @Field() name: string
+  @Field() indoor: boolean
+}
+
+@ObjectType({ implements: () => [Animal] })
+export class Dog implements Animal {
+  @Field(() => ID) id: string
+  @Field() name: string
+  @Field() breed: string
+}
+```
+
+## Resolver for interface
+
+```ts
+@Resolver(() => Animal)
+export class AnimalsResolver {
+  @Query(() => [Animal])
+  animals(): Animal[] {
+    return [
+      Object.assign(new Cat(), { id: '1', name: 'Tom', indoor: true }),
+      Object.assign(new Dog(), { id: '2', name: 'Rex', breed: 'Lab' }),
+    ]
+  }
+
+  @ResolveType()
+  resolveType(animal: Cat | Dog) {
+    return animal instanceof Cat ? 'Cat' : 'Dog'
+  }
+}
+```
 
 ## API reference
 
-TBD
+- `@InterfaceType()` — declares an abstract interface type.
+- `@ObjectType({ implements: () => [Interface] })` — implements an interface.
+- `@ResolveType()` — resolves the concrete type for an interface field.
 
 ## See also
 
-TBD
+- [Unions and Enums](/graphql/unions-and-enums) — polymorphic types without shared fields
+- [Resolvers](/graphql/resolvers) — resolver patterns
+- [Quick Start](/graphql/quick-start) — GraphQL module setup

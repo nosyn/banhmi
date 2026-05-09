@@ -1,23 +1,49 @@
 # Hot reload
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
-
-## When to use
-
-TBD
+Bun has built-in watch mode (`bun --watch`) that restarts the process on file
+changes. No separate HMR plugin is needed. This is faster and simpler than
+Webpack HMR used in Node.js-based setups.
 
 ## Setup
 
-TBD
+Add a `dev` script to `package.json`:
 
-## Usage
+```json
+{
+  "scripts": {
+    "dev": "bun --watch run src/main.ts"
+  }
+}
+```
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+Or use the Banhmi CLI:
 
-## API reference
+```bash
+banhmi start --watch
+```
 
-TBD
+## Behaviour
+
+`bun --watch` performs a **full process restart** on any `.ts` change under `src/`.
+The restart is typically under 200ms (including module graph re-resolution).
+
+## Ignoring paths
+
+Use `bunfig.toml` to exclude directories from watch:
+
+```toml
+[watch]
+ignore = ["dist/**", "*.test.ts"]
+```
+
+## What about NestJS HMR?
+
+NestJS uses Webpack HMR (`module.hot`) for partial module replacement. Banhmi
+doesn't support this — Bun's cold-start is fast enough (154ms) that full-process
+restart is the simpler and more reliable choice.
 
 ## See also
 
-TBD
+- [First Steps](/introduction/first-steps) — project setup
+- [CLI Usage](/cli/usage) — `banhmi start --watch`
+- [Performance](/techniques/performance) — cold-start benchmark numbers

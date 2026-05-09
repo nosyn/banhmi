@@ -1,23 +1,78 @@
 # Resolvers
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Resolvers in `@banhmi/graphql` are TypeScript classes that map GraphQL
+operations (queries, mutations, field resolutions) to provider methods.
 
-## When to use
+## Query resolver
 
-TBD
+```ts
+import { Args, Query, Resolver } from '@banhmi/graphql'
+import { CatsService } from './cats.service'
+import { Cat } from './models/cat.model'
 
-## Setup
+@Resolver(() => Cat)
+export class CatsResolver {
+  static inject = [CatsService] as const
+  constructor(private catsService: CatsService) {}
 
-TBD
+  @Query(() => [Cat])
+  cats(): Cat[] {
+    return this.catsService.findAll()
+  }
+}
+```
 
-## Usage
+## Field resolver
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+Resolve computed or related fields without embedding logic in the type class:
+
+```ts
+import { ResolveField, Parent } from '@banhmi/graphql'
+import { Owner } from '../owners/models/owner.model'
+
+@Resolver(() => Cat)
+export class CatsResolver {
+  @ResolveField(() => Owner, { nullable: true })
+  owner(@Parent() cat: Cat) {
+    return this.ownersService.findByCatId(cat.id)
+  }
+}
+```
+
+## Context
+
+Access the GraphQL context (request, user, dataloaders) via `@Context`:
+
+```ts
+import { Context } from '@banhmi/graphql'
+
+@Query(() => User)
+me(@Context('user') user: User) {
+  return user
+}
+```
+
+## DataLoader pattern
+
+```ts
+@ResolveField(() => [Toy])
+toys(@Parent() cat: Cat, @Context('loaders') loaders: Loaders) {
+  return loaders.toys.load(cat.id)
+}
+```
 
 ## API reference
 
-TBD
+- `@Resolver(() => Type)` — binds the class to a GraphQL object type.
+- `@Query(() => Type, opts?)` — declares a top-level query.
+- `@Mutation(() => Type, opts?)` — declares a top-level mutation.
+- `@ResolveField(() => Type, opts?)` — resolves a single field on the parent type.
+- `@Parent()` — injects the parent object into a field resolver.
+- `@Args(name, opts?)` / `@ArgsType()` — extract arguments.
+- `@Context(key?)` — extract value(s) from the GraphQL context object.
 
 ## See also
 
-TBD
+- [Quick Start](/graphql/quick-start) — schema setup
+- [Mutations](/graphql/mutations) — write operations
+- [Field Middleware](/graphql/field-middleware) — cross-cutting field logic

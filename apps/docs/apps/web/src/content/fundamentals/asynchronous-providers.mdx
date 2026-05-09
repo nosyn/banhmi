@@ -1,23 +1,77 @@
 # Asynchronous Providers
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Use `useFactory` with an `async` function to build providers that need to perform
+I/O (database connections, config loading, key fetches) before the application
+starts handling requests. Banhmi awaits all async providers before calling
+`onModuleInit` and before the server starts listening.
 
 ## When to use
 
-TBD
-
-## Setup
-
-TBD
+- Establish a database connection before the first request.
+- Fetch remote secrets or configuration at startup.
+- Warm a cache or pre-compile templates at boot.
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import { Module } from 'banhmi'
+import { Token } from 'banhmi'
+import { ConfigService } from './config.service'
+
+export const DB_TOKEN = Token<Database>('DB_TOKEN')
+
+@Module({
+  providers: [
+    ConfigService,
+    {
+      provide: DB_TOKEN,
+      useFactory: async (config: ConfigService) => {
+        const db = new Database(config.get('DATABASE_URL'))
+        await db.connect()   // async work happens here
+        return db            // resolved value becomes the provider
+      },
+      inject: [ConfigService],
+    },
+  ],
+  exports: [DB_TOKEN],
+})
+export class DatabaseModule {}
+```
+
+Consumers inject it the same way as any other provider:
+
+```ts
+@Injectable()
+export class CatsRepository {
+  static inject = [DB_TOKEN] as const
+  constructor(private readonly db: Database) {}
+}
+```
+
+## Teardown
+
+Implement `OnModuleDestroy` to close the connection on shutdown:
+
+```ts
+import { OnModuleDestroy } from 'banhmi'
+
+@Injectable()
+export class DatabaseService implements OnModuleDestroy {
+  async onModuleDestroy() {
+    await this.db.close()
+  }
+}
+```
 
 ## API reference
 
-TBD
+- `useFactory: async (...deps) => value` — factory is awaited before the module resolves.
+- `inject` — list of dependency tokens passed positionally to the factory.
+- `OnModuleDestroy.onModuleDestroy()` — called during graceful shutdown.
+- `OnModuleInit.onModuleInit()` — called synchronously after all providers resolve.
 
 ## See also
 
-TBD
+- [Custom Providers](/fundamentals/custom-providers) — all provider shapes
+- [Lifecycle Events](/fundamentals/lifecycle-events) — `onModuleInit` / `onApplicationBootstrap`
+- [Dynamic Modules](/fundamentals/dynamic-modules) — `forRootAsync` pattern

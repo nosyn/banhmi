@@ -1,23 +1,66 @@
 # Native WebSocket
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Bun's native WebSocket API is built into `Bun.serve` — no `ws` package or
+native addon required. Banhmi's `BunWebSocketAdapter` exposes this directly
+through the `@WebSocketGateway()` abstraction.
 
 ## When to use
 
-TBD
+- You need raw access to `BunWebSocket` properties or Bun-specific options.
+- You want to understand what `BunWebSocketAdapter` does under the hood.
 
-## Setup
+## Raw Bun.serve WebSocket (no Banhmi)
 
-TBD
+```ts
+Bun.serve({
+  fetch(req, server) {
+    if (server.upgrade(req, { data: { id: crypto.randomUUID() } })) {
+      return  // upgraded to WebSocket
+    }
+    return new Response('Not found', { status: 404 })
+  },
+  websocket: {
+    open(ws) {
+      console.log('opened', ws.data.id)
+    },
+    message(ws, msg) {
+      ws.send(`echo: ${msg}`)
+    },
+    close(ws, code, reason) {
+      console.log('closed', code, reason)
+    },
+  },
+})
+```
 
-## Usage
+## With Banhmi (recommended)
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+Use `@WebSocketGateway()` — it handles upgrade routing automatically:
 
-## API reference
+```ts
+@WebSocketGateway({ path: '/ws' })
+export class ChatGateway {
+  @SubscribeMessage('ping')
+  handlePing() {
+    return { event: 'pong', data: 'pong' }
+  }
+}
+```
 
-TBD
+## BunWebSocket properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `ws.data` | `T` | Per-connection data set during upgrade |
+| `ws.readyState` | `0|1|2|3` | WebSocket ready state |
+| `ws.remoteAddress` | `string` | Client IP address |
+| `ws.send(data)` | `void` | Send message to this client |
+| `ws.close(code?, reason?)` | `void` | Close this connection |
+| `ws.subscribe(topic)` | `void` | Subscribe to a pub/sub topic |
+| `ws.publish(topic, data)` | `void` | Publish to all subscribers of a topic |
 
 ## See also
 
-TBD
+- [Gateways](/websockets/gateways) — Banhmi WebSocket gateway
+- [Adapters](/websockets/adapters) — `BunWebSocketAdapter` options
+- [Bun WebSocket docs](https://bun.sh/docs/api/websockets) — upstream Bun docs

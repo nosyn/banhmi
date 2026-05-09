@@ -1,23 +1,57 @@
 # Subscriptions
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
-
-## When to use
-
-TBD
+GraphQL subscriptions deliver real-time updates over a persistent connection.
+`@banhmi/graphql` uses Bun's native WebSocket support as the subscription transport.
 
 ## Setup
 
-TBD
+```ts
+GraphQLModule.forRoot({
+  autoSchemaFile: true,
+  subscriptions: {
+    'graphql-ws': true,  // use graphql-ws protocol
+  },
+})
+```
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import { Args, Resolver, Subscription } from '@banhmi/graphql'
+import { PubSub } from 'graphql-subscriptions'
+import { Cat } from './models/cat.model'
+
+const pubSub = new PubSub()
+
+@Resolver(() => Cat)
+export class CatsResolver {
+  @Subscription(() => Cat, {
+    filter: (payload, variables) =>
+      payload.catCreated.id === variables.id,
+  })
+  catCreated(@Args('id') id: string) {
+    return pubSub.asyncIterator('CAT_CREATED')
+  }
+
+  @Mutation(() => Cat)
+  async createCat(@Args('input') input: CreateCatInput) {
+    const cat = await this.catsService.create(input)
+    await pubSub.publish('CAT_CREATED', { catCreated: cat })
+    return cat
+  }
+}
+```
 
 ## API reference
 
-TBD
+- `@Subscription(() => Type, options?)` — declares a subscription field.
+- `options.filter(payload, variables)` — filter which events are sent to each subscriber.
+- `options.resolve(payload)` — transform the published event before sending.
+- `pubSub.asyncIterator(trigger)` — returns an async iterator for an event topic.
+- `pubSub.publish(trigger, payload)` — emit an event to all subscribers.
 
 ## See also
 
-TBD
+- [Quick Start](/graphql/quick-start) — GraphQL module setup
+- [Resolvers](/graphql/resolvers) — query and mutation patterns
+- [Native WebSocket](/bun-native/native-websocket) — Bun's underlying WS API

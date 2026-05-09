@@ -1,23 +1,44 @@
 # Directives
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+GraphQL directives annotate types, fields, or arguments with additional
+metadata or behaviour. Use `@Directive(sdl)` to attach schema-level directives.
 
-## When to use
+## Schema directives (SDL)
 
-TBD
+```ts
+import { Directive, Field, ObjectType } from '@banhmi/graphql'
 
-## Setup
+@ObjectType()
+@Directive('@deprecated(reason: "Use NewCat instead")')
+export class Cat {
+  @Field()
+  @Directive('@deprecated')
+  legacyName: string
+}
+```
 
-TBD
+## Custom directive transformer
 
-## Usage
+Register a schema transformer in `GraphQLModule`:
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+GraphQLModule.forRoot({
+  autoSchemaFile: true,
+  transformSchema: (schema) => applyMyDirective(schema),
+})
+```
+
+## Apollo Federation directives
+
+See [Federation](/graphql/federation) for `@key`, `@external`, `@extends`.
 
 ## API reference
 
-TBD
+- `@Directive(sdlString)` — attach an SDL directive to a type, field, or argument.
+- `transformSchema` option — apply `graphql-tools` schema transformers.
 
 ## See also
 
-TBD
+- [Federation](/graphql/federation) — `@key`, `@external` federation directives
+- [Extensions](/graphql/extensions) — attaching custom metadata
+- [Plugins](/graphql/plugins) — programmatic schema modifications

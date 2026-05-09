@@ -1,23 +1,62 @@
 # Bun.gzip / deflate / zstd
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Bun ships built-in gzip, deflate, and zstd compression via `Bun.gzip`,
+`Bun.deflate`, `Bun.zstd`, and their decompression counterparts. These are
+synchronous Zig implementations with no additional dependencies.
 
 ## When to use
 
-TBD
-
-## Setup
-
-TBD
+- Compress a `Uint8Array` payload before writing it to a cache or S3.
+- Decompress a compressed HTTP response body.
+- Integrate custom compression into a Banhmi interceptor.
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+// Compress
+const data = new TextEncoder().encode('Hello, world!')
+const compressed = Bun.gzipSync(data)
+
+// Decompress
+const decompressed = Bun.gunzipSync(compressed)
+console.log(new TextDecoder().decode(decompressed)) // Hello, world!
+```
+
+## Middleware compression
+
+For automatic HTTP response compression, use `@banhmi/compression`:
+
+```ts
+import { compressionMiddleware } from '@banhmi/compression'
+
+const app = await BanhmiFactory.create(AppModule)
+app.use(compressionMiddleware())
+await app.listen(3000)
+```
+
+The middleware negotiates `Accept-Encoding` and applies the best available
+encoding (zstd > br > gzip > deflate).
+
+## Async API
+
+```ts
+const compressed = await Bun.gzip(data)
+const decompressed = await Bun.gunzip(compressed)
+```
 
 ## API reference
 
-TBD
+| Function | Description |
+|----------|-------------|
+| `Bun.gzipSync(data)` | Synchronous gzip compression |
+| `Bun.gunzipSync(data)` | Synchronous gzip decompression |
+| `Bun.deflateSync(data)` | Synchronous deflate compression |
+| `Bun.inflateSync(data)` | Synchronous deflate decompression |
+| `Bun.gzip(data)` | Async gzip |
+| `Bun.gunzip(data)` | Async gunzip |
 
 ## See also
 
-TBD
+- [Compression](/techniques/compression) — `@banhmi/compression` middleware
+- [Performance](/techniques/performance) — compression impact on throughput
+- [Streaming Files](/techniques/streaming-files) — streaming compressed responses

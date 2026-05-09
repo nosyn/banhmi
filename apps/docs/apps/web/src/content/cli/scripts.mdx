@@ -1,23 +1,53 @@
 # Scripts
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Scaffolded projects include a standard set of `package.json` scripts that
+map directly to Bun and `banhmi` CLI commands.
 
-## When to use
+## Standard scripts
 
-TBD
+```json
+{
+  "scripts": {
+    "dev":       "banhmi start --watch",
+    "start":     "banhmi start",
+    "build":     "banhmi build",
+    "lint":      "biome check --write .",
+    "format":    "biome format --write .",
+    "test":      "bun test",
+    "test:cov":  "bun test --coverage",
+    "type-check":"tsc --noEmit"
+  }
+}
+```
 
-## Setup
+## Quality scripts (workspace-level)
 
-TBD
+Projects generated from the Banhmi monorepo template include additional
+quality gate scripts under `scripts/quality/`:
 
-## Usage
+| Script | Purpose |
+|--------|---------|
+| `bun run quality:no-anys` | Fail if any `any` type remains |
+| `bun run quality:no-bangs` | Fail if any `!` non-null assertion remains |
+| `bun run quality:no-reflect` | Fail if `reflect-metadata` is imported |
+| `bun run quality:tsdoc` | Check TSDoc coverage on public API |
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+Run all at once:
 
-## API reference
+```bash
+bun run lint && bun test && bun run type-check
+```
 
-TBD
+## Custom scripts
+
+Add custom scripts inline in `package.json`. For monorepo use, prefix
+scripts with the workspace name:
+
+```bash
+bun run --filter @myorg/api dev
+```
 
 ## See also
 
-TBD
+- [CLI Usage](/cli/usage) — `banhmi start`, `banhmi build`
+- [Workspaces](/cli/workspaces) — monorepo script execution

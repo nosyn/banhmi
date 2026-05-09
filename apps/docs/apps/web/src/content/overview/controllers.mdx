@@ -1,23 +1,96 @@
 # Controllers
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Controllers handle incoming HTTP requests and return responses. Each controller is
+a class decorated with `@Controller()` and registered in a module.
 
 ## When to use
 
-TBD
+Use a controller whenever you need to expose HTTP endpoints. Group related endpoints
+in one controller (e.g. `CatsController` for all `/cats` routes).
 
 ## Setup
 
-TBD
+Register the controller in the enclosing module:
+
+```ts
+import { Module } from 'banhmi'
+import { CatsController } from './cats.controller'
+import { CatsService } from './cats.service'
+
+@Module({
+  controllers: [CatsController],
+  providers: [CatsService],
+})
+export class CatsModule {}
+```
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import { Body, Controller, Delete, Get, Param, Post, Put } from 'banhmi'
+import { CatsService } from './cats.service'
+import type { CreateCatDto } from './dto/create-cat.dto'
+
+@Controller('cats')
+export class CatsController {
+  static inject = [CatsService] as const
+  constructor(private readonly catsService: CatsService) {}
+
+  @Get()
+  findAll() {
+    return this.catsService.findAll()
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.catsService.findOne(id)
+  }
+
+  @Post()
+  create(@Body() dto: CreateCatDto) {
+    return this.catsService.create(dto)
+  }
+
+  @Put(':id')
+  update(@Param('id') id: string, @Body() dto: Partial<CreateCatDto>) {
+    return this.catsService.update(id, dto)
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.catsService.remove(id)
+  }
+}
+```
+
+## Route parameters
+
+| Decorator | Source |
+|-----------|--------|
+| `@Param(key?)` | URL path segment |
+| `@Query(key?)` | Query string |
+| `@Body()` | Request body (JSON parsed) |
+| `@Headers(key?)` | Request headers |
+| `@Req()` | Raw `Request` object |
+| `@Res()` | Raw `Response` builder |
+
+## HTTP methods
+
+`@Get`, `@Post`, `@Put`, `@Patch`, `@Delete`, `@Options`, `@Head`, `@All`.
 
 ## API reference
 
-TBD
+- `@Controller(prefix?)` — marks a class as a controller with an optional route prefix.
+- `@Get(path?)`, `@Post(path?)`, etc. — bind a method to an HTTP verb + path.
+- `@Param(key?)` — extract a named route parameter (or all params).
+- `@Query(key?)` — extract a query string value (or the full query object).
+- `@Body()` — parse and inject the request body.
+- `@Headers(key?)` — extract a specific header (or all headers).
 
 ## See also
 
-TBD
+- [Providers](/overview/providers) — services injected into controllers
+- [Pipes](/overview/pipes) — transform / validate input
+- [Guards](/overview/guards) — authorisation before the handler
+- [Interceptors](/overview/interceptors) — pre/post handler logic
+- [Exception Filters](/overview/exception-filters) — error handling

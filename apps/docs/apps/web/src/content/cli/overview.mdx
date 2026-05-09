@@ -1,23 +1,54 @@
 # Overview
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+The `banhmi` CLI (`@banhmi/cli`) scaffolds projects and generates boilerplate
+so you can focus on application logic rather than file setup.
 
-## When to use
+## Installation
 
-TBD
+The CLI is bundled with the `banhmi` package. You can also install it globally:
 
-## Setup
+```bash
+bun add -g @banhmi/cli
+```
 
-TBD
+## Commands
 
-## Usage
+| Command | Description |
+|---------|-------------|
+| `banhmi new <name>` | Scaffold a new Banhmi application |
+| `banhmi generate controller <name>` | Generate a controller |
+| `banhmi generate service <name>` | Generate a service |
+| `banhmi generate module <name>` | Generate a module |
+| `banhmi generate resource <name>` | Generate a full CRUD resource (controller + service + module + DTOs) |
+| `banhmi generate guard <name>` | Generate a guard |
+| `banhmi generate interceptor <name>` | Generate an interceptor |
+| `banhmi generate pipe <name>` | Generate a pipe |
+| `banhmi generate filter <name>` | Generate an exception filter |
+| `banhmi build` | Build the project with `bun build` |
+| `banhmi start [--watch]` | Start the application |
+| `banhmi info` | Display environment and package versions |
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+## Quick start
 
-## API reference
+```bash
+bun create banhmi my-app
+cd my-app
+bun run dev
+```
 
-TBD
+## Alias
+
+All commands accept the shorthand `bmi` alias:
+
+```bash
+bmi g controller users
+bmi g service users
+bmi g module users
+```
 
 ## See also
 
-TBD
+- [CLI Usage](/cli/usage) — detailed command reference
+- [Scripts](/cli/scripts) — npm/bun script conventions
+- [Workspaces](/cli/workspaces) — monorepo support
+- [Libraries](/cli/libraries) — generating re-usable library packages

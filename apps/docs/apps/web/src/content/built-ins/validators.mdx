@@ -1,23 +1,73 @@
 # Built-in Validators
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+The `@banhmi/validation` package provides `ZodValidationPipe` and related
+helpers for schema-based input validation.
 
-## When to use
+## ZodValidationPipe
 
-TBD
+Validates body, query, or param against a Zod schema:
 
-## Setup
+```ts
+import { ZodValidationPipe } from '@banhmi/validation'
+import { z } from 'zod'
 
-TBD
+const CreateCatSchema = z.object({
+  name: z.string().min(1),
+  age: z.number().int().min(0),
+})
 
-## Usage
+@Post()
+create(
+  @Body(new ZodValidationPipe(CreateCatSchema))
+  dto: z.infer<typeof CreateCatSchema>,
+) {
+  return this.catsService.create(dto)
+}
+```
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+## Global setup
+
+```ts
+app.useGlobalPipes(new ZodValidationPipe())
+```
+
+When used globally without a schema argument, the pipe looks for a schema
+attached to the body DTO via `@ZodSchema(schema)`.
+
+## @ZodSchema decorator
+
+```ts
+import { ZodSchema } from '@banhmi/validation'
+import { z } from 'zod'
+
+const Schema = z.object({ name: z.string(), age: z.number() })
+
+@ZodSchema(Schema)
+export class CreateCatDto {}
+```
+
+## Error format
+
+A validation failure returns HTTP 422 with:
+
+```json
+{
+  "statusCode": 422,
+  "message": "Validation failed",
+  "errors": [
+    { "path": ["age"], "message": "Expected number, received string" }
+  ]
+}
+```
 
 ## API reference
 
-TBD
+- `ZodValidationPipe(schema?)` — the main validation pipe.
+- `@ZodSchema(schema)` — class decorator to attach a schema to a DTO.
+- `formatZodError(error)` — utility: converts `ZodError` to the standard error shape.
 
 ## See also
 
-TBD
+- [Validation](/techniques/validation) — detailed validation guide
+- [Built-in Pipes](/built-ins/pipes) — ParseIntPipe, DefaultValuePipe, etc.
+- [Built-in Exceptions](/built-ins/exceptions) — `UnprocessableEntityException`

@@ -1,23 +1,66 @@
 # Execution Context
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+The `ExecutionContext` interface extends `ArgumentsHost` with handler-introspection
+methods. Guards, interceptors, and exception filters all receive an
+`ExecutionContext` so they can inspect the current request regardless of transport.
 
 ## When to use
 
-TBD
+- Inside guards/interceptors that must work across HTTP, WebSocket, and microservice contexts.
+- To read `@SetMetadata` values attached to the current handler or controller.
 
-## Setup
+## Usage — switching context
 
-TBD
+```ts
+import type { ExecutionContext } from 'banhmi'
 
-## Usage
+function getRequest(ctx: ExecutionContext): Request {
+  const type = ctx.getType<'http' | 'ws' | 'rpc'>()
+  if (type === 'http') {
+    return ctx.switchToHttp().getRequest<Request>()
+  }
+  if (type === 'ws') {
+    return ctx.switchToWs().getClient()
+  }
+  return ctx.switchToRpc().getData()
+}
+```
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+## Usage — reading metadata
+
+```ts
+import { Reflector } from 'banhmi'
+import type { CanActivate, ExecutionContext } from 'banhmi'
+
+@Injectable()
+export class RolesGuard implements CanActivate {
+  static inject = [Reflector] as const
+  constructor(private reflector: Reflector) {}
+
+  canActivate(ctx: ExecutionContext): boolean {
+    const roles = this.reflector.getAllAndOverride<string[]>('roles', [
+      ctx.getHandler(),
+      ctx.getClass(),
+    ])
+    if (!roles) return true
+    const user = ctx.switchToHttp().getRequest<Request & { user: User }>().user
+    return roles.some((r) => user.roles.includes(r))
+  }
+}
+```
 
 ## API reference
 
-TBD
+- `ctx.getType()` — returns `'http' | 'ws' | 'rpc'`.
+- `ctx.getHandler()` — the route handler function.
+- `ctx.getClass()` — the controller class.
+- `ctx.switchToHttp()` — `{ getRequest, getResponse }`.
+- `ctx.switchToWs()` — `{ getClient, getData }`.
+- `ctx.switchToRpc()` — `{ getContext, getData }`.
+- `Reflector.get(key, target)` / `getAllAndOverride(key, targets)` — read metadata.
 
 ## See also
 
-TBD
+- [Guards](/overview/guards) — using `ExecutionContext` for auth checks
+- [Interceptors](/overview/interceptors) — using `ExecutionContext` for logging
+- [Custom Decorators](/overview/custom-decorators) — attaching metadata with `SetMetadata`

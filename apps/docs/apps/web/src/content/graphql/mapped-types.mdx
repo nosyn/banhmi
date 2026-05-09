@@ -1,23 +1,56 @@
 # Mapped Types
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Mapped type helpers derive new input types from existing ones, reducing
+boilerplate for CRUD input shapes.
 
-## When to use
+## PartialType
 
-TBD
+Makes all fields optional (equivalent to TypeScript `Partial<T>`):
 
-## Setup
+```ts
+import { InputType } from '@banhmi/graphql'
+import { PartialType } from '@banhmi/graphql'
+import { CreateCatInput } from './create-cat.input'
 
-TBD
+@InputType()
+export class UpdateCatInput extends PartialType(CreateCatInput) {}
+```
 
-## Usage
+## PickType
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+Selects a subset of fields:
+
+```ts
+@InputType()
+export class LoginInput extends PickType(UserInput, ['email', 'password'] as const) {}
+```
+
+## OmitType
+
+Excludes specific fields:
+
+```ts
+@InputType()
+export class CreateUserInput extends OmitType(UserInput, ['id'] as const) {}
+```
+
+## IntersectionType
+
+Combines two types:
+
+```ts
+@InputType()
+export class AdminInput extends IntersectionType(CreateUserInput, AdminFields) {}
+```
 
 ## API reference
 
-TBD
+- `PartialType(Base)` — all fields become optional.
+- `PickType(Base, keys)` — keep only listed keys.
+- `OmitType(Base, keys)` — remove listed keys.
+- `IntersectionType(A, B)` — merge two input types.
 
 ## See also
 
-TBD
+- [Mutations](/graphql/mutations) — using input types in mutations
+- [Quick Start](/graphql/quick-start) — module setup

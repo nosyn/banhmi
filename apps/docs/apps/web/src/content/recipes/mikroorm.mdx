@@ -1,23 +1,52 @@
 # MikroORM
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
-
-## When to use
-
-TBD
+MikroORM is compatible with Bun and works without `reflect-metadata` when
+configured with its own metadata provider. You can use it as a DI provider
+in Banhmi.
 
 ## Setup
 
-TBD
+```bash
+bun add @mikro-orm/core @mikro-orm/postgresql
+```
 
-## Usage
+Register as an async provider:
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import { MikroORM } from '@mikro-orm/core'
+import { Token } from 'banhmi'
 
-## API reference
+export const MIKRO_ORM_TOKEN = Token<MikroORM>('MIKRO_ORM_TOKEN')
 
-TBD
+@Module({
+  providers: [
+    {
+      provide: MIKRO_ORM_TOKEN,
+      useFactory: async (config: ConfigService) => {
+        const orm = await MikroORM.init({
+          type: 'postgresql',
+          clientUrl: config.get('DATABASE_URL'),
+          entities: ['./dist/entities'],
+          metadataProvider: ReflectMetadataProvider,  // MikroORM's own provider
+        })
+        return orm
+      },
+      inject: [ConfigService],
+    },
+  ],
+  exports: [MIKRO_ORM_TOKEN],
+})
+export class OrmModule {}
+```
+
+## Note on metadata
+
+MikroORM uses its own `ReflectMetadataProvider` — you do **not** need
+`emitDecoratorMetadata` or Banhmi's `Symbol.metadata` polyfill for entity classes.
+Just avoid mixing MikroORM decorators with Banhmi decorators in the same class.
 
 ## See also
 
-TBD
+- [Drizzle ORM](/techniques/drizzle) — alternative type-safe ORM
+- [Custom Providers](/fundamentals/custom-providers) — async factory pattern
+- [TypeORM](/recipes/typeorm) — alternatives comparison

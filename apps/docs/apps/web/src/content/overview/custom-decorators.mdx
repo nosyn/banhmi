@@ -1,23 +1,85 @@
 # Custom Decorators
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Banhmi uses TC39 Stage 3 decorators (not legacy `experimentalDecorators`).
+You can compose custom parameter, method, and class decorators to reduce
+boilerplate across your application.
 
 ## When to use
 
-TBD
+- Extract common route-level metadata (current user, roles, request-id).
+- Compose multiple decorators into a single named decorator.
+- Attach metadata readable by guards or interceptors via `Reflector`.
 
-## Setup
+## Custom parameter decorator
 
-TBD
+```ts
+import { createParamDecorator } from 'banhmi'
+import type { ExecutionContext } from 'banhmi'
 
-## Usage
+export const CurrentUser = createParamDecorator(
+  (_data: unknown, ctx: ExecutionContext) => {
+    const request = ctx.switchToHttp().getRequest<Request & { user: User }>()
+    return request.user
+  },
+)
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+// Usage
+@Get('me')
+getProfile(@CurrentUser() user: User) {
+  return user
+}
+```
+
+## Metadata decorator (for guards)
+
+```ts
+import { SetMetadata } from 'banhmi'
+
+export const Roles = (...roles: string[]) => SetMetadata('roles', roles)
+
+// Usage
+@Roles('admin')
+@Delete(':id')
+remove(@Param('id') id: string) {}
+```
+
+## Composed decorator
+
+```ts
+import { applyDecorators, UseGuards, SetMetadata } from 'banhmi'
+
+export function Auth(...roles: string[]) {
+  return applyDecorators(
+    SetMetadata('roles', roles),
+    UseGuards(AuthGuard, RolesGuard),
+  )
+}
+
+// Usage
+@Auth('admin')
+@Delete(':id')
+remove() {}
+```
+
+## Class decorator
+
+```ts
+function Serialize(dto: new (...args: unknown[]) => unknown) {
+  return (target: Function, context: ClassDecoratorContext) => {
+    context.metadata['serializer'] = dto
+  }
+}
+```
 
 ## API reference
 
-TBD
+- `createParamDecorator(factory)` — create a parameter decorator from a factory.
+- `SetMetadata(key, value)` — attach metadata; read via `Reflector.get`.
+- `applyDecorators(...decorators)` — merge multiple decorators into one.
+- `Reflector.get(key, target)` — retrieve metadata set by `SetMetadata`.
 
 ## See also
 
-TBD
+- [Guards](/overview/guards) — reading metadata via Reflector
+- [Pipes](/overview/pipes) — custom parameter pipes
+- [Interceptors](/overview/interceptors) — reading class-level metadata

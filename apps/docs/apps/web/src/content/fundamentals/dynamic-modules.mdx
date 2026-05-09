@@ -1,23 +1,81 @@
 # Dynamic Modules
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Dynamic modules return a `DynamicModule` object from a static factory method
+(`forRoot`, `forFeature`, `register`, `forRootAsync`) so callers can pass
+configuration at import time instead of hard-coding it.
 
 ## When to use
 
-TBD
+- Build reusable library modules where the host application provides options.
+- Support both sync (`forRoot(options)`) and async (`forRootAsync({ useFactory })`)
+  configuration.
+- Expose a sub-set of providers to feature modules (`forFeature`).
 
-## Setup
+## Sync pattern
 
-TBD
+```ts
+import { DynamicModule, Module } from 'banhmi'
+import { Token } from 'banhmi'
 
-## Usage
+export const MAILER_OPTIONS_TOKEN = Token<MailerOptions>('MAILER_OPTIONS')
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+@Module({})
+export class MailerModule {
+  static forRoot(options: MailerOptions): DynamicModule {
+    return {
+      module: MailerModule,
+      providers: [
+        { provide: MAILER_OPTIONS_TOKEN, useValue: options },
+        MailerService,
+      ],
+      exports: [MailerService],
+    }
+  }
+}
+```
+
+```ts
+@Module({
+  imports: [MailerModule.forRoot({ host: 'smtp.example.com', port: 587 })],
+})
+export class AppModule {}
+```
+
+## Async pattern
+
+```ts
+@Module({})
+export class MailerModule {
+  static forRootAsync(options: {
+    useFactory: (...args: unknown[]) => MailerOptions | Promise<MailerOptions>
+    inject?: unknown[]
+  }): DynamicModule {
+    return {
+      module: MailerModule,
+      providers: [
+        {
+          provide: MAILER_OPTIONS_TOKEN,
+          useFactory: options.useFactory,
+          inject: options.inject ?? [],
+        },
+        MailerService,
+      ],
+      exports: [MailerService],
+    }
+  }
+}
+```
 
 ## API reference
 
-TBD
+- `DynamicModule` — `{ module, imports?, providers?, exports?, controllers?, global? }`.
+- `forRoot(options)` — sync configuration.
+- `forRootAsync({ useFactory, inject })` — async configuration.
+- `forFeature(features)` — sub-module registration (e.g. per-repository).
+- `global: true` — makes the dynamic module globally available.
 
 ## See also
 
-TBD
+- [Modules](/overview/modules) — static module basics
+- [Custom Providers](/fundamentals/custom-providers) — useFactory, useValue
+- [Asynchronous Providers](/fundamentals/asynchronous-providers) — async factory lifecycle

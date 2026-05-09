@@ -1,23 +1,58 @@
 # Discovery Service
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+The `DiscoveryService` (from `@banhmi/core`) scans all registered providers and
+controllers in the application for decorators applied with `Symbol.metadata`.
+It powers features like `@EventPattern`, `@MessagePattern`, `@Cron`, and
+`@SubscribeMessage` by finding handlers at startup time.
 
 ## When to use
 
-TBD
+- Building framework extensions or plugins that scan for custom decorators.
+- Implementing dynamic handler registration (event emitters, schedulers, queues).
+- Introspecting the provider graph for documentation or tooling purposes.
 
 ## Setup
 
-TBD
+`DiscoveryService` is exported from `@banhmi/core` and available without additional
+module imports if you import `CoreModule` (included by default).
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import { DiscoveryService, Injectable, OnModuleInit } from 'banhmi'
+
+const HANDLER_SYMBOL = Symbol('handler')
+
+function Handle(event: string) {
+  return (_target: unknown, context: ClassMethodDecoratorContext) => {
+    context.metadata[HANDLER_SYMBOL] = event
+  }
+}
+
+@Injectable()
+export class EventBus implements OnModuleInit {
+  static inject = [DiscoveryService] as const
+  constructor(private discovery: DiscoveryService) {}
+
+  onModuleInit() {
+    const handlers = this.discovery.getProvidersWithMetaAtKey(HANDLER_SYMBOL)
+    for (const { instance, meta } of handlers) {
+      console.log(`Registered handler for event: ${meta}`)
+    }
+  }
+}
+```
 
 ## API reference
 
-TBD
+- `DiscoveryService.getProvidersWithMetaAtKey(symbol)` — returns `{ instance, meta }[]`.
+- `DiscoveryService.getControllersWithMetaAtKey(symbol)` — same, for controllers.
+- `DiscoveryService.getHandlersWithMetaAtKey(symbol)` — finds method-level metadata.
+- `DiscoveryService.getProviders()` — all registered provider wrappers.
+- `DiscoveryService.getControllers()` — all registered controller wrappers.
 
 ## See also
 
-TBD
+- [Custom Decorators](/overview/custom-decorators) — writing `Symbol.metadata` decorators
+- [Module Reference](/fundamentals/module-reference) — alternative programmatic access
+- [Lifecycle Events](/fundamentals/lifecycle-events) — use `onModuleInit` to run discovery

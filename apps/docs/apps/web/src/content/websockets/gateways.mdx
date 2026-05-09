@@ -1,23 +1,78 @@
 # Gateways
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+A gateway is a class decorated with `@WebSocketGateway()` that handles
+WebSocket connections using Bun's native WebSocket API. Gateways integrate
+with the same DI container as HTTP controllers.
 
 ## When to use
 
-TBD
+- Real-time bidirectional communication (chat, live updates, collaborative editing).
+- Push notifications from server to connected clients.
+- Low-latency event streams where HTTP polling is too slow.
 
 ## Setup
 
-TBD
+```ts
+import { Module } from 'banhmi'
+import { ChatGateway } from './chat.gateway'
+
+@Module({
+  providers: [ChatGateway],
+})
+export class ChatModule {}
+```
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import {
+  ConnectedSocket,
+  MessageBody,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer,
+} from 'banhmi'
+import type { BunWebSocket, WsServer } from 'banhmi'
+
+@WebSocketGateway({ path: '/ws' })
+export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  @WebSocketServer()
+  server!: WsServer
+
+  handleConnection(client: BunWebSocket) {
+    console.log('Client connected:', client.data.id)
+  }
+
+  handleDisconnect(client: BunWebSocket) {
+    console.log('Client disconnected:', client.data.id)
+  }
+
+  @SubscribeMessage('message')
+  handleMessage(
+    @MessageBody() payload: { text: string },
+    @ConnectedSocket() client: BunWebSocket,
+  ) {
+    // Broadcast to all connected clients
+    this.server.broadcast('message', JSON.stringify(payload))
+    return { event: 'ack', data: payload }
+  }
+}
+```
 
 ## API reference
 
-TBD
+- `@WebSocketGateway(options?)` — declares a gateway; `path` defaults to `/`.
+- `@WebSocketServer()` — injects the `WsServer` broadcasting handle.
+- `@SubscribeMessage(event)` — binds a method to an incoming event name.
+- `@MessageBody()` — extracts the parsed message payload.
+- `@ConnectedSocket()` — injects the raw `BunWebSocket` instance.
+- `OnGatewayConnection.handleConnection(client)` — called on new connection.
+- `OnGatewayDisconnect.handleDisconnect(client)` — called on disconnect.
 
 ## See also
 
-TBD
+- [Guards (WebSocket)](/websockets/guards) — gate-keeping WebSocket connections
+- [Interceptors (WebSocket)](/websockets/interceptors) — wrapping message handlers
+- [Adapters (WebSocket)](/websockets/adapters) — underlying Bun WS adapter

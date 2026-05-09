@@ -1,23 +1,51 @@
 # Examples Catalog
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Each example is a standalone Banhmi application that you can clone and run
+with `bun run dev`. Browse the source on GitHub or clone the repo and run
+from the `examples/` directory.
 
-## When to use
+## Cluster apps
 
-TBD
+| Example | Description | Key features |
+|---------|-------------|-------------|
+| [`cats-api`](https://github.com/banhmi/banhmi/tree/main/examples/cats-api) | Classic CRUD API | Controllers, services, pipes, validation |
+| [`cats-mongo`](https://github.com/banhmi/banhmi/tree/main/examples/cats-mongo) | MongoDB-backed CRUD | `@banhmi/mongo`, Mongoose integration |
+| [`drizzle-api`](https://github.com/banhmi/banhmi/tree/main/examples/drizzle-api) | Postgres with Drizzle ORM | `@banhmi/drizzle`, type-safe SQL |
+| [`better-auth-api`](https://github.com/banhmi/banhmi/tree/main/examples/better-auth-api) | Auth with Better Auth | JWT, sessions, email OTP |
+| [`scheduling-queues`](https://github.com/banhmi/banhmi/tree/main/examples/scheduling-queues) | Cron jobs + job queues | `@banhmi/scheduling`, `@banhmi/queue` |
+| [`graphql-demo`](https://github.com/banhmi/banhmi/tree/main/examples/graphql-demo) | Code-first GraphQL API | `@banhmi/graphql`, subscriptions |
+| [`microservices-demo`](https://github.com/banhmi/banhmi/tree/main/examples/microservices-demo) | TCP + Redis microservices | `@banhmi/microservices`, ClientProxy |
+| [`edge-worker`](https://github.com/banhmi/banhmi/tree/main/examples/edge-worker) | Cloudflare Worker | `@banhmi/edge`, fetch adapter |
+| [`lambda-app`](https://github.com/banhmi/banhmi/tree/main/examples/lambda-app) | AWS Lambda function | `@banhmi/serverless`, cold-start |
 
-## Setup
+## Feature examples (`examples/features/`)
 
-TBD
+Each feature example is a minimal single-file (or small multi-file) app
+demonstrating one specific capability:
 
-## Usage
+- `compression` — gzip/zstd response compression
+- `cookies` — cookie read/write
+- `cors` — CORS configuration
+- `csrf` — CSRF token protection
+- `crypto` — HMAC and AES helpers
+- `file-upload` — multipart form upload
+- `helmet` — security headers
+- `rate-limiting` — request throttling
+- `serialization` — `ClassSerializerInterceptor`
+- `serve-static` — static file serving
+- `session` — server-side sessions
+- `sse` — Server-Sent Events
+- `validation-native` — built-in `ValidationPipe`
+- `validation-zod` — Zod-based validation
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+## Running an example
 
-## API reference
-
-TBD
+```bash
+cd examples/cats-api
+bun install   # only needed first time
+bun run dev
+```
 
 ## See also
 
-TBD
+- [First Steps](/introduction/first-steps) — creating your own app from scratch

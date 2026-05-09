@@ -1,23 +1,43 @@
 # Bun.serve
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+`Bun.serve` is the zero-dependency HTTP server built into Bun. Banhmi's
+`BunAdapter` wraps it to provide routing, DI, and the full enhancer pipeline,
+while keeping raw access available when you need it.
 
-## When to use
+## How Banhmi uses Bun.serve
 
-TBD
+`BanhmiFactory.create(AppModule)` creates a `BunAdapter` that calls `Bun.serve`
+under the hood. The adapter wires the Radix-tree router into the `fetch` handler
+and hands off WebSocket upgrades to the `BunWebSocketAdapter`.
 
-## Setup
+You never call `Bun.serve` directly in a Banhmi app — the factory handles it.
 
-TBD
+## Accessing the underlying server
 
-## Usage
+```ts
+const app = await BanhmiFactory.create(AppModule)
+const server = await app.listen(3000)
+// `server` is the `Bun.Server` instance
+console.log(`Listening on port ${server.port}`)
+```
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+## Custom Bun.serve options
 
-## API reference
+Pass low-level `Bun.serve` options through `app.listen`:
 
-TBD
+```ts
+await app.listen(3000, {
+  maxRequestBodySize: 50 * 1024 * 1024,   // 50 MB
+  lowMemoryMode: true,
+  tls: {
+    cert: Bun.file('./cert.pem'),
+    key: Bun.file('./key.pem'),
+  },
+})
+```
 
 ## See also
 
-TBD
+- [First Steps](/introduction/first-steps) — application bootstrap
+- [Platform Agnosticism](/fundamentals/platform-agnosticism) — adapters
+- [Performance](/techniques/performance) — `Bun.serve` benchmark numbers

@@ -1,23 +1,64 @@
 # Pipes
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+Pipes transform or validate handler arguments before they reach the handler
+method. They implement the `PipeTransform<T, R>` interface.
 
 ## When to use
 
-TBD
+- Validate incoming request data (body, param, query) against a schema.
+- Transform raw string params into typed values (numbers, dates, UUIDs).
+- Sanitize inputs before they reach the business logic layer.
 
 ## Setup
 
-TBD
+Apply a pipe globally, at the controller level, or per-parameter:
 
-## Usage
+```ts
+// Global (applies to every handler)
+app.useGlobalPipes(new ValidationPipe())
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+// Handler-level
+@Get(':id')
+@UsePipes(new ParseIntPipe())
+findOne(@Param('id') id: number) {}
+
+// Parameter-level
+@Get(':id')
+findOne(@Param('id', ParseIntPipe) id: number) {}
+```
+
+## Usage — custom pipe
+
+```ts
+import type { PipeTransform } from 'banhmi'
+
+export class TrimPipe implements PipeTransform<string, string> {
+  transform(value: string): string {
+    return value.trim()
+  }
+}
+```
+
+## Built-in pipes
+
+| Pipe | Description |
+|------|-------------|
+| `ValidationPipe` | Validates against a Zod schema or class-validator class |
+| `ParseIntPipe` | Coerces string to integer, throws on NaN |
+| `ParseFloatPipe` | Coerces string to float |
+| `ParseBoolPipe` | Coerces `'true'`/`'false'` to boolean |
+| `ParseUUIDPipe` | Validates UUID format |
+| `DefaultValuePipe(d)` | Returns `d` when the value is `undefined` |
 
 ## API reference
 
-TBD
+- `PipeTransform<T, R>` — interface: `transform(value: T, metadata: ArgumentMetadata): R`.
+- `@UsePipes(...pipes)` — apply one or more pipes to a handler or controller.
+- `app.useGlobalPipes(...pipes)` — apply pipes application-wide.
+- `ArgumentMetadata` — `{ type: 'body'|'param'|'query'|'custom', metatype, data }`.
 
 ## See also
 
-TBD
+- [Built-in Pipes](/built-ins/pipes) — ValidationPipe and parse pipes reference
+- [Validation](/techniques/validation) — Zod-based validation setup
+- [Exception Filters](/overview/exception-filters) — handling pipe errors

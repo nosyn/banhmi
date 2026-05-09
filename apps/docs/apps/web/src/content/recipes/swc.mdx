@@ -1,23 +1,34 @@
 # SWC
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+SWC is a Rust-based TypeScript compiler used in NestJS to speed up builds.
+**Banhmi does not need SWC.** Bun's built-in TypeScript transpiler (also
+Rust-based via Zig) is already fast — typically under 1ms per file.
 
-## When to use
+## Why this is not needed in Banhmi
 
-TBD
+- Bun transpiles TypeScript natively without a separate compiler step.
+- `bun run src/main.ts` is direct — no `tsc` or `ts-node` required.
+- `bun build` produces optimised bundles for production.
 
-## Setup
+## If you're migrating from NestJS + SWC
 
-TBD
+Replace:
+```json
+{ "scripts": { "build": "nest build --webpack" } }
+```
 
-## Usage
+With:
+```json
+{ "scripts": { "build": "banhmi build" } }
+```
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
-
-## API reference
-
-TBD
+Type-checking is separate:
+```bash
+bun run type-check  # runs tsc --noEmit
+```
 
 ## See also
 
-TBD
+- [First Steps](/introduction/first-steps) — Bun-native build and start
+- [Performance](/techniques/performance) — why Bun is already fast
+- [Migration Guide](/migration/nestjs) — NestJS to Banhmi migration

@@ -1,23 +1,50 @@
 # Exception Filters
 
-> **Status:** Placeholder. This page will be filled in during the wave that owns it (see `docs/superpowers/specs/2026-05-08-banhmi-supremacy-master-design.md`).
+WebSocket exception filters catch errors thrown inside `@SubscribeMessage`
+handlers and send a structured error event back to the client instead of
+crashing the connection.
 
 ## When to use
 
-TBD
-
-## Setup
-
-TBD
+- Convert domain exceptions into a consistent WebSocket error-event shape.
+- Prevent unhandled promise rejections from terminating the WebSocket connection.
 
 ## Usage
 
-{/* <CodeFromExample slug="<feature-slug>" /> */}
+```ts
+import { Catch, ArgumentsHost, ExceptionFilter } from 'banhmi'
+import type { WsException } from 'banhmi'
+
+@Catch(WsException)
+export class WsExceptionFilter implements ExceptionFilter {
+  catch(exception: WsException, host: ArgumentsHost) {
+    const client = host.switchToWs().getClient()
+    client.send(JSON.stringify({
+      event: 'error',
+      data: { message: exception.message },
+    }))
+  }
+}
+```
+
+Apply at the gateway level:
+
+```ts
+@UseFilters(WsExceptionFilter)
+@WebSocketGateway({ path: '/ws' })
+export class ChatGateway {}
+```
 
 ## API reference
 
-TBD
+- `WsException(message | object)` — the base WebSocket exception class.
+- `@Catch(...types)` — bind the filter to specific exception classes.
+- `host.switchToWs().getClient()` — the raw `BunWebSocket` to send back to.
+- `host.switchToWs().getData()` — the payload that triggered the handler.
+- `@UseFilters(...filters)` — apply filters to a gateway or message handler.
 
 ## See also
 
-TBD
+- [Exception Filters](/overview/exception-filters) — HTTP filter mechanics (same interface)
+- [Gateways](/websockets/gateways) — gateway setup
+- [Guards (WebSocket)](/websockets/guards) — pre-handler access control
