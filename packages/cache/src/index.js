@@ -1,5 +1,0 @@
-export { CacheModule } from './cache.module'
-export { CacheEvict } from './cache-evict'
-export { Cacheable } from './cacheable'
-export { MemoryCacheStore } from './store'
-export { CACHE_STORE_TOKEN } from './tokens'
