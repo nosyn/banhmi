@@ -17,9 +17,7 @@ test('flags a .js file that shadows a .tsx source', () => {
     'apps/docs/apps/web/src/components/hero.js',
   ])
   expect(violations).toHaveLength(1)
-  expect(violations[0].path).toBe(
-    'apps/docs/apps/web/src/components/hero.js',
-  )
+  expect(violations[0].path).toBe('apps/docs/apps/web/src/components/hero.js')
   expect(violations[0].reason).toBe(
     'shadows apps/docs/apps/web/src/components/hero.tsx',
   )
@@ -41,9 +39,7 @@ test('flags a .d.ts file that shadows a .ts source', () => {
   ])
   expect(violations).toHaveLength(1)
   expect(violations[0].path).toBe('packages/core/src/container.d.ts')
-  expect(violations[0].reason).toBe(
-    'shadows packages/core/src/container.ts',
-  )
+  expect(violations[0].reason).toBe('shadows packages/core/src/container.ts')
 })
 
 test('flags a .js.map file that shadows a .ts source', () => {
