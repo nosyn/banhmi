@@ -9,6 +9,7 @@ import { SidebarInset, SidebarProvider } from '@workspace/ui/components/sidebar'
 import { TooltipProvider } from '@workspace/ui/components/tooltip'
 import appCss from '@workspace/ui/globals.css?url'
 import { AppSidebar } from '@/components/app-sidebar'
+import { CopyButtonEnhancer } from '@/components/copy-button-enhancer'
 import { DocsFooter } from '@/components/docs-footer'
 import { DocsHeader } from '@/components/docs-header'
 import { DocPageLayout, DocsMdxProvider } from '@/components/mdx-provider'
@@ -89,6 +90,8 @@ function RootLayout() {
             </SidebarInset>
           </div>
         </SidebarProvider>
+        {/* Injects copy-to-clipboard buttons on all prose code blocks */}
+        <CopyButtonEnhancer />
       </TooltipProvider>
     </ThemeProvider>
   )

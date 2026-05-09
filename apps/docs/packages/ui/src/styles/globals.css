@@ -179,3 +179,16 @@
 .dark .prose :not(pre) > code {
   background-color: oklch(0.263 0.024 320.12);
 }
+
+/* Copy-code button: show on group hover and after a successful copy */
+.prose pre.group:hover .copy-code-btn,
+.prose pre.group .copy-code-btn:focus {
+  opacity: 1;
+}
+
+/* "Copied!" indicator — appended after the SVG icon via ::after */
+.copy-code-btn[data-copied="true"]::after {
+  content: '✓';
+  margin-left: 0.25rem;
+  color: #22c55e;
+}
