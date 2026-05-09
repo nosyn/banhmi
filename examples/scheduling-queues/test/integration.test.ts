@@ -24,36 +24,57 @@ import {
 import { BanhmiFactory } from '@banhmi/platform-bun'
 import type { ProcessorContext, Queue } from '@banhmi/queue'
 import { InjectQueue, Process, Processor, QueueModule } from '@banhmi/queue'
-import { REDIS_TOKEN, RedisModule } from '@banhmi/redis'
+import { REDIS_TOKEN, type RedisLike, RedisModule } from '@banhmi/redis'
 import { Interval, ScheduleModule } from '@banhmi/scheduling'
 import type { RouteCtx } from 'banhmi'
 import { Controller, Get, HttpCode, Injectable, Module, Post } from 'banhmi'
-import type { Redis } from 'ioredis'
 
 // ─── In-memory mock Redis for queue operations ──────────────────────────────
 
 type MockRedisMap = Record<string, Record<string, string>>
 
-function makeMockRedis() {
+function makeMockRedis(): RedisLike {
   const data: MockRedisMap = {}
   const waitingLists: Record<string, string[]> = {}
   const delayedSets: Record<string, Array<{ score: number; id: string }>> = {}
 
   return {
-    _data: data,
-    _waiting: waitingLists,
-    _delayed: delayedSets,
-
+    async get(_key: string) {
+      return null
+    },
+    async set(_key: string, _value: string, _ttl?: number) {
+      return 'OK'
+    },
+    async del(_key: string) {
+      return 1
+    },
+    async expire(_key: string, _sec: number) {
+      return 1
+    },
+    async pexpire(_key: string, _ms: number) {
+      return 1
+    },
+    async pttl(_key: string) {
+      return -1
+    },
+    async incr(_key: string) {
+      return 1
+    },
+    async publish(_ch: string, _msg: string) {
+      return 1
+    },
+    subscribe(_ch: string, _cb: (msg: string) => void) {},
+    close() {},
     async hset(key: string, fields: Record<string, string>) {
       data[key] = { ...(data[key] ?? {}), ...fields }
       return 1
     },
     async hgetall(key: string) {
-      return data[key] ?? null
+      return data[key] ?? {}
     },
-    async lpush(key: string, ...ids: string[]) {
+    async lpush(key: string, value: string) {
       if (!waitingLists[key]) waitingLists[key] = []
-      waitingLists[key].unshift(...ids)
+      waitingLists[key].unshift(value)
       return waitingLists[key].length
     },
     async rpop(key: string) {
@@ -66,10 +87,14 @@ function makeMockRedis() {
       delayedSets[key].push({ score, id })
       return 1
     },
-    async zrangebyscore(key: string, _min: string, max: number) {
+    async zrangebyscore(
+      key: string,
+      _min: string | number,
+      max: string | number,
+    ) {
       const set = delayedSets[key]
       if (!set) return []
-      return set.filter((e) => e.score <= max).map((e) => e.id)
+      return set.filter((e) => e.score <= Number(max)).map((e) => e.id)
     },
     async zrem(key: string, id: string) {
       const set = delayedSets[key]
@@ -77,10 +102,6 @@ function makeMockRedis() {
       const idx = set.findIndex((e) => e.id === id)
       if (idx >= 0) set.splice(idx, 1)
       return 1
-    },
-    disconnect() {},
-    quit() {
-      return Promise.resolve()
     },
   }
 }
@@ -99,15 +120,16 @@ const captureTransport: LogTransport = {
 
 async function isRedisAvailable(): Promise<boolean> {
   try {
-    const { default: IORedis } = await import('ioredis')
-    const r = new IORedis(Bun.env.REDIS_URL ?? 'redis://localhost:6379', {
-      connectTimeout: 500,
-      lazyConnect: true,
-      maxRetriesPerRequest: 1,
-    })
+    const r = new Bun.RedisClient(
+      Bun.env.REDIS_URL ?? 'redis://localhost:6379',
+      {
+        connectionTimeout: 500,
+        maxRetries: 1,
+      },
+    )
     await r.connect()
     await r.ping()
-    r.disconnect()
+    r.close()
     return true
   } catch {
     return false
@@ -213,7 +235,7 @@ function buildAppModule(mockRedis: ReturnType<typeof makeMockRedis> | null) {
 
   if (mockRedis !== null) {
     // Override both the root REDIS_TOKEN and the queue-dedicated redis token
-    // with the in-memory mock so ioredis is never contacted.
+    // with the in-memory mock so no real Redis connection is needed.
     @Module({
       imports: [
         LoggerModule.forRoot({ level: 'info', transports: [captureTransport] }),
@@ -228,9 +250,9 @@ function buildAppModule(mockRedis: ReturnType<typeof makeMockRedis> | null) {
         TestHeartbeatService,
         createChildLoggerProvider('HeartbeatService'),
         // Override the REDIS_TOKEN so any code that injects it gets the mock
-        { provide: REDIS_TOKEN, useValue: mockRedis as unknown as Redis },
+        { provide: REDIS_TOKEN, useValue: mockRedis },
         // Override the queue-dedicated redis token
-        { provide: redisToken, useValue: mockRedis as unknown as Redis },
+        { provide: redisToken, useValue: mockRedis },
       ],
     })
     class TestAppModuleMock {}

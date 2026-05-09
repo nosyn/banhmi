@@ -6,7 +6,6 @@
   "dependencies": {
     "@banhmi/queue": "workspace:*",
     "@banhmi/redis": "workspace:*",
-    "banhmi": "workspace:*",
-    "ioredis": "^5.10.1"
+    "banhmi": "workspace:*"
   }
 }

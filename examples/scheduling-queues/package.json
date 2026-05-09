@@ -16,7 +16,6 @@
     "@banhmi/redis": "workspace:*",
     "@banhmi/scheduling": "workspace:*",
     "@banhmi/testing": "workspace:*",
-    "banhmi": "workspace:*",
-    "ioredis": "^5.10.1"
+    "banhmi": "workspace:*"
   }
 }

@@ -41,46 +41,78 @@ export class EmailController {
 }
 
 // Use an in-memory mock for the demo (no real Redis needed for the test)
-import type { Redis } from 'ioredis'
+import type { RedisLike } from '@banhmi/redis'
 
 /** Creates a minimal in-memory Redis mock suitable for unit tests. */
-export function createMockRedis() {
+export function createMockRedis(): RedisLike {
   const data: Record<string, Record<string, string>> = {}
   const lists: Record<string, string[]> = {}
   const sortedSets: Record<string, Array<{ score: number; id: string }>> = {}
 
   return {
-    hset: async (key: string, fields: Record<string, string>) => {
+    async get(_key: string) {
+      return null
+    },
+    async set(_key: string, _value: string, _ttl?: number) {
+      return 'OK'
+    },
+    async del(_key: string) {
+      return 1
+    },
+    async expire(_key: string, _sec: number) {
+      return 1
+    },
+    async pexpire(_key: string, _ms: number) {
+      return 1
+    },
+    async pttl(_key: string) {
+      return -1
+    },
+    async incr(_key: string) {
+      return 1
+    },
+    async publish(_ch: string, _msg: string) {
+      return 1
+    },
+    subscribe(_ch: string, _cb: (msg: string) => void) {},
+    close() {},
+    async hset(key: string, fields: Record<string, string>) {
       data[key] = { ...(data[key] ?? {}), ...fields }
       return 1
     },
-    hgetall: async (key: string) => data[key] ?? null,
-    lpush: async (key: string, ...ids: string[]) => {
+    async hgetall(key: string) {
+      return data[key] ?? {}
+    },
+    async lpush(key: string, value: string) {
       if (!lists[key]) lists[key] = []
-      lists[key].unshift(...ids)
+      lists[key].unshift(value)
       return lists[key].length
     },
-    rpop: async (key: string) => {
+    async rpop(key: string) {
       const list = lists[key]
       if (!list || list.length === 0) return null
       return list.pop() ?? null
     },
-    zadd: async (key: string, score: number, id: string) => {
+    async zadd(key: string, score: number, id: string) {
       if (!sortedSets[key]) sortedSets[key] = []
       sortedSets[key].push({ score, id })
       return 1
     },
-    zrangebyscore: async (key: string, _min: string, max: number) => {
+    async zrangebyscore(
+      key: string,
+      _min: string | number,
+      max: string | number,
+    ) {
       const set = sortedSets[key]
       if (!set) return []
-      return set.filter((e) => e.score <= max).map((e) => e.id)
+      return set.filter((e) => e.score <= Number(max)).map((e) => e.id)
     },
-    zrem: async (key: string, id: string) => {
+    async zrem(key: string, id: string) {
       const set = sortedSets[key]
       if (!set) return 0
       const idx = set.findIndex((e) => e.id === id)
       if (idx >= 0) set.splice(idx, 1)
       return 1
     },
-  } as unknown as Redis
+  }
 }
