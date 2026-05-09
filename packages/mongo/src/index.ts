@@ -1,6 +1,10 @@
 export { INJECT_MONGO_DB, InjectCollection, InjectMongo } from './inject-mongo'
 export { MongoModule } from './mongo.module'
 export type { MongoDocument } from './repository'
-export { MongoRepository, Repository } from './repository'
+export {
+  MongoRepository,
+  Repository,
+  Repository as MongoRepositoryDecorator,
+} from './repository'
 export { MONGO_DB } from './tokens'
 export type { MongoOptions } from './types'
