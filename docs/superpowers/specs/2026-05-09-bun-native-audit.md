@@ -13,7 +13,7 @@
 | `@banhmi/redis` | `ioredis ^5.10.1` | `Bun.RedisClient` adapter | Done |
 | `@banhmi/queue` | `ioredis ^5.10.1` | `RedisLike` from `@banhmi/redis` | Done |
 | `@banhmi/throttler` | ioredis type import | `RedisLike` from `@banhmi/redis` | Done |
-| `@banhmi/microservices` | `ioredis` (peer) | Retained — see below | Intentional |
+| `@banhmi/microservices` | `ioredis` (peer) | `Bun.RedisClient` (inbound-channel design) | Done |
 | `@banhmi/cache` | n/a | Already using `RedisLike` | No change needed |
 | `@banhmi/session` | n/a | Stale comment updated | Minor cleanup |
 
@@ -39,13 +39,18 @@ contract all other framework packages depend on.
 | `subscribe(channel, cb)` | Bun uses callbacks, not event emitter |
 | `close()` | Bun calls it `close()`; ioredis used `quit()` |
 
-### ioredis retained (`@banhmi/microservices`)
+### ioredis → Bun.RedisClient (`@banhmi/microservices`)
 
-The `RedisTransport` uses `psubscribe` (glob-pattern channel subscription)
-plus the `on('pmessage', ...)` event emitter.  `Bun.RedisClient.subscribe`
-only accepts exact channels via a callback.  There is no native
-pattern-subscribe in Bun 1.3.x.  `ioredis` remains an optional peer dep
-for this transport; this can be revisited when Bun adds `psubscribe`.
+`Bun.RedisClient.psubscribe` exists on the prototype but only sends the raw
+Redis `PSUBSCRIBE` command — it has no callback parameter and no event-emitter
+delivery for pattern messages in Bun 1.3.x.
+
+**Design change:** the transport now uses a single inbound channel
+(`${prefix}:inbound`) instead of `psubscribe('${prefix}:*')`.  All clients
+publish to `${prefix}:inbound`; the server subscribes to that one channel
+with a callback.  The message envelope's `pattern` field is used for
+server-side dispatch.  Reply channels (`${prefix}:reply:{correlationId}`)
+are unchanged.  `ioredis` is no longer a peer dependency.
 
 ---
 
