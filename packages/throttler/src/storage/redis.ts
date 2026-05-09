@@ -2,7 +2,8 @@
  * Redis-backed {@link ThrottlerStorage} for distributed rate limiting.
  *
  * Uses `INCR` + `PEXPIRE NX` (set TTL only on first increment) to implement
- * an atomic sliding-window counter via `ioredis`.
+ * an atomic sliding-window counter via `@banhmi/redis`'s {@link RedisLike}
+ * interface, backed by `Bun.RedisClient`.
  *
  * This module is available via the subpath export `@banhmi/throttler/redis`.
  * It requires `@banhmi/redis` as a peer dependency.
@@ -11,10 +12,10 @@
  * import { RedisThrottlerStorage } from '@banhmi/throttler/redis'
  * import { ThrottlerModule } from '@banhmi/throttler'
  *
- * ThrottlerModule.forRoot({ ttl: 60_000, limit: 100, storage: new RedisThrottlerStorage(redisClient) })
+ * ThrottlerModule.forRoot({ ttl: 60_000, limit: 100, storage: new RedisThrottlerStorage(redisLikeClient) })
  */
 
-import type { Redis } from 'ioredis'
+import type { RedisLike } from '@banhmi/redis'
 import type { ThrottlerStorage } from '../types'
 
 /**
@@ -22,14 +23,14 @@ import type { ThrottlerStorage } from '../types'
  * TTL is set only on the first increment of each window.
  *
  * @example
- * const storage = new RedisThrottlerStorage(ioredisClient)
+ * const storage = new RedisThrottlerStorage(redisLikeClient)
  * const { count, resetAt } = await storage.increment('key', 60_000)
  */
 export class RedisThrottlerStorage implements ThrottlerStorage {
   /**
-   * @param redis - An `ioredis` Redis client instance.
+   * @param redis - A {@link RedisLike} Redis client instance (e.g. from `@banhmi/redis`).
    */
-  constructor(private readonly redis: Redis) {}
+  constructor(private readonly redis: RedisLike) {}
 
   /**
    * Atomically increment the counter for `key` in Redis.
