@@ -25,7 +25,7 @@
 
 - Pre-existing 6 `: any` violations in `packages/common/`.
 - Per-stage profile recorder is whole-request only; per-stage instrumentation requires deeper `runEnhancerPipeline` hooks (Wave 6 patterns).
-- Queue worker uses 100ms polling instead of BRPOP (ioredis blocking quirks under Bun).
+- Queue worker uses 100ms polling instead of BRPOP (blocking-pop quirks under Bun at the time of Wave 3; `Bun.RedisClient` has since replaced ioredis via the `RedisLike` interface).
 - Cron parser uses intersection semantics for DOM+DOW (documented).
 
 ## Verification gate

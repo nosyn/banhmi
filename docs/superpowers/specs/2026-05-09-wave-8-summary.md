@@ -11,7 +11,7 @@
 | Transport | Tier | Status | Notes |
 |-----------|------|--------|-------|
 | TCP (`tcpTransport`) | A | SHIPPED | `Bun.listen`/`Bun.connect`; length-prefixed framing; resolved Bun `close()` sync timing issue |
-| Redis (`redisTransport`) | A | SHIPPED | `ioredis` pub/sub; channel-prefixed routing; live tests skipped without Redis |
+| Redis (`redisTransport`) | A | SHIPPED | `Bun.RedisClient` pub/sub; single inbound channel; pattern dispatch from envelope; live tests skipped without Redis |
 | Custom (`customTransport`) | A | SHIPPED | Wraps `CustomTransportStrategy`; `InMemoryTransport` for deterministic tests |
 | In-Memory (`InMemoryTransport`) | A | SHIPPED | In-process transport; used by all Tier A tests |
 | `MicroserviceServer` | A | SHIPPED | Routes inbound messages to `@MessagePattern`/`@EventPattern` handlers |

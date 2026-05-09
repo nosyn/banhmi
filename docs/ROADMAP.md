@@ -114,7 +114,7 @@ const url = file.presign({ expiresIn: 3600 })
 **New package:** `@banhmi/cache`
 
 ### Features (`@banhmi/redis`)
-- `RedisModule.forRoot(url)` — connection via `ioredis`
+- `RedisModule.forRoot(url)` — connection via `Bun.RedisClient`
 - Typed client: `get/set/del/expire/publish/subscribe`
 - Pub/sub for real-time messaging
 

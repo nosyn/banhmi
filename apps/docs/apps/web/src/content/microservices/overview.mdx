@@ -18,7 +18,7 @@ guards, interceptors, pipes).
 | Transport | Tier | Status |
 |-----------|------|--------|
 | TCP (`tcpTransport`) | A | Ships — uses `Bun.listen`/`Bun.connect` |
-| Redis (`redisTransport`) | A | Ships — uses `ioredis` pub/sub |
+| Redis (`redisTransport`) | A | Ships — uses `Bun.RedisClient` pub/sub |
 | Custom (`customTransport`) | A | Ships — wraps any strategy |
 | In-Memory (`InMemoryTransport`) | A | Ships — deterministic testing |
 | NATS (`natsTransport`) | B | Ships — requires `nats` peer dep |
@@ -106,6 +106,6 @@ await client.close()
 ## See also
 
 - [TCP Transport](/microservices/overview) — built-in TCP using `Bun.listen`.
-- [Redis Transport](/microservices/redis) — pub/sub via `ioredis`.
+- [Redis Transport](/microservices/redis) — pub/sub via `Bun.RedisClient`.
 - [Custom Transporters](/microservices/custom-transporters) — plug in your own.
 - [Exception Filters](/microservices/exception-filters) — `MsExceptionFilter`.

@@ -1,6 +1,6 @@
 # Redis Transport
 
-The Redis transport uses `ioredis` pub/sub to route messages between services.
+The Redis transport uses `Bun.RedisClient` (built-in — no extra dependency) to route messages between services via pub/sub.
 
 ## When to use
 
@@ -10,11 +10,7 @@ The Redis transport uses `ioredis` pub/sub to route messages between services.
 
 ## Setup
 
-Install `ioredis`:
-
-```bash
-bun add ioredis
-```
+`Bun.RedisClient` is built into Bun — no additional packages required.
 
 ```ts
 import { MicroserviceModule, redisTransport } from '@banhmi/microservices'

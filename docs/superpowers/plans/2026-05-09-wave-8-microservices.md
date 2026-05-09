@@ -22,7 +22,7 @@ This wave's surface is gigantic. Ship in tiers:
 - **Tier B (ship if feasible):** NATS, MQTT, RabbitMQ.
 - **Tier C (deferred OK):** Kafka, gRPC. These have heavy peer deps; ship interface-only stubs with clear TODO if they fight Bun. Document concretely.
 
-Each transport is a peer dep on its respective client library (`ioredis` → already shipped, `nats`, `mqtt`, `amqplib`, `kafkajs`, `@grpc/grpc-js`).
+Each transport is a peer dep on its respective client library (`nats`, `mqtt`, `amqplib`, `kafkajs`, `@grpc/grpc-js`). The Redis transport uses `Bun.RedisClient` (built-in) — no peer dep required.
 
 ## Tasks
 

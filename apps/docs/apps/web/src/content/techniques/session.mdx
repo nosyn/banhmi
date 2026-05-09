@@ -79,8 +79,7 @@ SessionModule.forRoot({
 })
 ```
 
-Import from the `@banhmi/session/redis` subpath to avoid pulling in
-`ioredis` unless it's installed.
+Import from the `@banhmi/session/redis` subpath to keep `@banhmi/redis` optional for apps that don't need Redis sessions.
 
 ## Cookie options
 
