@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@banhmi/auth": "workspace:*",
+    "@banhmi/better-auth": "workspace:*",
     "@banhmi/crypto": "workspace:*",
     "@banhmi/jwt": "workspace:*",
     "@banhmi/security": "workspace:*",

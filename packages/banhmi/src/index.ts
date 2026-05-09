@@ -1,4 +1,5 @@
 export * from '@banhmi/auth'
+export * from '@banhmi/better-auth'
 export * from '@banhmi/cache'
 export * from '@banhmi/common'
 export * from '@banhmi/compression'

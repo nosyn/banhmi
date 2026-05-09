@@ -82,6 +82,7 @@
       "version": "0.0.1",
       "dependencies": {
         "@banhmi/auth": "workspace:*",
+        "@banhmi/better-auth": "workspace:*",
         "@banhmi/crypto": "workspace:*",
         "@banhmi/jwt": "workspace:*",
         "@banhmi/security": "workspace:*",
@@ -164,6 +165,14 @@
       "dependencies": {
         "@banhmi/auth": "workspace:*",
         "@banhmi/crypto": "workspace:*",
+        "banhmi": "workspace:*",
+      },
+    },
+    "examples/features/better-auth-plugin": {
+      "name": "banhmi-feature-better-auth-plugin",
+      "version": "0.0.0",
+      "dependencies": {
+        "@banhmi/better-auth": "workspace:*",
         "banhmi": "workspace:*",
       },
     },
@@ -467,6 +476,7 @@
       "version": "1.0.0-rc.1",
       "dependencies": {
         "@banhmi/auth": "workspace:*",
+        "@banhmi/better-auth": "workspace:*",
         "@banhmi/cache": "workspace:*",
         "@banhmi/common": "workspace:*",
         "@banhmi/compression": "workspace:*",
@@ -508,6 +518,15 @@
         "@banhmi/transform": "workspace:*",
         "@banhmi/validation": "workspace:*",
         "@banhmi/versioning": "workspace:*",
+      },
+    },
+    "packages/better-auth": {
+      "name": "@banhmi/better-auth",
+      "version": "1.0.0-rc.1",
+      "dependencies": {
+        "@banhmi/common": "workspace:*",
+        "@banhmi/cookies": "workspace:*",
+        "@banhmi/core": "workspace:*",
       },
     },
     "packages/cache": {
@@ -716,7 +735,6 @@
       "peerDependencies": {
         "@grpc/grpc-js": ">=1",
         "amqplib": ">=0.10",
-        "ioredis": ">=5",
         "kafkajs": ">=2",
         "mqtt": ">=5",
         "nats": ">=2",
@@ -724,7 +742,6 @@
       "optionalPeers": [
         "@grpc/grpc-js",
         "amqplib",
-        "ioredis",
         "kafkajs",
         "mqtt",
         "nats",
@@ -1056,6 +1073,8 @@
     "@banhmi/auth": ["@banhmi/auth@workspace:packages/auth"],
 
     "@banhmi/benchmarks": ["@banhmi/benchmarks@workspace:benchmarks"],
+
+    "@banhmi/better-auth": ["@banhmi/better-auth@workspace:packages/better-auth"],
 
     "@banhmi/cache": ["@banhmi/cache@workspace:packages/cache"],
 
@@ -1434,6 +1453,8 @@
     "banhmi-feature-auth-jwt": ["banhmi-feature-auth-jwt@workspace:examples/features/auth-jwt"],
 
     "banhmi-feature-auth-local": ["banhmi-feature-auth-local@workspace:examples/features/auth-local"],
+
+    "banhmi-feature-better-auth-plugin": ["banhmi-feature-better-auth-plugin@workspace:examples/features/better-auth-plugin"],
 
     "banhmi-feature-compression": ["banhmi-feature-compression@workspace:examples/features/compression"],
 

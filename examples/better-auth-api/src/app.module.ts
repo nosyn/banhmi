@@ -1,3 +1,4 @@
+import { BetterAuthModule } from '@banhmi/better-auth'
 import { SecurityModule } from '@banhmi/security'
 import { ThrottlerModule } from '@banhmi/throttler'
 import { Module } from 'banhmi'
@@ -5,8 +6,17 @@ import { LegacyModule } from './legacy/legacy.module'
 import { ProfileModule } from './profile/profile.module'
 import { UsersModule } from './users/users.module'
 
+// The better-auth server is mounted on the same host via app.use() in main.ts.
+// We point the plugin client at the app's own URL so BetterAuthGuard can
+// validate sessions against the running better-auth instance.
+const BETTER_AUTH_URL = Bun.env.BETTER_AUTH_URL ?? 'http://localhost:3001'
+
 @Module({
   imports: [
+    BetterAuthModule.forRoot({
+      url: BETTER_AUTH_URL,
+      cookieName: 'better-auth.session_token',
+    }),
     SecurityModule.forRoot({
       helmet: {},
       cors: { origin: 'http://localhost:3000', credentials: true },
