@@ -389,6 +389,14 @@
         "banhmi": "workspace:*",
       },
     },
+    "examples/features/validation-class-validator": {
+      "name": "banhmi-feature-validation-class-validator",
+      "version": "0.0.0",
+      "dependencies": {
+        "@banhmi/validation": "workspace:*",
+        "banhmi": "workspace:*",
+      },
+    },
     "examples/features/validation-native": {
       "name": "banhmi-feature-validation-native",
       "version": "0.0.0",
@@ -1507,6 +1515,8 @@
     "banhmi-feature-sse": ["banhmi-feature-sse@workspace:examples/features/sse"],
 
     "banhmi-feature-template": ["banhmi-feature-template@workspace:examples/features/.template"],
+
+    "banhmi-feature-validation-class-validator": ["banhmi-feature-validation-class-validator@workspace:examples/features/validation-class-validator"],
 
     "banhmi-feature-validation-native": ["banhmi-feature-validation-native@workspace:examples/features/validation-native"],
 

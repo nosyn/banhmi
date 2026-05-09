@@ -1,0 +1,10 @@
+{
+  "name": "banhmi-feature-validation-class-validator",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "dependencies": {
+    "@banhmi/validation": "workspace:*",
+    "banhmi": "workspace:*"
+  }
+}

@@ -1,73 +1,118 @@
 # Built-in Validators
 
-The `@banhmi/validation` package provides `ZodValidationPipe` and related
-helpers for schema-based input validation.
+`@banhmi/validation` provides adapter-based validation with zero required
+external dependencies. The class-validator-style decorators let you annotate
+DTOs declaratively using TC39 Stage 3 decorators and `Symbol.metadata`.
 
-## ZodValidationPipe
+## Class-validator-style decorators
 
-Validates body, query, or param against a Zod schema:
+Import from `@banhmi/validation` (or the `banhmi` meta-package):
 
 ```ts
-import { ZodValidationPipe } from '@banhmi/validation'
-import { z } from 'zod'
+import { IsString, IsEmail, classValidator, AdaptedValidationPipe } from '@banhmi/validation'
+```
 
-const CreateCatSchema = z.object({
-  name: z.string().min(1),
-  age: z.number().int().min(0),
-})
+### String decorators
 
-@Post()
-create(
-  @Body(new ZodValidationPipe(CreateCatSchema))
-  dto: z.infer<typeof CreateCatSchema>,
-) {
-  return this.catsService.create(dto)
+| Decorator | Parameters | Description |
+|---|---|---|
+| `@IsString()` | `opts?` | Value must be a `string`. |
+| `@IsEmail()` | `opts?` | Value must be a valid e-mail address. |
+| `@IsUUID()` | `opts?` | Value must be a UUID (v1–v5). |
+| `@IsURL()` | `opts?` | Value must be an `http://` or `https://` URL. |
+| `@IsNotEmpty()` | `opts?` | String must be non-empty after trimming. |
+
+### Number decorators
+
+| Decorator | Parameters | Description |
+|---|---|---|
+| `@IsNumber()` | `opts?` | Value must be a finite `number`. |
+| `@IsInt()` | `opts?` | Value must be an integer. |
+| `@IsFloat()` | `opts?` | Value must be a finite number (allows floats). |
+| `@Min(n)` | `n: number, opts?` | Value must be ≥ `n`. |
+| `@Max(n)` | `n: number, opts?` | Value must be ≤ `n`. |
+| `@IsPositive()` | `opts?` | Value must be > 0. |
+| `@IsNegative()` | `opts?` | Value must be < 0. |
+
+### Boolean decorators
+
+| Decorator | Parameters | Description |
+|---|---|---|
+| `@IsBoolean()` | `opts?` | Value must be `true` or `false`. |
+
+### Array decorators
+
+| Decorator | Parameters | Description |
+|---|---|---|
+| `@IsArray()` | `opts?` | Value must be an `Array`. |
+| `@ArrayMinSize(n)` | `n: number, opts?` | Array must have ≥ `n` elements. |
+| `@ArrayMaxSize(n)` | `n: number, opts?` | Array must have ≤ `n` elements. |
+
+### Common decorators
+
+| Decorator | Parameters | Description |
+|---|---|---|
+| `@IsOptional()` | `opts?` | Skip all other rules when value is `undefined` or `null`. |
+| `@IsDefined()` | `opts?` | Value must not be `undefined` or `null`. |
+| `@IsIn(values)` | `values: unknown[], opts?` | Value must be one of the given values. |
+| `@Matches(re)` | `re: RegExp, opts?` | String must match the regular expression. |
+| `@Length(min, max)` | `min, max: number, opts?` | String length must be between `min` and `max`. |
+| `@MinLength(n)` | `n: number, opts?` | String length must be ≥ `n`. |
+| `@MaxLength(n)` | `n: number, opts?` | String length must be ≤ `n`. |
+
+### Enum decorators
+
+| Decorator | Parameters | Description |
+|---|---|---|
+| `@IsEnum(EnumType)` | `enumType: Record<string, unknown>, opts?` | Value must be a member of the enum. |
+
+### Date decorators
+
+| Decorator | Parameters | Description |
+|---|---|---|
+| `@IsDate()` | `opts?` | Value must be a valid `Date` instance. |
+
+### Object / nested decorators
+
+| Decorator | Parameters | Description |
+|---|---|---|
+| `@IsObject()` | `opts?` | Value must be a plain object (not `null`, not array). |
+| `@ValidateNested(typeFn)` | `typeFn: () => unknown, opts?` | Recursively validate nested DTO. Accepts single objects or arrays. |
+
+All `opts?` parameters accept `{ message?: string }` to override the default
+error message.
+
+## `classValidator(Cls)` builder
+
+Builds a `Validator<T>` from a decorated class. Compatible with
+`AdaptedValidationPipe`:
+
+```ts
+class CreateCatDto {
+  @IsString() @MinLength(2) name!: string
+  @IsInt() @Min(0)          age!: number
 }
+
+const pipe = new AdaptedValidationPipe(classValidator(CreateCatDto))
 ```
 
-## Global setup
-
-```ts
-app.useGlobalPipes(new ZodValidationPipe())
-```
-
-When used globally without a schema argument, the pipe looks for a schema
-attached to the body DTO via `@ZodSchema(schema)`.
-
-## @ZodSchema decorator
-
-```ts
-import { ZodSchema } from '@banhmi/validation'
-import { z } from 'zod'
-
-const Schema = z.object({ name: z.string(), age: z.number() })
-
-@ZodSchema(Schema)
-export class CreateCatDto {}
-```
+On failure the pipe throws `ValidationException` (a `BadRequestException`)
+whose `errors` field is a `ValidationError[]` array with `path` and `message`.
 
 ## Error format
 
-A validation failure returns HTTP 422 with:
-
 ```json
 {
-  "statusCode": 422,
   "message": "Validation failed",
   "errors": [
-    { "path": ["age"], "message": "Expected number, received string" }
+    { "path": ["name"], "message": "length must be at least 2" },
+    { "path": ["age"],  "message": "must be at least 0" }
   ]
 }
 ```
 
-## API reference
-
-- `ZodValidationPipe(schema?)` — the main validation pipe.
-- `@ZodSchema(schema)` — class decorator to attach a schema to a DTO.
-- `formatZodError(error)` — utility: converts `ZodError` to the standard error shape.
-
 ## See also
 
-- [Validation](/techniques/validation) — detailed validation guide
+- [Validation](/techniques/validation) — detailed guide including nested validation
 - [Built-in Pipes](/built-ins/pipes) — ParseIntPipe, DefaultValuePipe, etc.
-- [Built-in Exceptions](/built-ins/exceptions) — `UnprocessableEntityException`
+- [Built-in Exceptions](/built-ins/exceptions) — exception classes

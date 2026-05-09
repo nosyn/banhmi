@@ -28,6 +28,37 @@
 
 export type { Spec } from './adapters/native'
 export { native } from './adapters/native'
+export type { ValidatorOptions } from './class-validator'
+export {
+  ArrayMaxSize,
+  ArrayMinSize,
+  classValidator,
+  IsArray,
+  IsBoolean,
+  IsDate,
+  IsDefined,
+  IsEmail,
+  IsEnum,
+  IsFloat,
+  IsIn,
+  IsInt,
+  IsNegative,
+  IsNotEmpty,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsPositive,
+  IsString,
+  IsURL,
+  IsUUID,
+  Length,
+  Matches,
+  Max,
+  MaxLength,
+  Min,
+  MinLength,
+  ValidateNested,
+} from './class-validator'
 export { AdaptedValidationPipe, ValidationException } from './validation.pipe'
 export type { ValidationError, Validator } from './validator'
 export { ValidationFailedError } from './validator'

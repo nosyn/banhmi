@@ -43,6 +43,92 @@ import { zod } from '@banhmi/validation/zod'
 
 <CodeFromExample slug="validation-zod" />
 
+## Class-validator-style decorators (built-in)
+
+`@banhmi/validation` ships a full set of property decorators modelled after
+[class-validator](https://github.com/typestack/class-validator). They work with
+**TC39 Stage 3 decorators** and `Symbol.metadata` — no `reflect-metadata`, no
+`experimentalDecorators`, zero external dependencies.
+
+### Annotate a DTO
+
+```ts
+import {
+  IsBoolean,
+  IsEmail,
+  IsInt,
+  IsOptional,
+  IsString,
+  Min,
+  MinLength,
+  classValidator,
+} from '@banhmi/validation'
+
+class CreateUserDto {
+  @IsString()
+  @MinLength(2)
+  name!: string
+
+  @IsEmail()
+  email!: string
+
+  @IsInt()
+  @Min(0)
+  age!: number
+
+  @IsBoolean()
+  active!: boolean
+
+  /** Optional field — other rules skipped when value is absent. */
+  @IsOptional()
+  @IsString()
+  bio?: string
+}
+```
+
+### Build a validator and use with AdaptedValidationPipe
+
+```ts
+import { AdaptedValidationPipe, classValidator } from '@banhmi/validation'
+
+const pipe = new AdaptedValidationPipe(classValidator(CreateUserDto))
+
+@Post()
+async create(ctx: RouteCtx) {
+  const body = await ctx.json()
+  const dto = pipe.transform(body, { type: 'body' })
+  return dto
+}
+```
+
+`classValidator(Cls)` returns a standard `Validator<T>` so it composes with
+`AdaptedValidationPipe` exactly like the `native` and `zod` adapters.
+
+### Nested validation
+
+Use `@ValidateNested` with a type thunk to recurse into nested DTOs:
+
+```ts
+class AddressDto {
+  @IsString() street!: string
+  @IsString() city!: string
+}
+
+class OrderDto {
+  @IsString() id!: string
+
+  @ValidateNested(() => AddressDto)
+  shippingAddress!: AddressDto
+}
+```
+
+Error paths for nested fields include the parent property name (e.g.
+`shippingAddress.street`). Arrays of nested objects are also supported.
+
+### Available decorators
+
+See the [Built-in Validators](/built-ins/validators) reference for a full list.
+
 ## API reference
 
 ### `native(spec): Validator<T>`
