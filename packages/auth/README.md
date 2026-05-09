@@ -2,6 +2,14 @@
 
 Part of the [Banhmi](https://banhmi.dev) framework.
 
+Strategy-based (Passport-style) authentication. Compose local password,
+JWT Bearer, Google OAuth, and GitHub OAuth strategies into your routes using
+`@UseAuth` and `getAuthUser`.
+
+**See also:** [`@banhmi/better-auth`](../better-auth) — if you want
+end-to-end auth (sessions, providers, RBAC) managed by better-auth rather
+than composing individual strategies.
+
 ## Perf budget
 
 Targets are aspirational for Wave 10. Wave 11 will measure and adjust based on

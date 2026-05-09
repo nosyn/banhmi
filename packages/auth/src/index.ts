@@ -6,7 +6,9 @@
  * - `JwtStrategy` — JWT Bearer token (HS256 via `@banhmi/jwt`)
  * - `GoogleStrategy` — OAuth 2.0 authorization-code (Google)
  * - `GitHubStrategy` — OAuth 2.0 authorization-code (GitHub)
- * - `BetterAuthStrategy` — bridge to a better-auth session endpoint
+ *
+ * For end-to-end better-auth integration (sessions, providers, RBAC), see
+ * `@banhmi/better-auth` instead.
  *
  * Use `@UseAuth(strategyName, strategies)` on a handler to enforce
  * authentication. Retrieve the principal with `getAuthUser(ctx)`.
@@ -34,7 +36,6 @@
 
 export { AuthModule } from './auth.module'
 export { AuthUser, getAuthUser, UseAuth } from './decorators'
-export { BetterAuthStrategy } from './strategies/better-auth'
 export { GitHubStrategy } from './strategies/github'
 export { GoogleStrategy } from './strategies/google'
 export { bearerToken, JwtStrategy } from './strategies/jwt'
