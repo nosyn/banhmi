@@ -1,0 +1,174 @@
+# better-auth (`@banhmi/better-auth`)
+
+`@banhmi/better-auth` integrates [better-auth](https://better-auth.com) into
+Banhmi as a first-class plugin. better-auth owns sessions, OAuth providers,
+magic links, RBAC, and more — Banhmi handles routing and DI.
+
+> **Looking for a lighter strategy-based approach?**
+> See the [Passport recipe](./passport) for `@banhmi/auth` (Local, JWT, OAuth
+> without a session server).
+
+## Setup
+
+```bash
+bun add @banhmi/better-auth better-auth
+```
+
+## 1. Create a better-auth server
+
+better-auth needs a database-backed session store and is mounted as a
+middleware on the `/api/auth/**` path:
+
+```ts
+// src/auth/auth.service.ts
+import { Database } from 'bun:sqlite'
+import { Injectable } from 'banhmi'
+import { betterAuth } from 'better-auth'
+
+@Injectable()
+export class AuthService {
+  static inject = [] as const
+
+  readonly client = betterAuth({
+    database: new Database('./auth.sqlite'),
+    emailAndPassword: { enabled: true },
+    trustedOrigins: [Bun.env.BETTER_AUTH_URL ?? 'http://localhost:3001'],
+  })
+}
+```
+
+Mount it in `main.ts` before the Banhmi HTTP layer handles the request:
+
+```ts
+// src/main.ts
+import { BanhmiFactory } from 'banhmi'
+import { AppModule } from './app.module'
+import { AuthService } from './auth/auth.service'
+
+const app = await BanhmiFactory.create(AppModule)
+const auth = app.container.resolve(AuthService)
+
+app.use(async (req, next) => {
+  if (new URL(req.url).pathname.startsWith('/api/auth')) {
+    return auth.client.handler(req)
+  }
+  return next()
+})
+
+await app.listen(3001)
+```
+
+## 2. Register `BetterAuthModule`
+
+```ts
+// src/app.module.ts
+import { BetterAuthModule } from '@banhmi/better-auth'
+import { Module } from 'banhmi'
+import { AuthModule } from './auth/auth.module'
+import { UsersModule } from './users/users.module'
+
+const BETTER_AUTH_URL = Bun.env.BETTER_AUTH_URL ?? 'http://localhost:3001'
+
+@Module({
+  imports: [
+    BetterAuthModule.forRoot({
+      url: BETTER_AUTH_URL,
+      // cookieName defaults to 'better-auth.session_token'
+    }),
+    AuthModule,
+    UsersModule,
+  ],
+})
+export class AppModule {}
+```
+
+## 3. Protect routes with `BetterAuthGuard`
+
+```ts
+// src/users/users.controller.ts
+import { BetterAuthGuard, getBetterAuthSession } from '@banhmi/better-auth'
+import type { RouteCtx } from 'banhmi'
+import { Controller, Get, UseGuards } from 'banhmi'
+
+@Controller('/users')
+export class UsersController {
+  @Get('/me')
+  @UseGuards(BetterAuthGuard)
+  me(ctx: RouteCtx) {
+    const session = getBetterAuthSession(ctx)
+    return { user: session?.user ?? null }
+  }
+
+  @Get('/ping')
+  ping() {
+    return { ok: true }
+  }
+}
+```
+
+`BetterAuthGuard` reads the session cookie, calls `GET /api/auth/get-session`
+on the better-auth instance, and sets the session on `ctx.state`. If no valid
+session is found, it throws `401 Unauthorized`.
+
+## 4. Optional auth
+
+For endpoints that want to read the session when present but still serve
+unauthenticated users:
+
+```ts
+@Get('/public')
+public(ctx: RouteCtx) {
+  const session = getBetterAuthSession(ctx) // null if not logged in
+  return {
+    message: 'Hello',
+    user: session?.user ?? null,
+  }
+}
+```
+
+## 5. Sign up / sign in
+
+better-auth exposes these endpoints automatically at `/api/auth/**`:
+
+```bash
+# Sign up
+curl -X POST http://localhost:3001/api/auth/sign-up/email \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"alice@example.com","password":"s3cr3t","name":"Alice"}'
+
+# Sign in
+curl -X POST http://localhost:3001/api/auth/sign-in/email \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"alice@example.com","password":"s3cr3t"}'
+
+# Authenticated request (session cookie set after sign-in)
+curl http://localhost:3001/users/me --cookie 'better-auth.session_token=<token>'
+```
+
+## DI tokens
+
+The module provides two tokens for programmatic use:
+
+```ts
+import { BETTER_AUTH_CLIENT, BETTER_AUTH_OPTIONS } from '@banhmi/better-auth'
+
+// In a provider that needs to call getSession directly
+class MyService {
+  static inject = [BETTER_AUTH_CLIENT] as const
+
+  constructor(private client: { getSession(req: Request): Promise<unknown> }) {}
+}
+```
+
+## Full example
+
+See [`examples/better-auth-api/`](https://github.com/banhmi/banhmi/tree/main/examples/better-auth-api)
+for a complete cluster app with `SecurityModule`, `ThrottlerModule`, JWT
+profile, and better-auth session management.
+
+## See also
+
+- [Authentication overview](../security/authentication) — choosing between `@banhmi/auth` and `@banhmi/better-auth`
+- [Passport recipe](./passport) — strategy-based auth (`@banhmi/auth`)
+- [better-auth docs](https://better-auth.com/docs)
+- [CSRF](../security/csrf) — CSRF protection with `SecurityModule`

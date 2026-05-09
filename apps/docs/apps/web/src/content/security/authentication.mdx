@@ -1,32 +1,65 @@
 # Authentication
 
-`@banhmi/auth` provides strategy-based authentication. Pick a strategy (local
-password, JWT Bearer token, Google/GitHub OAuth, or better-auth bridge), attach
-it to a handler with `@UseAuth`, and read the principal with `getAuthUser(ctx)`.
+Banhmi ships two first-class authentication packages. Choose the one that fits
+your application's needs.
 
-## When to use
+## Choose your auth philosophy
 
-- Protect specific routes or controllers from unauthenticated access.
-- Support multiple authentication mechanisms in a single application.
-- Integrate with third-party OAuth providers or a better-auth instance.
+### `@banhmi/auth` — Passport-style strategies
 
-## Setup
+Compose individual strategies (Local, JWT Bearer, Google OAuth, GitHub OAuth)
+onto specific routes using `@UseAuth`. You control the session format, token
+lifetime, and principal shape.
 
 ```bash
 bun add @banhmi/auth
 ```
 
-## Usage — local strategy
+**When to pick `@banhmi/auth`:**
+- You already have a JWT issuer or a custom credential store.
+- You want to mix multiple auth mechanisms on different routes.
+- You need a lightweight, zero-session setup (stateless JWT).
+
+### `@banhmi/better-auth` — end-to-end sessions
+
+[better-auth](https://better-auth.com) owns sessions, providers, magic links,
+RBAC, and 30+ OAuth providers. `@banhmi/better-auth` wires it into the Banhmi
+DI container with `BetterAuthModule.forRoot()` and a `BetterAuthGuard` you
+apply with `@UseGuards`.
+
+```bash
+bun add @banhmi/better-auth better-auth
+```
+
+**When to pick `@banhmi/better-auth`:**
+- You want sessions, OAuth, magic links, and RBAC without building them yourself.
+- You're migrating from an app that already uses better-auth.
+- You prefer configuration-over-code for auth providers.
+
+> **Which should I pick?**
+> - Need only JWT + a login form? → `@banhmi/auth`.
+> - Need Google/GitHub login, session management, and org roles out of the box? → `@banhmi/better-auth`.
+> - Need both (e.g. API JWT + web session)? Use both — they don't conflict.
+
+---
+
+## `@banhmi/auth` — strategy-based
+
+### Setup
+
+```ts
+import { LocalStrategy, JwtStrategy, UseAuth, getAuthUser } from '@banhmi/auth'
+```
 
 <CodeFromExample slug="auth-local" />
 
-## Usage — JWT strategy
+### Usage — JWT strategy
 
 <CodeFromExample slug="auth-jwt" />
 
-## Strategies
+### Strategies
 
-### `LocalStrategy`
+#### `LocalStrategy`
 
 Reads `username` and `password` from a JSON body or
 `application/x-www-form-urlencoded` form. Calls your `validate` callback to
@@ -52,11 +85,11 @@ Custom field names:
 new LocalStrategy({
   usernameField: 'email',
   passwordField: 'pwd',
-  validate: async ({ username, password }) => { ... },
+  validate: async ({ username, password }) => { /* ... */ },
 })
 ```
 
-### `JwtStrategy`
+#### `JwtStrategy`
 
 Verifies an HS256 JWT from the `Authorization: Bearer <token>` header using
 `@banhmi/jwt` under the hood. Returns the decoded payload on success.
@@ -64,7 +97,7 @@ Verifies an HS256 JWT from the `Authorization: Bearer <token>` header using
 ```ts
 import { JwtStrategy } from '@banhmi/auth'
 
-const jwt = new JwtStrategy({ secret: Bun.env.JWT_SECRET! })
+const jwt = new JwtStrategy({ secret: Bun.env.JWT_SECRET ?? '' })
 ```
 
 Custom extractor (e.g., query parameter):
@@ -76,7 +109,7 @@ new JwtStrategy({
 })
 ```
 
-### `GoogleStrategy` / `GitHubStrategy`
+#### `GoogleStrategy` / `GitHubStrategy`
 
 OAuth 2.0 authorization-code flow. Redirects the user to the provider, then
 exchanges the code on the callback route.
@@ -85,8 +118,8 @@ exchanges the code on the callback route.
 import { GoogleStrategy } from '@banhmi/auth'
 
 const google = new GoogleStrategy({
-  clientId: Bun.env.GOOGLE_CLIENT_ID!,
-  clientSecret: Bun.env.GOOGLE_CLIENT_SECRET!,
+  clientId: Bun.env.GOOGLE_CLIENT_ID ?? '',
+  clientSecret: Bun.env.GOOGLE_CLIENT_SECRET ?? '',
   redirectUri: 'https://example.com/auth/google/callback',
   validate: async (profile) => db.upsertUser(profile),
 })
@@ -98,24 +131,7 @@ return Response.redirect(url)
 // On callback route — @UseAuth('google') reads code+state from query string
 ```
 
-### `BetterAuthStrategy`
-
-Forwards the session cookie to a better-auth `get-session` endpoint and returns
-the session user on success.
-
-```ts
-import { BetterAuthStrategy } from '@banhmi/auth'
-
-const betterAuth = new BetterAuthStrategy({
-  url: 'http://localhost:3001',
-  cookieName: 'better-auth.session_token',
-})
-```
-
-> **Note:** Full server-side session integration is planned for Wave 6.
-> Current implementation performs an HTTP round-trip to the session endpoint.
-
-## Applying authentication with `@UseAuth`
+### Applying authentication with `@UseAuth`
 
 ```ts
 import { Controller, Get, Post } from 'banhmi'
@@ -141,10 +157,7 @@ On success, the authenticated principal is stored on `ctx.state` and
 accessible via `getAuthUser(ctx)`. On failure, the decorator returns
 `401 Unauthorized` before the handler runs.
 
-If the named strategy is not registered, the response is `500 Internal Server
-Error` with a message indicating the missing strategy name.
-
-## `AuthModule` — DI integration
+### `AuthModule` — DI integration
 
 For DI-managed applications, register strategies via `AuthModule.register`:
 
@@ -159,20 +172,93 @@ import { AuthModule } from '@banhmi/auth'
 class AppModule {}
 ```
 
-The `AUTH_STRATEGIES` token is then available for injection in providers that
-need to run strategies programmatically.
+---
 
-## API reference
+## `@banhmi/better-auth` — end-to-end sessions
+
+### Setup
+
+```ts
+import { BetterAuthModule, BetterAuthGuard, getBetterAuthSession } from '@banhmi/better-auth'
+```
+
+Mount the better-auth HTTP handler first (in `main.ts`):
+
+```ts
+import { BanhmiFactory } from 'banhmi'
+import { betterAuth } from 'better-auth'
+import { Database } from 'bun:sqlite'
+
+const auth = betterAuth({
+  database: new Database('./auth.sqlite'),
+  emailAndPassword: { enabled: true },
+})
+
+const app = await BanhmiFactory.create(AppModule)
+app.use(async (req, next) => {
+  if (new URL(req.url).pathname.startsWith('/api/auth')) {
+    return auth.handler(req)
+  }
+  return next()
+})
+await app.listen(3001)
+```
+
+Register the plugin in your `AppModule`:
+
+```ts
+@Module({
+  imports: [
+    BetterAuthModule.forRoot({
+      url: Bun.env.BETTER_AUTH_URL ?? 'http://localhost:3001',
+    }),
+  ],
+})
+class AppModule {}
+```
+
+### Protecting routes
+
+```ts
+import { BetterAuthGuard, getBetterAuthSession } from '@banhmi/better-auth'
+import { Controller, Get, UseGuards } from 'banhmi'
+
+@Controller('/users')
+class UsersController {
+  @Get('/me')
+  @UseGuards(BetterAuthGuard)
+  me(ctx: RouteCtx) {
+    const session = getBetterAuthSession(ctx)
+    return { user: session?.user }
+  }
+
+  @Get('/ping')
+  ping() {
+    return { ok: true }
+  }
+}
+```
+
+### Optional auth
+
+On public routes that want to read the session when present:
+
+```ts
+@Get('/public')
+public(ctx: RouteCtx) {
+  const session = getBetterAuthSession(ctx) // null if no session
+  return { loggedIn: session !== null }
+}
+```
+
+---
+
+## API reference — `@banhmi/auth`
 
 ### `UseAuth(strategyName, strategies)`
 
 Method decorator. Runs the named strategy before the handler. On success, sets
 `ctx.state['banhmi:auth:user']`. On failure, returns `401`.
-
-### `AuthUser()`
-
-No-op method decorator. Documents that the handler relies on an authenticated
-principal. Use `getAuthUser(ctx)` to retrieve the value at runtime.
 
 ### `getAuthUser<TUser>(ctx)`
 
@@ -184,8 +270,32 @@ or `null` if not set.
 Abstract base class. Implement `name: string` and
 `authenticate(req, ctx): Promise<TUser | null>` to create a custom strategy.
 
+---
+
+## API reference — `@banhmi/better-auth`
+
+### `BetterAuthModule.forRoot(options)`
+
+Registers the plugin. Provides `BETTER_AUTH_CLIENT`, `BETTER_AUTH_OPTIONS`, and
+configures `BetterAuthGuard` in the DI container.
+
+### `BetterAuthGuard`
+
+A `Guard` that reads the session cookie, calls the better-auth `get-session`
+endpoint, and throws `401 Unauthorized` if no valid session is found. Stores
+the session on `ctx.state['banhmi:better-auth:session']` on success.
+
+### `getBetterAuthSession(ctx)`
+
+Helper that reads the session from `ctx.state`. Returns `null` if the guard
+has not run or the session is absent.
+
+---
+
 ## See also
 
+- [Passport recipe](../recipes/passport) — `@banhmi/auth` in depth
+- [better-auth recipe](../recipes/better-auth) — `@banhmi/better-auth` in depth
 - [Authorization](./authorization)
 - [JWT](../packages/jwt)
 - [Encryption and hashing](./encryption-and-hashing)

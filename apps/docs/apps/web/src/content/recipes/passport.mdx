@@ -1,60 +1,157 @@
-# Passport (auth)
+# Passport-style auth (`@banhmi/auth`)
 
-Banhmi ships `@banhmi/auth` as a first-class auth module built on
-[Better Auth](https://better-auth.com), which provides sessions, JWT, email OTP,
-OAuth providers, and 2FA without requiring Passport.js.
+`@banhmi/auth` provides strategy-based (Passport-style) authentication for
+Banhmi applications. Compose strategies onto routes with `@UseAuth` and read
+the principal with `getAuthUser`.
 
-## Recommended: @banhmi/auth + Better Auth
+> **Looking for full session management, OAuth, and RBAC?**
+> See the [better-auth recipe](./better-auth) for `@banhmi/better-auth`.
+
+## Setup
 
 ```bash
-bun add @banhmi/auth better-auth
+bun add @banhmi/auth
 ```
 
-See the [Authentication](/security/authentication) guide for full setup.
+## Strategies
 
-## Using Passport.js (legacy migration path)
+### Local (username + password)
 
-If you're migrating from a NestJS + Passport app, Passport strategies run
-as Banhmi middleware:
+```ts
+import { LocalStrategy, UseAuth, getAuthUser } from '@banhmi/auth'
+import { verifyPassword } from '@banhmi/crypto'
+
+const local = new LocalStrategy({
+  usernameField: 'email',
+  validate: async ({ username, password }) => {
+    const user = await db.findByEmail(username)
+    if (!user) return null
+    return (await verifyPassword(password, user.hash)) ? user : null
+  },
+})
+```
+
+Apply to a login handler:
+
+```ts
+@Post('/login')
+@UseAuth('local', [local])
+login(ctx: RouteCtx) {
+  return { user: getAuthUser(ctx) }
+}
+```
+
+### JWT Bearer
+
+```ts
+import { JwtStrategy, UseAuth, getAuthUser } from '@banhmi/auth'
+
+const jwt = new JwtStrategy({
+  secret: Bun.env.JWT_SECRET ?? '',
+})
+
+@Get('/me')
+@UseAuth('jwt', [jwt])
+me(ctx: RouteCtx) {
+  return { user: getAuthUser(ctx) }
+}
+```
+
+Custom token extractor (cookie, query param, etc.):
+
+```ts
+new JwtStrategy({
+  secret: '...',
+  extract: (req) => new URL(req.url).searchParams.get('token'),
+})
+```
+
+### Google / GitHub OAuth
+
+```ts
+import { GoogleStrategy, GitHubStrategy } from '@banhmi/auth'
+
+const google = new GoogleStrategy({
+  clientId: Bun.env.GOOGLE_CLIENT_ID ?? '',
+  clientSecret: Bun.env.GOOGLE_CLIENT_SECRET ?? '',
+  redirectUri: 'https://example.com/auth/google/callback',
+  stateSecret: Bun.env.STATE_SECRET ?? '',
+  validate: async (profile) => db.upsertUser(profile),
+})
+
+// Redirect to provider
+@Get('/auth/google')
+async googleLogin() {
+  return Response.redirect(await google.getAuthorizationUrl())
+}
+
+// Handle callback — @UseAuth reads code+state from query params
+@Get('/auth/google/callback')
+@UseAuth('google', [google])
+googleCallback(ctx: RouteCtx) {
+  const user = getAuthUser(ctx)
+  return Response.redirect('/?loggedIn=1')
+}
+```
+
+## `AuthModule` — DI setup
+
+Register strategies once at the module level and inject the strategy list:
+
+```ts
+import { AuthModule, AUTH_STRATEGIES } from '@banhmi/auth'
+
+@Module({
+  imports: [
+    AuthModule.register({ strategies: [local, jwt, google] }),
+  ],
+})
+class AppModule {}
+```
+
+The `AUTH_STRATEGIES` token provides the registered strategy array for
+programmatic use.
+
+## Custom strategies
+
+Extend `Strategy<TUser>`:
+
+```ts
+import { Strategy } from '@banhmi/auth'
+
+class ApiKeyStrategy extends Strategy<{ id: string }> {
+  readonly name = 'api-key'
+
+  async authenticate(req: Request) {
+    const key = req.headers.get('x-api-key')
+    if (!key) return null
+    return db.findByApiKey(key)
+  }
+}
+```
+
+## Migrating from Passport.js (NestJS)
+
+If you're migrating from a NestJS + Passport app, Passport strategies can run
+as Banhmi middleware during a transition period:
 
 ```ts
 import passport from 'passport'
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt'
 
-// Configure strategy
 passport.use(new JwtStrategy(
   { jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), secretOrKey: 'secret' },
   (payload, done) => done(null, payload),
 ))
 
-// Register as middleware
 const app = await BanhmiFactory.create(AppModule)
 app.use(passport.initialize())
 await app.listen(3000)
 ```
 
-Then protect routes with a custom guard:
-
-```ts
-import type { CanActivate, ExecutionContext } from 'banhmi'
-import passport from 'passport'
-
-@Injectable()
-export class PassportJwtGuard implements CanActivate {
-  canActivate(ctx: ExecutionContext): Promise<boolean> {
-    const req = ctx.switchToHttp().getRequest()
-    return new Promise((resolve) =>
-      passport.authenticate('jwt', { session: false }, (err: unknown, user: unknown) => {
-        if (err || !user) resolve(false)
-        else { req.user = user; resolve(true) }
-      })(req, {}, () => {}),
-    )
-  }
-}
-```
-
 ## See also
 
-- [Authentication](/security/authentication) — `@banhmi/auth` recommended guide
-- [Guards](/overview/guards) — building custom guards
-- [JWT](/security/authentication) — JWT token signing and verification
+- [Authentication overview](../security/authentication) — choosing between `@banhmi/auth` and `@banhmi/better-auth`
+- [better-auth recipe](./better-auth) — end-to-end session management
+- [Guards](../overview/guards) — building custom guards
+- [JWT](../security/authentication) — JWT token signing and verification

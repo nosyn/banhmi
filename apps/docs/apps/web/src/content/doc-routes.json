@@ -208,6 +208,7 @@
         { "slug": "crud-generator", "title": "CRUD Generator" },
         { "slug": "swc", "title": "SWC" },
         { "slug": "passport", "title": "Passport (auth)" },
+        { "slug": "better-auth", "title": "better-auth (end-to-end sessions)" },
         { "slug": "hot-reload", "title": "Hot reload" },
         { "slug": "mikroorm", "title": "MikroORM" },
         { "slug": "typeorm", "title": "TypeORM" },

@@ -67,6 +67,7 @@ import { Route as DocsRecipesCrudGeneratorRouteImport } from './routes/docs/reci
 import { Route as DocsRecipesCqrsRouteImport } from './routes/docs/recipes.cqrs'
 import { Route as DocsRecipesCompodocRouteImport } from './routes/docs/recipes.compodoc'
 import { Route as DocsRecipesCommanderRouteImport } from './routes/docs/recipes.commander'
+import { Route as DocsRecipesBetterAuthRouteImport } from './routes/docs/recipes.better-auth'
 import { Route as DocsRecipesAsyncLocalStorageRouteImport } from './routes/docs/recipes.async-local-storage'
 import { Route as DocsPerformanceTuningRouteImport } from './routes/docs/performance.tuning'
 import { Route as DocsPerformanceResultsRouteImport } from './routes/docs/performance.results'
@@ -480,6 +481,11 @@ const DocsRecipesCompodocRoute = DocsRecipesCompodocRouteImport.update({
 const DocsRecipesCommanderRoute = DocsRecipesCommanderRouteImport.update({
   id: '/docs/recipes/commander',
   path: '/docs/recipes/commander',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRecipesBetterAuthRoute = DocsRecipesBetterAuthRouteImport.update({
+  id: '/docs/recipes/better-auth',
+  path: '/docs/recipes/better-auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DocsRecipesAsyncLocalStorageRoute =
@@ -1170,6 +1176,7 @@ export interface FileRoutesByFullPath {
   '/docs/performance/results': typeof DocsPerformanceResultsRoute
   '/docs/performance/tuning': typeof DocsPerformanceTuningRoute
   '/docs/recipes/async-local-storage': typeof DocsRecipesAsyncLocalStorageRoute
+  '/docs/recipes/better-auth': typeof DocsRecipesBetterAuthRoute
   '/docs/recipes/commander': typeof DocsRecipesCommanderRoute
   '/docs/recipes/compodoc': typeof DocsRecipesCompodocRoute
   '/docs/recipes/cqrs': typeof DocsRecipesCqrsRoute
@@ -1337,6 +1344,7 @@ export interface FileRoutesByTo {
   '/docs/performance/results': typeof DocsPerformanceResultsRoute
   '/docs/performance/tuning': typeof DocsPerformanceTuningRoute
   '/docs/recipes/async-local-storage': typeof DocsRecipesAsyncLocalStorageRoute
+  '/docs/recipes/better-auth': typeof DocsRecipesBetterAuthRoute
   '/docs/recipes/commander': typeof DocsRecipesCommanderRoute
   '/docs/recipes/compodoc': typeof DocsRecipesCompodocRoute
   '/docs/recipes/cqrs': typeof DocsRecipesCqrsRoute
@@ -1505,6 +1513,7 @@ export interface FileRoutesById {
   '/docs/performance/results': typeof DocsPerformanceResultsRoute
   '/docs/performance/tuning': typeof DocsPerformanceTuningRoute
   '/docs/recipes/async-local-storage': typeof DocsRecipesAsyncLocalStorageRoute
+  '/docs/recipes/better-auth': typeof DocsRecipesBetterAuthRoute
   '/docs/recipes/commander': typeof DocsRecipesCommanderRoute
   '/docs/recipes/compodoc': typeof DocsRecipesCompodocRoute
   '/docs/recipes/cqrs': typeof DocsRecipesCqrsRoute
@@ -1674,6 +1683,7 @@ export interface FileRouteTypes {
     | '/docs/performance/results'
     | '/docs/performance/tuning'
     | '/docs/recipes/async-local-storage'
+    | '/docs/recipes/better-auth'
     | '/docs/recipes/commander'
     | '/docs/recipes/compodoc'
     | '/docs/recipes/cqrs'
@@ -1841,6 +1851,7 @@ export interface FileRouteTypes {
     | '/docs/performance/results'
     | '/docs/performance/tuning'
     | '/docs/recipes/async-local-storage'
+    | '/docs/recipes/better-auth'
     | '/docs/recipes/commander'
     | '/docs/recipes/compodoc'
     | '/docs/recipes/cqrs'
@@ -2008,6 +2019,7 @@ export interface FileRouteTypes {
     | '/docs/performance/results'
     | '/docs/performance/tuning'
     | '/docs/recipes/async-local-storage'
+    | '/docs/recipes/better-auth'
     | '/docs/recipes/commander'
     | '/docs/recipes/compodoc'
     | '/docs/recipes/cqrs'
@@ -2176,6 +2188,7 @@ export interface RootRouteChildren {
   DocsPerformanceResultsRoute: typeof DocsPerformanceResultsRoute
   DocsPerformanceTuningRoute: typeof DocsPerformanceTuningRoute
   DocsRecipesAsyncLocalStorageRoute: typeof DocsRecipesAsyncLocalStorageRoute
+  DocsRecipesBetterAuthRoute: typeof DocsRecipesBetterAuthRoute
   DocsRecipesCommanderRoute: typeof DocsRecipesCommanderRoute
   DocsRecipesCompodocRoute: typeof DocsRecipesCompodocRoute
   DocsRecipesCqrsRoute: typeof DocsRecipesCqrsRoute
@@ -2641,6 +2654,13 @@ declare module '@tanstack/react-router' {
       path: '/docs/recipes/commander'
       fullPath: '/docs/recipes/commander'
       preLoaderRoute: typeof DocsRecipesCommanderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/recipes/better-auth': {
+      id: '/docs/recipes/better-auth'
+      path: '/docs/recipes/better-auth'
+      fullPath: '/docs/recipes/better-auth'
+      preLoaderRoute: typeof DocsRecipesBetterAuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/docs/recipes/async-local-storage': {
@@ -3511,6 +3531,7 @@ const rootRouteChildren: RootRouteChildren = {
   DocsPerformanceResultsRoute: DocsPerformanceResultsRoute,
   DocsPerformanceTuningRoute: DocsPerformanceTuningRoute,
   DocsRecipesAsyncLocalStorageRoute: DocsRecipesAsyncLocalStorageRoute,
+  DocsRecipesBetterAuthRoute: DocsRecipesBetterAuthRoute,
   DocsRecipesCommanderRoute: DocsRecipesCommanderRoute,
   DocsRecipesCompodocRoute: DocsRecipesCompodocRoute,
   DocsRecipesCqrsRoute: DocsRecipesCqrsRoute,
