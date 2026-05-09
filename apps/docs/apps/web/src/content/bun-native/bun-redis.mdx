@@ -1,0 +1,138 @@
+# Bun.redis
+
+`Bun.RedisClient` is Bun's built-in Redis client — written in Zig with zero
+external dependencies. It replaces `ioredis` and `node-redis` for most
+production workflows.
+
+## When to use
+
+- You want Redis without adding a Node.js native addon or JS client to your
+  bundle.
+- You need pub/sub, caching, rate-limiting, or queue primitives in a Bun
+  application.
+- You are using `@banhmi/redis`, `@banhmi/queue`, or `@banhmi/microservices`
+  — all three rely on `Bun.RedisClient` under the hood.
+
+## Setup
+
+No install needed — `Bun.RedisClient` is built into Bun 1.1+.
+
+```ts
+const redis = new Bun.RedisClient('redis://localhost:6379')
+```
+
+The constructor accepts a full Redis URL including credentials and database
+number:
+
+```ts
+const redis = new Bun.RedisClient('redis://:password@host:6380/1')
+```
+
+## Basic usage
+
+```ts
+// String commands
+await redis.set('greeting', 'hello')
+const value = await redis.get('greeting')   // 'hello'
+
+// Expire after 60 seconds
+await redis.set('session', 'abc123', 'EX', 60)
+
+// Expire an existing key
+await redis.expire('session', 30)
+
+// Delete
+await redis.del('greeting')
+
+// Atomic counter
+await redis.incr('visits')
+const count = await redis.incr('visits')    // 2
+```
+
+## Hashes, lists, and sorted sets
+
+```ts
+// Hash
+await redis.hset('user:1', { name: 'Alice', role: 'admin' })
+const fields = await redis.hgetall('user:1')
+// { name: 'Alice', role: 'admin' }
+
+// List (queue pattern)
+await redis.lpush('jobs', JSON.stringify({ id: 1 }))
+const job = await redis.rpop('jobs')
+
+// Sorted set
+await redis.zadd('leaderboard', '9000', 'alice')
+const top = await redis.zrangebyscore('leaderboard', '-inf', '+inf')
+await redis.zrem('leaderboard', 'alice')
+```
+
+## Pub/sub
+
+`Bun.RedisClient` delivers pub/sub messages via a callback. Subscribing puts
+the client into subscription mode — it can no longer issue regular commands.
+Always use a **dedicated subscriber connection**.
+
+```ts
+const sub = new Bun.RedisClient('redis://localhost:6379')
+const pub = new Bun.RedisClient('redis://localhost:6379')
+
+// subscribe takes exact channel names (not patterns)
+await sub.subscribe('notifications', (message) => {
+  console.log('received:', message)
+})
+
+// publish from a separate connection
+await pub.publish('notifications', 'hello subscribers')
+```
+
+> **Note:** `psubscribe` (pattern subscriptions) does not deliver messages via
+> callback in Bun 1.3.x. Use `subscribe` with explicit channel names instead.
+> This is also why `@banhmi/microservices` uses a single `{prefix}:inbound`
+> channel rather than pattern-based routing.
+
+## Sending raw commands
+
+For Redis commands not yet wrapped as first-class methods, use `send`:
+
+```ts
+const result = await redis.send('PEXPIRE', ['mykey', '5000', 'NX'])
+```
+
+## Closing the connection
+
+```ts
+redis.close()
+```
+
+Always call `close()` during application shutdown (e.g. in `onModuleDestroy`).
+
+## API reference
+
+| Method | Description |
+|--------|-------------|
+| `get(key)` | Returns `string \| null` |
+| `set(key, value, ...options?)` | Stores a string value; accepts `'EX', seconds` etc. |
+| `del(key)` | Deletes one key; returns count removed |
+| `incr(key)` | Atomically increments by 1; returns new value |
+| `expire(key, seconds)` | Set TTL in seconds; returns `1` on success |
+| `pexpire(key, ms)` | Set TTL in milliseconds |
+| `pttl(key)` | Remaining TTL in ms; `-1` = no TTL, `-2` = missing |
+| `publish(channel, message)` | Publish to a channel; returns subscriber count |
+| `subscribe(channel, callback)` | Subscribe; enters subscription mode |
+| `hset(key, fields)` | Set multiple hash fields |
+| `hgetall(key)` | Get all hash fields; returns `{}` when missing |
+| `lpush(key, value)` | Push to list head; returns new length |
+| `rpop(key)` | Pop from list tail; returns `null` when empty |
+| `zadd(key, score, member)` | Add to sorted set |
+| `zrangebyscore(key, min, max)` | Range query; use `'-inf'` / `'+inf'` |
+| `zrem(key, member)` | Remove from sorted set |
+| `send(command, args)` | Send a raw Redis command |
+| `close()` | Close the connection |
+
+## See also
+
+- [`@banhmi/redis`](/techniques/caching) — DI-friendly wrapper (`RedisModule.forRoot(url)`)
+- [`@banhmi/queue`](/techniques/queues) — job queue built on the `RedisLike` interface
+- [`@banhmi/microservices` Redis transport](/microservices/redis) — pub/sub message broker
+- [Bun.RedisClient docs](https://bun.sh/docs/api/redis) — upstream Bun docs

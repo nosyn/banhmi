@@ -47,6 +47,7 @@
         { "slug": "bun-sql", "title": "Bun.sql" },
         { "slug": "bun-s3", "title": "Bun.S3Client" },
         { "slug": "bun-password", "title": "Bun.password" },
+        { "slug": "bun-redis", "title": "Bun.redis" },
         { "slug": "bun-compression", "title": "Bun.gzip / deflate / zstd" },
         { "slug": "native-formdata", "title": "Native FormData" },
         { "slug": "native-websocket", "title": "Native WebSocket" }
