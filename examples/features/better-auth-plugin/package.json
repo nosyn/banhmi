@@ -1,0 +1,10 @@
+{
+  "name": "banhmi-feature-better-auth-plugin",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "dependencies": {
+    "@banhmi/better-auth": "workspace:*",
+    "banhmi": "workspace:*"
+  }
+}

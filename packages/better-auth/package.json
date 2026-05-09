@@ -1,0 +1,14 @@
+{
+  "name": "@banhmi/better-auth",
+  "version": "1.0.0-rc.1",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@banhmi/common": "workspace:*",
+    "@banhmi/core": "workspace:*",
+    "@banhmi/cookies": "workspace:*"
+  }
+}
