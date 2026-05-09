@@ -4,10 +4,29 @@ Each example is a standalone Banhmi application that you can clone and run
 with `bun run dev`. Browse the source on GitHub or clone the repo and run
 from the `examples/` directory.
 
+## Recommended starting point
+
+[`kitchen-sink`](https://github.com/banhmi/banhmi/tree/main/examples/kitchen-sink)
+is the recommended end-to-end demo. It wires 20+ Banhmi packages into a single
+runnable task-tracker API — the fastest way to see what the framework can do:
+
+```bash
+cd examples/kitchen-sink && bun run dev
+# API docs:  http://localhost:3000/api/docs
+# Health:    http://localhost:3000/api/health
+# Devtools:  http://localhost:3000/__banhmi/devtools
+```
+
+Features demonstrated: HTTP versioning, class-validator DTOs, JWT auth,
+throttling, SQLite, EventEmitter, SSE, WebSocket, queues, scheduling,
+caching, serialization, multipart uploads, static file serving, compression,
+signed cookies, security headers, health checks, OpenAPI/Scalar, and devtools.
+
 ## Cluster apps
 
 | Example | Description | Key features |
 |---------|-------------|-------------|
+| **[`kitchen-sink`](https://github.com/banhmi/banhmi/tree/main/examples/kitchen-sink)** | **Recommended end-to-end demo** | **20+ packages wired together** |
 | [`cats-api`](https://github.com/banhmi/banhmi/tree/main/examples/cats-api) | Classic CRUD API | Controllers, services, pipes, validation |
 | [`cats-mongo`](https://github.com/banhmi/banhmi/tree/main/examples/cats-mongo) | MongoDB-backed CRUD | `@banhmi/mongo`, Mongoose integration |
 | [`drizzle-api`](https://github.com/banhmi/banhmi/tree/main/examples/drizzle-api) | Postgres with Drizzle ORM | `@banhmi/drizzle`, type-safe SQL |

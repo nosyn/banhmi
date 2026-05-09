@@ -1,0 +1,37 @@
+{
+  "name": "kitchen-sink",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --watch src/main.ts"
+  },
+  "dependencies": {
+    "@banhmi/auth": "workspace:*",
+    "@banhmi/cache": "workspace:*",
+    "@banhmi/common": "workspace:*",
+    "@banhmi/compression": "workspace:*",
+    "@banhmi/cookies": "workspace:*",
+    "@banhmi/core": "workspace:*",
+    "@banhmi/devtools": "workspace:*",
+    "@banhmi/events": "workspace:*",
+    "@banhmi/health": "workspace:*",
+    "@banhmi/jwt": "workspace:*",
+    "@banhmi/logger": "workspace:*",
+    "@banhmi/middleware": "workspace:*",
+    "@banhmi/multipart": "workspace:*",
+    "@banhmi/openapi": "workspace:*",
+    "@banhmi/platform-bun": "workspace:*",
+    "@banhmi/queue": "workspace:*",
+    "@banhmi/redis": "workspace:*",
+    "@banhmi/scheduling": "workspace:*",
+    "@banhmi/security": "workspace:*",
+    "@banhmi/sqlite": "workspace:*",
+    "@banhmi/sse": "workspace:*",
+    "@banhmi/static": "workspace:*",
+    "@banhmi/throttler": "workspace:*",
+    "@banhmi/transform": "workspace:*",
+    "@banhmi/validation": "workspace:*",
+    "@banhmi/versioning": "workspace:*",
+    "banhmi": "workspace:*"
+  }
+}
