@@ -5,26 +5,51 @@
  * Set `REDIS_URL` (e.g. `redis://localhost:6379`) to run them.
  */
 import { afterAll, beforeAll, describe, expect, test } from 'bun:test'
+import type { RedisLike } from '@banhmi/redis'
 import { Process } from '../src/process.decorator'
 import { Processor } from '../src/processor.decorator'
 import { Queue } from '../src/queue'
 import { Worker } from '../src/worker'
 
-let redis: import('ioredis').Redis | null = null
+let redis: RedisLike | null = null
 let skip = false
 
 beforeAll(async () => {
   const url = Bun.env.REDIS_URL ?? 'redis://localhost:6379'
   try {
-    const { default: IORedis } = await import('ioredis')
-    const client = new IORedis(url, {
-      lazyConnect: true,
-      connectTimeout: 2000,
-      maxRetriesPerRequest: 1,
+    const client = new Bun.RedisClient(url, {
+      connectionTimeout: 2000,
+      maxRetries: 1,
     })
     await client.connect()
     await client.ping()
-    redis = client
+    redis = {
+      get: (key) => client.get(key),
+      set: (key, value, ttlSeconds) =>
+        ttlSeconds !== undefined
+          ? client.set(key, value, 'EX', ttlSeconds)
+          : client.set(key, value),
+      del: (key) => client.del(key),
+      expire: (key, seconds) => client.expire(key, seconds),
+      pexpire: (key, ms, nx) =>
+        nx === 'NX'
+          ? (client.send('PEXPIRE', [key, String(ms), 'NX']) as Promise<number>)
+          : client.pexpire(key, ms),
+      pttl: (key) => client.pttl(key),
+      incr: (key) => client.incr(key),
+      publish: (channel, message) => client.publish(channel, message),
+      subscribe: (channel, listener) => {
+        void client.subscribe(channel, (msg: string) => listener(msg))
+      },
+      hset: (key, fields) => client.hset(key, fields),
+      hgetall: (key) => client.hgetall(key),
+      lpush: (key, value) => client.lpush(key, value),
+      rpop: (key) => client.rpop(key),
+      zadd: (key, score, member) => client.zadd(key, String(score), member),
+      zrangebyscore: (key, min, max) => client.zrangebyscore(key, min, max),
+      zrem: (key, member) => client.zrem(key, member),
+      close: () => client.close(),
+    }
   } catch {
     skip = true
     console.log('skipping integration tests — Redis unavailable')
@@ -33,7 +58,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   if (redis) {
-    await redis.quit()
+    redis.close()
   }
 })
 
@@ -53,11 +78,10 @@ describe('Queue + Worker integration', () => {
     }
 
     const queue = new Queue(queueName, redis)
-    const workerRedis = redis.duplicate()
     const instance = new ImmediateProcessor()
     const worker = new Worker(
       queueName,
-      workerRedis,
+      redis,
       instance,
       ImmediateProcessor,
       20,
@@ -68,7 +92,6 @@ describe('Queue + Worker integration', () => {
 
     await new Promise((r) => setTimeout(r, 300))
     await worker.stop()
-    await workerRedis.quit()
 
     expect(processed).toBe(1)
   })
@@ -88,15 +111,8 @@ describe('Queue + Worker integration', () => {
     }
 
     const queue = new Queue(queueName, redis)
-    const workerRedis = redis.duplicate()
     const instance = new DelayedProcessor()
-    const worker = new Worker(
-      queueName,
-      workerRedis,
-      instance,
-      DelayedProcessor,
-      20,
-    )
+    const worker = new Worker(queueName, redis, instance, DelayedProcessor, 20)
 
     worker.start()
     await queue.add('delayed-work', {}, { delay: 100 })
@@ -108,7 +124,6 @@ describe('Queue + Worker integration', () => {
     // now it should be ready
     await new Promise((r) => setTimeout(r, 300))
     await worker.stop()
-    await workerRedis.quit()
 
     expect(processed).toBe(1)
   })
@@ -129,22 +144,14 @@ describe('Queue + Worker integration', () => {
     }
 
     const queue = new Queue(queueName, redis)
-    const workerRedis = redis.duplicate()
     const instance = new RetryProcessor()
-    const worker = new Worker(
-      queueName,
-      workerRedis,
-      instance,
-      RetryProcessor,
-      20,
-    )
+    const worker = new Worker(queueName, redis, instance, RetryProcessor, 20)
 
     worker.start()
     await queue.add('flaky', {}, { attempts: 3 })
 
     await new Promise((r) => setTimeout(r, 500))
     await worker.stop()
-    await workerRedis.quit()
 
     expect(callCount).toBe(3)
   })
@@ -176,11 +183,8 @@ describe('Queue + Worker integration', () => {
     const q1 = new Queue(queue1Name, redis)
     const q2 = new Queue(queue2Name, redis)
 
-    const r1 = redis.duplicate()
-    const r2 = redis.duplicate()
-
-    const w1 = new Worker(queue1Name, r1, new Q1Processor(), Q1Processor, 20)
-    const w2 = new Worker(queue2Name, r2, new Q2Processor(), Q2Processor, 20)
+    const w1 = new Worker(queue1Name, redis, new Q1Processor(), Q1Processor, 20)
+    const w2 = new Worker(queue2Name, redis, new Q2Processor(), Q2Processor, 20)
 
     w1.start()
     w2.start()
@@ -193,8 +197,6 @@ describe('Queue + Worker integration', () => {
 
     await w1.stop()
     await w2.stop()
-    await r1.quit()
-    await r2.quit()
 
     expect(q1Count).toBe(2)
     expect(q2Count).toBe(1)

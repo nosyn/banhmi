@@ -5,7 +5,7 @@ import type {
 } from '@banhmi/common'
 import type { Container, ModuleNode } from '@banhmi/core'
 import { CONTAINER_TOKEN, MODULE_TREE_TOKEN } from '@banhmi/platform-bun'
-import type { Redis } from 'ioredis'
+import type { RedisLike } from '@banhmi/redis'
 import { PROCESSOR_METADATA } from './metadata'
 import { QUEUE_OPTIONS } from './tokens'
 import type { QueueOptions } from './types'
@@ -50,9 +50,9 @@ export class QueueExplorerService
       if (!opts) continue
 
       const redisToken = Symbol.for(`banhmi:queue-redis:${queueName}`)
-      let redis: Redis | undefined
+      let redis: RedisLike | undefined
       try {
-        redis = this.container.resolve(redisToken) as Redis
+        redis = this.container.resolve(redisToken) as RedisLike
       } catch {
         // no dedicated redis for this queue, skip
         continue

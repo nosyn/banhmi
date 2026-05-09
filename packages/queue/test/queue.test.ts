@@ -1,29 +1,33 @@
 import { describe, expect, mock, test } from 'bun:test'
-import type { Redis } from 'ioredis'
+import type { RedisLike } from '@banhmi/redis'
 import { Queue } from '../src/queue'
 
-function makeMockRedis() {
+function makeMockRedis(): RedisLike {
   return {
-    hset: mock(async (..._args: unknown[]) => 1),
-    hgetall: mock(async (_key: string) => null),
-    lpush: mock(async (..._args: unknown[]) => 1),
-    rpop: mock(async (_key: string) => null),
-    zadd: mock(async (..._args: unknown[]) => 1),
-    zrangebyscore: mock(async (..._args: unknown[]) => [] as string[]),
-    zrem: mock(async (..._args: unknown[]) => 1),
     get: mock(async (_key: string) => null),
     set: mock(async (..._args: unknown[]) => 'OK'),
     del: mock(async (_key: string) => 1),
+    expire: mock(async (_key: string, _sec: number) => 1),
+    pexpire: mock(async (_key: string, _ms: number) => 1),
+    pttl: mock(async (_key: string) => -1),
+    incr: mock(async (_key: string) => 1),
+    publish: mock(async (_ch: string, _msg: string) => 1),
+    subscribe: mock((_ch: string, _cb: (msg: string) => void) => {}),
+    hset: mock(async (_key: string, _fields: Record<string, string>) => 1),
+    hgetall: mock(async (_key: string) => ({}) as Record<string, string>),
+    lpush: mock(async (_key: string, _value: string) => 1),
+    rpop: mock(async (_key: string) => null),
+    zadd: mock(async (_key: string, _score: number, _member: string) => 1),
+    zrangebyscore: mock(async (..._args: unknown[]) => [] as string[]),
+    zrem: mock(async (_key: string, _member: string) => 1),
+    close: mock(() => {}),
   }
 }
 
 describe('Queue', () => {
   test('add writes the job hash with correct fields', async () => {
     const redis = makeMockRedis()
-    const queue = new Queue<{ email: string }>(
-      'emails',
-      redis as unknown as Redis,
-    )
+    const queue = new Queue<{ email: string }>('emails', redis)
 
     const job = await queue.add('send', { email: 'user@example.com' })
 
@@ -44,7 +48,7 @@ describe('Queue', () => {
 
   test('add without delay does LPUSH onto waiting list', async () => {
     const redis = makeMockRedis()
-    const queue = new Queue('emails', redis as unknown as Redis)
+    const queue = new Queue('emails', redis)
 
     const job = await queue.add('send', { to: 'a@b.com' })
 
@@ -54,7 +58,7 @@ describe('Queue', () => {
 
   test('add with delay does ZADD onto delayed sorted set', async () => {
     const redis = makeMockRedis()
-    const queue = new Queue('emails', redis as unknown as Redis)
+    const queue = new Queue('emails', redis)
 
     const before = Date.now()
     const job = await queue.add('remind', { to: 'a@b.com' }, { delay: 5000 })
@@ -71,7 +75,7 @@ describe('Queue', () => {
 
   test('add returns a Job with correct id when jobId is provided', async () => {
     const redis = makeMockRedis()
-    const queue = new Queue('emails', redis as unknown as Redis)
+    const queue = new Queue('emails', redis)
 
     const job = await queue.add('send', {}, { jobId: 'custom-id-123' })
 
@@ -80,7 +84,7 @@ describe('Queue', () => {
 
   test('add stores attempts in hash', async () => {
     const redis = makeMockRedis()
-    const queue = new Queue('emails', redis as unknown as Redis)
+    const queue = new Queue('emails', redis)
 
     await queue.add('send', {}, { attempts: 3 })
 
@@ -90,7 +94,7 @@ describe('Queue', () => {
 
   test('add stores backoff config in hash', async () => {
     const redis = makeMockRedis()
-    const queue = new Queue('emails', redis as unknown as Redis)
+    const queue = new Queue('emails', redis)
 
     await queue.add(
       'send',
@@ -105,7 +109,7 @@ describe('Queue', () => {
 
   test('add returns unique ids for multiple jobs', async () => {
     const redis = makeMockRedis()
-    const queue = new Queue('emails', redis as unknown as Redis)
+    const queue = new Queue('emails', redis)
 
     const job1 = await queue.add('send', {})
     const job2 = await queue.add('send', {})

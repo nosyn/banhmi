@@ -1,6 +1,5 @@
 import { Module } from '@banhmi/common'
-import { REDIS_TOKEN } from '@banhmi/redis'
-import type { Redis } from 'ioredis'
+import { REDIS_TOKEN, type RedisLike } from '@banhmi/redis'
 import { QueueExplorerService } from './explorer'
 import { Queue } from './queue'
 import { getQueueToken, QUEUE_OPTIONS } from './tokens'
@@ -51,13 +50,13 @@ export class QueueModule {
         // dedicated redis connection for this queue
         {
           provide: redisToken,
-          useFactory: (redis: Redis) => redis,
+          useFactory: (redis: RedisLike) => redis,
           inject: [REDIS_TOKEN],
         },
         // the Queue producer
         {
           provide: queueToken,
-          useFactory: (redis: Redis) => new Queue(opts.name, redis),
+          useFactory: (redis: RedisLike) => new Queue(opts.name, redis),
           inject: [redisToken],
         },
         // queue options for the explorer

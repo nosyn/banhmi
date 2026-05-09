@@ -12,7 +12,6 @@
     "@banhmi/logger": "workspace:*",
     "@banhmi/platform-bun": "workspace:*",
     "@banhmi/redis": "workspace:*",
-    "banhmi": "workspace:*",
-    "ioredis": "^5.10.1"
+    "banhmi": "workspace:*"
   }
 }

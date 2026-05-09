@@ -1,4 +1,4 @@
-import type { Redis } from 'ioredis'
+import type { RedisLike } from '@banhmi/redis'
 import type { Job, JobOptions } from './types'
 
 /**
@@ -24,11 +24,11 @@ import type { Job, JobOptions } from './types'
 export class Queue<TData = unknown> {
   /**
    * @param name - Logical queue name; used as Redis key prefix.
-   * @param redis - ioredis client instance.
+   * @param redis - `RedisLike` client instance.
    */
   constructor(
     readonly name: string,
-    private readonly redis: Redis,
+    private readonly redis: RedisLike,
   ) {}
 
   /**

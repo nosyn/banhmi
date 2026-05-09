@@ -1,4 +1,4 @@
-import type { Redis } from 'ioredis'
+import type { RedisLike } from '@banhmi/redis'
 import type { ProcessHandlerEntry } from './metadata'
 import { PROCESS_METADATA } from './metadata'
 import type { Job, ProcessorContext } from './types'
@@ -39,14 +39,14 @@ export class Worker {
 
   /**
    * @param queueName - Name of the queue to consume from.
-   * @param redis - ioredis client instance (dedicated — not shared with producers).
+   * @param redis - `RedisLike` client instance (dedicated — not shared with producers).
    * @param processorInstance - Instance of the `@Processor` class.
    * @param processorClass - Constructor of the `@Processor` class (for metadata).
    * @param pollIntervalMs - How long to wait between polls when no job is ready (default 100ms).
    */
   constructor(
     private readonly queueName: string,
-    private readonly redis: Redis,
+    private readonly redis: RedisLike,
     private readonly processorInstance: object,
     private readonly processorClass: new (...args: unknown[]) => unknown,
     private readonly pollIntervalMs = 100,

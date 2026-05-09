@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from 'bun:test'
-import type { Redis } from 'ioredis'
+import type { RedisLike } from '@banhmi/redis'
 import { Process } from '../src/process.decorator'
 import { Processor } from '../src/processor.decorator'
 import { Worker } from '../src/worker'
@@ -8,7 +8,11 @@ import { Worker } from '../src/worker'
 
 type MockRedisMap = { [key: string]: Record<string, string> }
 
-function makeMockRedis() {
+function makeMockRedis(): RedisLike & {
+  _data: MockRedisMap
+  _waiting: Record<string, string[]>
+  _delayed: Record<string, Array<{ score: number; id: string }>>
+} {
   const data: MockRedisMap = {}
   const waitingLists: { [key: string]: string[] } = {}
   const delayedSets: { [key: string]: Array<{ score: number; id: string }> } =
@@ -19,34 +23,64 @@ function makeMockRedis() {
     _waiting: waitingLists,
     _delayed: delayedSets,
 
-    async hset(key: string, fields: Record<string, string>) {
+    async get(_key: string): Promise<string | null> {
+      return null
+    },
+    async set(_key: string, _value: string, _ttl?: number): Promise<unknown> {
+      return 'OK'
+    },
+    async del(_key: string): Promise<number> {
+      return 1
+    },
+    async expire(_key: string, _sec: number): Promise<number> {
+      return 1
+    },
+    async pexpire(_key: string, _ms: number): Promise<number> {
+      return 1
+    },
+    async pttl(_key: string): Promise<number> {
+      return -1
+    },
+    async incr(_key: string): Promise<number> {
+      return 1
+    },
+    async publish(_ch: string, _msg: string): Promise<number> {
+      return 1
+    },
+    subscribe(_ch: string, _cb: (msg: string) => void): void {},
+    close(): void {},
+    async hset(key: string, fields: Record<string, string>): Promise<number> {
       data[key] = { ...(data[key] ?? {}), ...fields }
       return 1
     },
-    async hgetall(key: string) {
-      return data[key] ?? null
+    async hgetall(key: string): Promise<Record<string, string>> {
+      return data[key] ?? {}
     },
-    async lpush(key: string, ...ids: string[]) {
+    async lpush(key: string, value: string): Promise<number> {
       if (!waitingLists[key]) waitingLists[key] = []
-      waitingLists[key].unshift(...ids)
+      waitingLists[key].unshift(value)
       return waitingLists[key].length
     },
-    async rpop(key: string) {
+    async rpop(key: string): Promise<string | null> {
       const list = waitingLists[key]
       if (!list || list.length === 0) return null
       return list.pop() ?? null
     },
-    async zadd(key: string, score: number, id: string) {
+    async zadd(key: string, score: number, id: string): Promise<number> {
       if (!delayedSets[key]) delayedSets[key] = []
       delayedSets[key].push({ score, id })
       return 1
     },
-    async zrangebyscore(key: string, _min: string, max: number) {
+    async zrangebyscore(
+      key: string,
+      _min: string | number,
+      max: string | number,
+    ): Promise<string[]> {
       const set = delayedSets[key]
       if (!set) return []
-      return set.filter((e) => e.score <= max).map((e) => e.id)
+      return set.filter((e) => e.score <= Number(max)).map((e) => e.id)
     },
-    async zrem(key: string, id: string) {
+    async zrem(key: string, id: string): Promise<number> {
       const set = delayedSets[key]
       if (!set) return 0
       const idx = set.findIndex((e) => e.id === id)
@@ -94,13 +128,7 @@ describe('Worker', () => {
     }
 
     const instance = new EmailProcessor()
-    const worker = new Worker(
-      'emails',
-      redis as unknown as Redis,
-      instance,
-      EmailProcessor,
-      10,
-    )
+    const worker = new Worker('emails', redis, instance, EmailProcessor, 10)
     worker.start()
 
     // wait for the worker to pick up the job
@@ -136,13 +164,7 @@ describe('Worker', () => {
     }
 
     const instance = new CatchAllProcessor()
-    const worker = new Worker(
-      'emails',
-      redis as unknown as Redis,
-      instance,
-      CatchAllProcessor,
-      10,
-    )
+    const worker = new Worker('emails', redis, instance, CatchAllProcessor, 10)
     worker.start()
 
     await new Promise((r) => setTimeout(r, 200))
@@ -177,13 +199,7 @@ describe('Worker', () => {
     }
 
     const instance = new RetryProcessor()
-    const worker = new Worker(
-      'emails',
-      redis as unknown as Redis,
-      instance,
-      RetryProcessor,
-      10,
-    )
+    const worker = new Worker('emails', redis, instance, RetryProcessor, 10)
     worker.start()
 
     // enough time for multiple retries
@@ -222,13 +238,7 @@ describe('Worker', () => {
     }
 
     const instance = new BackoffProcessor()
-    const worker = new Worker(
-      'emails',
-      redis as unknown as Redis,
-      instance,
-      BackoffProcessor,
-      10,
-    )
+    const worker = new Worker('emails', redis, instance, BackoffProcessor, 10)
     worker.start()
 
     // first attempt should fail quickly, then back off
@@ -267,13 +277,7 @@ describe('Worker', () => {
     }
 
     const instance = new NoHandlerProcessor()
-    const worker = new Worker(
-      'emails',
-      redis as unknown as Redis,
-      instance,
-      NoHandlerProcessor,
-      10,
-    )
+    const worker = new Worker('emails', redis, instance, NoHandlerProcessor, 10)
     worker.start()
 
     await new Promise((r) => setTimeout(r, 200))
@@ -309,13 +313,7 @@ describe('Worker', () => {
     }
 
     const instance = new DelayedProcessor()
-    const worker = new Worker(
-      'emails',
-      redis as unknown as Redis,
-      instance,
-      DelayedProcessor,
-      10,
-    )
+    const worker = new Worker('emails', redis, instance, DelayedProcessor, 10)
     worker.start()
 
     await new Promise((r) => setTimeout(r, 200))
