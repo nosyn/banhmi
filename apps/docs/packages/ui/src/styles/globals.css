@@ -2,6 +2,7 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/figtree";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 @source "../../../apps/**/*.{ts,tsx}";
@@ -131,4 +132,50 @@
   [role="button"]:not(:disabled) {
     cursor: pointer;
   }
+}
+
+/* Shiki dual-theme support: light theme shown by default, dark when .dark is present */
+.shiki,
+.shiki span {
+  color: var(--shiki-light);
+  background-color: var(--shiki-light-bg);
+  font-style: var(--shiki-light-font-style);
+  font-weight: var(--shiki-light-font-weight);
+  text-decoration: var(--shiki-light-text-decoration);
+}
+.dark .shiki,
+.dark .shiki span {
+  color: var(--shiki-dark);
+  background-color: var(--shiki-dark-bg);
+  font-style: var(--shiki-dark-font-style);
+  font-weight: var(--shiki-dark-font-weight);
+  text-decoration: var(--shiki-dark-text-decoration);
+}
+
+/* Prose code block wrapper */
+.prose pre {
+  padding: 0;
+  background: transparent;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.prose pre > code {
+  display: block;
+  padding: 1.25rem 1.5rem;
+  overflow-x: auto;
+  font-size: 0.875em;
+  border-radius: var(--radius-lg);
+  background-color: oklch(0.97 0.003 325.6);
+}
+.dark .prose pre > code {
+  background-color: oklch(0.212 0.019 322.12);
+}
+.prose :not(pre) > code {
+  background-color: oklch(0.96 0.003 325.6);
+  border-radius: var(--radius-sm);
+  padding: 0.125em 0.375em;
+  font-size: 0.875em;
+}
+.dark .prose :not(pre) > code {
+  background-color: oklch(0.263 0.024 320.12);
 }
