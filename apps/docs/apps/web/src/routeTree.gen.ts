@@ -60,6 +60,8 @@ import { Route as DocsRecipesOtelRouteImport } from './routes/docs/recipes.otel'
 import { Route as DocsRecipesNecordRouteImport } from './routes/docs/recipes.necord'
 import { Route as DocsRecipesMongooseRouteImport } from './routes/docs/recipes.mongoose'
 import { Route as DocsRecipesMikroormRouteImport } from './routes/docs/recipes.mikroorm'
+import { Route as DocsRecipesMailerRouteImport } from './routes/docs/recipes.mailer'
+import { Route as DocsRecipesI18nRouteImport } from './routes/docs/recipes.i18n'
 import { Route as DocsRecipesHotReloadRouteImport } from './routes/docs/recipes.hot-reload'
 import { Route as DocsRecipesHealthChecksRouteImport } from './routes/docs/recipes.health-checks'
 import { Route as DocsRecipesDrizzleRouteImport } from './routes/docs/recipes.drizzle'
@@ -168,6 +170,7 @@ import { Route as DocsBunNativeBunSqliteRouteImport } from './routes/docs/bun-na
 import { Route as DocsBunNativeBunSqlRouteImport } from './routes/docs/bun-native.bun-sql'
 import { Route as DocsBunNativeBunServeRouteImport } from './routes/docs/bun-native.bun-serve'
 import { Route as DocsBunNativeBunS3RouteImport } from './routes/docs/bun-native.bun-s3'
+import { Route as DocsBunNativeBunRedisRouteImport } from './routes/docs/bun-native.bun-redis'
 import { Route as DocsBunNativeBunPasswordRouteImport } from './routes/docs/bun-native.bun-password'
 import { Route as DocsBunNativeBunCompressionRouteImport } from './routes/docs/bun-native.bun-compression'
 import { Route as DocsBuiltInsValidatorsRouteImport } from './routes/docs/built-ins.validators'
@@ -445,6 +448,16 @@ const DocsRecipesMongooseRoute = DocsRecipesMongooseRouteImport.update({
 const DocsRecipesMikroormRoute = DocsRecipesMikroormRouteImport.update({
   id: '/docs/recipes/mikroorm',
   path: '/docs/recipes/mikroorm',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRecipesMailerRoute = DocsRecipesMailerRouteImport.update({
+  id: '/docs/recipes/mailer',
+  path: '/docs/recipes/mailer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRecipesI18nRoute = DocsRecipesI18nRouteImport.update({
+  id: '/docs/recipes/i18n',
+  path: '/docs/recipes/i18n',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DocsRecipesHotReloadRoute = DocsRecipesHotReloadRouteImport.update({
@@ -1027,6 +1040,11 @@ const DocsBunNativeBunS3Route = DocsBunNativeBunS3RouteImport.update({
   path: '/docs/bun-native/bun-s3',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DocsBunNativeBunRedisRoute = DocsBunNativeBunRedisRouteImport.update({
+  id: '/docs/bun-native/bun-redis',
+  path: '/docs/bun-native/bun-redis',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DocsBunNativeBunPasswordRoute =
   DocsBunNativeBunPasswordRouteImport.update({
     id: '/docs/bun-native/bun-password',
@@ -1076,6 +1094,7 @@ export interface FileRoutesByFullPath {
   '/docs/built-ins/validators': typeof DocsBuiltInsValidatorsRoute
   '/docs/bun-native/bun-compression': typeof DocsBunNativeBunCompressionRoute
   '/docs/bun-native/bun-password': typeof DocsBunNativeBunPasswordRoute
+  '/docs/bun-native/bun-redis': typeof DocsBunNativeBunRedisRoute
   '/docs/bun-native/bun-s3': typeof DocsBunNativeBunS3Route
   '/docs/bun-native/bun-serve': typeof DocsBunNativeBunServeRoute
   '/docs/bun-native/bun-sql': typeof DocsBunNativeBunSqlRoute
@@ -1184,6 +1203,8 @@ export interface FileRoutesByFullPath {
   '/docs/recipes/drizzle': typeof DocsRecipesDrizzleRoute
   '/docs/recipes/health-checks': typeof DocsRecipesHealthChecksRoute
   '/docs/recipes/hot-reload': typeof DocsRecipesHotReloadRoute
+  '/docs/recipes/i18n': typeof DocsRecipesI18nRoute
+  '/docs/recipes/mailer': typeof DocsRecipesMailerRoute
   '/docs/recipes/mikroorm': typeof DocsRecipesMikroormRoute
   '/docs/recipes/mongoose': typeof DocsRecipesMongooseRoute
   '/docs/recipes/necord': typeof DocsRecipesNecordRoute
@@ -1244,6 +1265,7 @@ export interface FileRoutesByTo {
   '/docs/built-ins/validators': typeof DocsBuiltInsValidatorsRoute
   '/docs/bun-native/bun-compression': typeof DocsBunNativeBunCompressionRoute
   '/docs/bun-native/bun-password': typeof DocsBunNativeBunPasswordRoute
+  '/docs/bun-native/bun-redis': typeof DocsBunNativeBunRedisRoute
   '/docs/bun-native/bun-s3': typeof DocsBunNativeBunS3Route
   '/docs/bun-native/bun-serve': typeof DocsBunNativeBunServeRoute
   '/docs/bun-native/bun-sql': typeof DocsBunNativeBunSqlRoute
@@ -1352,6 +1374,8 @@ export interface FileRoutesByTo {
   '/docs/recipes/drizzle': typeof DocsRecipesDrizzleRoute
   '/docs/recipes/health-checks': typeof DocsRecipesHealthChecksRoute
   '/docs/recipes/hot-reload': typeof DocsRecipesHotReloadRoute
+  '/docs/recipes/i18n': typeof DocsRecipesI18nRoute
+  '/docs/recipes/mailer': typeof DocsRecipesMailerRoute
   '/docs/recipes/mikroorm': typeof DocsRecipesMikroormRoute
   '/docs/recipes/mongoose': typeof DocsRecipesMongooseRoute
   '/docs/recipes/necord': typeof DocsRecipesNecordRoute
@@ -1413,6 +1437,7 @@ export interface FileRoutesById {
   '/docs/built-ins/validators': typeof DocsBuiltInsValidatorsRoute
   '/docs/bun-native/bun-compression': typeof DocsBunNativeBunCompressionRoute
   '/docs/bun-native/bun-password': typeof DocsBunNativeBunPasswordRoute
+  '/docs/bun-native/bun-redis': typeof DocsBunNativeBunRedisRoute
   '/docs/bun-native/bun-s3': typeof DocsBunNativeBunS3Route
   '/docs/bun-native/bun-serve': typeof DocsBunNativeBunServeRoute
   '/docs/bun-native/bun-sql': typeof DocsBunNativeBunSqlRoute
@@ -1521,6 +1546,8 @@ export interface FileRoutesById {
   '/docs/recipes/drizzle': typeof DocsRecipesDrizzleRoute
   '/docs/recipes/health-checks': typeof DocsRecipesHealthChecksRoute
   '/docs/recipes/hot-reload': typeof DocsRecipesHotReloadRoute
+  '/docs/recipes/i18n': typeof DocsRecipesI18nRoute
+  '/docs/recipes/mailer': typeof DocsRecipesMailerRoute
   '/docs/recipes/mikroorm': typeof DocsRecipesMikroormRoute
   '/docs/recipes/mongoose': typeof DocsRecipesMongooseRoute
   '/docs/recipes/necord': typeof DocsRecipesNecordRoute
@@ -1583,6 +1610,7 @@ export interface FileRouteTypes {
     | '/docs/built-ins/validators'
     | '/docs/bun-native/bun-compression'
     | '/docs/bun-native/bun-password'
+    | '/docs/bun-native/bun-redis'
     | '/docs/bun-native/bun-s3'
     | '/docs/bun-native/bun-serve'
     | '/docs/bun-native/bun-sql'
@@ -1691,6 +1719,8 @@ export interface FileRouteTypes {
     | '/docs/recipes/drizzle'
     | '/docs/recipes/health-checks'
     | '/docs/recipes/hot-reload'
+    | '/docs/recipes/i18n'
+    | '/docs/recipes/mailer'
     | '/docs/recipes/mikroorm'
     | '/docs/recipes/mongoose'
     | '/docs/recipes/necord'
@@ -1751,6 +1781,7 @@ export interface FileRouteTypes {
     | '/docs/built-ins/validators'
     | '/docs/bun-native/bun-compression'
     | '/docs/bun-native/bun-password'
+    | '/docs/bun-native/bun-redis'
     | '/docs/bun-native/bun-s3'
     | '/docs/bun-native/bun-serve'
     | '/docs/bun-native/bun-sql'
@@ -1859,6 +1890,8 @@ export interface FileRouteTypes {
     | '/docs/recipes/drizzle'
     | '/docs/recipes/health-checks'
     | '/docs/recipes/hot-reload'
+    | '/docs/recipes/i18n'
+    | '/docs/recipes/mailer'
     | '/docs/recipes/mikroorm'
     | '/docs/recipes/mongoose'
     | '/docs/recipes/necord'
@@ -1919,6 +1952,7 @@ export interface FileRouteTypes {
     | '/docs/built-ins/validators'
     | '/docs/bun-native/bun-compression'
     | '/docs/bun-native/bun-password'
+    | '/docs/bun-native/bun-redis'
     | '/docs/bun-native/bun-s3'
     | '/docs/bun-native/bun-serve'
     | '/docs/bun-native/bun-sql'
@@ -2027,6 +2061,8 @@ export interface FileRouteTypes {
     | '/docs/recipes/drizzle'
     | '/docs/recipes/health-checks'
     | '/docs/recipes/hot-reload'
+    | '/docs/recipes/i18n'
+    | '/docs/recipes/mailer'
     | '/docs/recipes/mikroorm'
     | '/docs/recipes/mongoose'
     | '/docs/recipes/necord'
@@ -2088,6 +2124,7 @@ export interface RootRouteChildren {
   DocsBuiltInsValidatorsRoute: typeof DocsBuiltInsValidatorsRoute
   DocsBunNativeBunCompressionRoute: typeof DocsBunNativeBunCompressionRoute
   DocsBunNativeBunPasswordRoute: typeof DocsBunNativeBunPasswordRoute
+  DocsBunNativeBunRedisRoute: typeof DocsBunNativeBunRedisRoute
   DocsBunNativeBunS3Route: typeof DocsBunNativeBunS3Route
   DocsBunNativeBunServeRoute: typeof DocsBunNativeBunServeRoute
   DocsBunNativeBunSqlRoute: typeof DocsBunNativeBunSqlRoute
@@ -2196,6 +2233,8 @@ export interface RootRouteChildren {
   DocsRecipesDrizzleRoute: typeof DocsRecipesDrizzleRoute
   DocsRecipesHealthChecksRoute: typeof DocsRecipesHealthChecksRoute
   DocsRecipesHotReloadRoute: typeof DocsRecipesHotReloadRoute
+  DocsRecipesI18nRoute: typeof DocsRecipesI18nRoute
+  DocsRecipesMailerRoute: typeof DocsRecipesMailerRoute
   DocsRecipesMikroormRoute: typeof DocsRecipesMikroormRoute
   DocsRecipesMongooseRoute: typeof DocsRecipesMongooseRoute
   DocsRecipesNecordRoute: typeof DocsRecipesNecordRoute
@@ -2605,6 +2644,20 @@ declare module '@tanstack/react-router' {
       path: '/docs/recipes/mikroorm'
       fullPath: '/docs/recipes/mikroorm'
       preLoaderRoute: typeof DocsRecipesMikroormRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/recipes/mailer': {
+      id: '/docs/recipes/mailer'
+      path: '/docs/recipes/mailer'
+      fullPath: '/docs/recipes/mailer'
+      preLoaderRoute: typeof DocsRecipesMailerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/recipes/i18n': {
+      id: '/docs/recipes/i18n'
+      path: '/docs/recipes/i18n'
+      fullPath: '/docs/recipes/i18n'
+      preLoaderRoute: typeof DocsRecipesI18nRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/docs/recipes/hot-reload': {
@@ -3363,6 +3416,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocsBunNativeBunS3RouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/docs/bun-native/bun-redis': {
+      id: '/docs/bun-native/bun-redis'
+      path: '/docs/bun-native/bun-redis'
+      fullPath: '/docs/bun-native/bun-redis'
+      preLoaderRoute: typeof DocsBunNativeBunRedisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/docs/bun-native/bun-password': {
       id: '/docs/bun-native/bun-password'
       path: '/docs/bun-native/bun-password'
@@ -3424,6 +3484,7 @@ const rootRouteChildren: RootRouteChildren = {
   DocsBuiltInsValidatorsRoute: DocsBuiltInsValidatorsRoute,
   DocsBunNativeBunCompressionRoute: DocsBunNativeBunCompressionRoute,
   DocsBunNativeBunPasswordRoute: DocsBunNativeBunPasswordRoute,
+  DocsBunNativeBunRedisRoute: DocsBunNativeBunRedisRoute,
   DocsBunNativeBunS3Route: DocsBunNativeBunS3Route,
   DocsBunNativeBunServeRoute: DocsBunNativeBunServeRoute,
   DocsBunNativeBunSqlRoute: DocsBunNativeBunSqlRoute,
@@ -3539,6 +3600,8 @@ const rootRouteChildren: RootRouteChildren = {
   DocsRecipesDrizzleRoute: DocsRecipesDrizzleRoute,
   DocsRecipesHealthChecksRoute: DocsRecipesHealthChecksRoute,
   DocsRecipesHotReloadRoute: DocsRecipesHotReloadRoute,
+  DocsRecipesI18nRoute: DocsRecipesI18nRoute,
+  DocsRecipesMailerRoute: DocsRecipesMailerRoute,
   DocsRecipesMikroormRoute: DocsRecipesMikroormRoute,
   DocsRecipesMongooseRoute: DocsRecipesMongooseRoute,
   DocsRecipesNecordRoute: DocsRecipesNecordRoute,
