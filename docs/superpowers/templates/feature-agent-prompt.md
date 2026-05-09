@@ -33,10 +33,11 @@ Implement the feature listed in the wave plan under `### Feature: <FEATURE_SLUG>
 
 - `bun test` green for the package and the micro-example.
 - `bun run lint` clean.
-- `bun run quality` (`no-anys`, `no-bangs`, `no-reflect`, `tsdoc-coverage`) clean.
+- `bun run quality` (`no-anys`, `no-bangs`, `no-reflect`, `tsdoc-coverage`, `no-shadow-js`) clean.
 - TSDoc on every public symbol, with at least one `@example`.
 - No `reflect-metadata`, no `experimentalDecorators`.
 - No `process.env` in platform code (use `Bun.env`).
+- No committed `.js` / `.d.ts` artifacts that shadow `.ts` source (TypeScript-only source policy — see CLAUDE.md).
 
 ## Verification
 

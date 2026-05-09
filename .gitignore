@@ -8,3 +8,23 @@ coverage/
 scripts/codex/codex.queue.json
 .claude/worktrees/
 .turbo
+
+# TypeScript-only source policy: never commit compiled JS shadowing TS
+packages/**/src/**/*.js
+packages/**/src/**/*.js.map
+packages/**/src/**/*.d.ts
+packages/**/src/**/*.d.ts.map
+packages/**/test/**/*.js
+packages/**/test/**/*.js.map
+packages/**/test/**/*.d.ts
+apps/cli/src/**/*.js
+apps/cli/test/**/*.js
+apps/cli/src/**/*.d.ts
+apps/docs/apps/web/src/**/*.js
+apps/docs/apps/web/src/**/*.d.ts
+examples/**/src/**/*.js
+examples/**/test/**/*.js
+benchmarks/**/*.js
+benchmarks/**/*.d.ts
+scripts/**/*.js
+scripts/**/*.d.ts

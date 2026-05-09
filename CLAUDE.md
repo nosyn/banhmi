@@ -65,6 +65,16 @@ export const MY_TOKEN = Token<MyType>('MY_TOKEN')
 
 Never use `@Inject()` decorator or `reflect-metadata`.
 
+### TypeScript-only source
+
+Banhmi is a TypeScript-first project. The `.ts` and `.tsx` files in `packages/`, `apps/`, `examples/`, and `benchmarks/` are the single source of truth.
+
+- Do **NOT** commit compiled `.js`, `.js.map`, `.d.ts`, or `.d.ts.map` files alongside the `.ts` source. They confuse imports, get out of sync, and pollute diffs.
+- Do **NOT** generate them with `tsc --emit` and commit the output. Bun runs `.ts` natively; there is no compilation step needed for development or for running tests.
+- The repo's `.gitignore` blocks the common offending patterns. If you find yourself fighting `.gitignore`, you are doing something wrong — stop and ask.
+- Build artifacts (compiled output for npm publishing) live in `dist/` directories and are gitignored. Publishing happens through Changesets.
+- Configuration files at directory roots that are intentionally JavaScript (`eslint.config.js`, `drizzle.config.js`, etc.) are explicitly allowed; they have no `.ts` sibling.
+
 ### Formatting (Biome)
 
 - Single quotes
@@ -126,3 +136,4 @@ docs: add roadmap
 - Do NOT use `process.env` directly in platform code — use `Bun.env`
 - Do NOT skip the polyfill preload when adding a new package that uses decorators
 - Do NOT create `README.md` or doc files unless explicitly asked
+- Do NOT commit `.js`, `.js.map`, `.d.ts`, or `.d.ts.map` files that shadow `.ts` source (see TypeScript-only source section)
